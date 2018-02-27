@@ -1,0 +1,48 @@
+---
+title: "DEX Report"
+author: Sascha Holzhauer
+output:
+    pdf_document:
+        toc: true
+        toc_depth: 2
+        number_sections: true
+        fig_width: 7
+        fig_height: 6
+        fig_caption: true
+        df_print: kable
+---
+
+```{r include = FALSE}
+source(dexpa$dexpaDefinition)
+dexpa$sim$version 	<- "stageA"	
+
+setwd(paste(dexpa$dirs$scripts, sep="/"))
+source(paste(dexpa$dirs$scripts, dexpa$sim$version, "dexpa.R", sep="/"))
+```
+
+# Parameters
+```{r, eval=TRUE}
+dexR::output_table_param_products(dexpa)
+dexR::output_table_param_timing(dexpa)
+```
+
+# Time Series
+## Clearing Information
+
+```{r, eval=TRUE, results="hide", echo=FALSE}
+dexR::hl_figure_clearing_numConsideredRequests(dexpa)
+```
+
+## Price Statistics
+```{r, eval=TRUE, results="hide", echo=FALSE}
+dexpa$fig$height <- 550
+dexR::hl_figure_clearing_clearingPriceByCTbyProduct(dexpa)
+```
+
+## Request Statistics
+```{r, eval=TRUE, results="hide", echo=FALSE}
+dexpa$fig$height <- 550
+dexR::hl_figure_requests_numRequests_byStatusBySubmT(dexpa)
+dexR::hl_figure_requests_numRequests_byStatusByStartT(dexpa)
+```
+
