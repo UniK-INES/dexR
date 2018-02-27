@@ -1,0 +1,29 @@
+Package: dexR
+Type: Package
+Title: Analysing and Reporting DEX Experiments
+Version: 0.1
+Date: 2018-02-09
+Authors@R: person("Sascha", "Holzhauer", email = "Sascha.Holzhauer@uni-kassel.de", role = c("aut", "cre"))
+Depends: R (>= 3.3.2)
+Imports:
+	DBI,
+    futile.logger,
+    ggplot2,
+    knitr,
+    kfigr,
+    plyr,
+    RPostgreSQL,
+    R.oo,
+    RColorBrewer,
+    reshape2,
+    rmarkdown,
+    shbasic,
+    XML,
+    xtable
+Maintainer: Sascha Holzhauer <Sascha.Holzhauer@uni-kassel.de>
+Description: Connects to PostGreSQL DB, processes, and reports data from Direct Exchange (energy) simulations.
+License: GPL-3
+VignetteBuilder: knitr
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1

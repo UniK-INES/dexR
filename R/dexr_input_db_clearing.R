@@ -1,0 +1,36 @@
+#' Retrieve clearing data from PostgreSQL database.
+#' 
+#' @param dexpa
+#' @return data.frame of clearing infos 
+#' 
+#' @author Sascha Holzhauer
+#' @export
+input_db_clearings <- function(dexpa) {
+	
+	futile.logger::flog.info("Retrieve clearing data from PostgreSQL database %s",
+			dexpa$db$dbname,
+			name = "dexpa.input.db.clearing")
+	
+	con <- input_db_getconnection(dexpa)
+	
+	df_cinfos <- DBI::dbGetQuerydbGetQuery(con, "
+					SELECT
+						id,
+						clearing_time,
+						delivery_period_start,
+						energy_cleared,
+						num_considered_requests,
+						price_cleared,
+						mmarket_product_pattern.description AS product_id
+					FROM 
+						clearing_info,
+						mmarket_product_pattern
+					WHERE
+						clearing_info.product_pattern_product_id = mmarket_product_pattern.product_pattern_product_id")
+	DBI::dbDisconnect(con)
+	
+	df_cinfos$delivery_period_start <- ms_to_date(df_cinfos$delivery_period_start, timezone="Europe/Berlin")
+	df_cinfos$clearing_time <- ms_to_date(df_cinfos$clearing_time, timezone="Europe/Berlin")
+	
+	return(df_cinfos)
+}
