@@ -1,5 +1,5 @@
 ---
-title: "DEX Report"
+title: "DEX Comparison Report"
 author: Sascha Holzhauer
 output:
     pdf_document:
@@ -17,35 +17,48 @@ setwd(paste(dexpa$dirs$scripts, sep="/"))
 ```
 
 # Parameters
-## Products
+## Product Information (`r input_db_runID(dexpa)`)
 ```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 dexR::output_table_param_products(dexpa)
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
-## Market Information
+## Product Information (`r input_db_runID(dp2)`)
+```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
+invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
+dexR::output_table_param_products(dp2)
+invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
+```
+## Market Information (`r input_db_runID(dexpa)`)
 ```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 dexR::output_table_param_marketinfo(dexpa)
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
+## Market Information (`r input_db_runID(dp2)`)
+```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
+invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
+dexR::output_table_param_marketinfo(dp2)
+invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
+```
+
 # Time Series
 ## Clearing Information
 
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
-dexR::hl_figure_clearing_numConsideredRequests(dexpa)
+dexR::hl_figure_clearing_comp_numConsideredRequests(dexpa, dp2)
 ```
 
 ## Price Statistics
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpa$fig$height <- 550
-dexR::hl_figure_clearing_clearingPriceByCTbyProduct(dexpa)
+dexR::hl_figure_clearing_comp_clearingPriceByCTbyProduct(dexpa, dp2)
 ```
 
 ## Request Statistics
-```{r, eval=TRUE, results="hide", echo=FALSE}
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpa$fig$height <- 550
-dexR::hl_figure_requests_numRequests_byStatusBySubmT(dexpa)
-dexR::hl_figure_requests_numRequests_byStatusByStartT(dexpa)
+dexR::hl_figure_requests_numRequests_comp_byStatusBySubmT(dexpa, dp2)
+dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(dexpa, dp2)
 ```
 

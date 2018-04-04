@@ -13,17 +13,25 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	if (!exists("defdexpa")) defdexpa <- list()
 	defdexpa$sim <- list()
 
-	defdexpa$sim$version					<- "version"
-	defdexpa$sim$scenario				<- "scenario"
-	defdexpa$sim$runids					<- c("0-0")
+	defdexpa$sim$version			<- "version"
+	defdexpa$sim$id				<- c("NN")
+	defdexpa$sim$duration			<- 30*60             # in sec
+	defdexpa$sim$timefactor			<- 1.0
 	
 	### Directories ################################################################
 	defdexpa$dirs <- list()
 	defdexpa$dirs$project			<- "./"
+	defdexpa$dirs$config			<- "./config"
 	
+	defdexpa$dirs$csvtemplates		<- "./template/csv"
+	defdexpa$dirs$xmltemplatesstatic	<- "./template/xml_static"
+	defdexpa$dirs$backend			<- "./market-backend"
+	defdexpa$dirs$emgrundir			<- "./emg/rundirs/rundir-enavi"
+
 	defdexpa$dirs$output <- list()
 	defdexpa$dirs$outputdir			<- paste(defdexpa$dirs$project, "output/version/", sep="")	
-	defdexpa$dirs$output$rdata		<- paste(defdexpa$dirs$outputdir, "rData/", sep="") 
+	defdexpa$dirs$output$rdata		<- paste(defdexpa$dirs$outputdir, "rData/", sep="")
+	defdexpa$dirs$output$dbdumps		<- paste(defdexpa$dirs$outputdir, "dbdumps/", sep="") 
 	defdexpa$dirs$output$figures		<- paste(defdexpa$dirs$outputdir, "figures/", sep="")
 	defdexpa$dirs$output$reports		<- paste(defdexpa$dirs$outputdir, "reports/", sep="")
 	
@@ -33,9 +41,19 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 
 	defdexpa$db$suname			<- "postgres"
 	defdexpa$db$supassword			<- "NotSet"
-	
+
+	defdexpa$db$dbname_template		<- "enavi_template"
+
+	defdexpa$db$tablenames$clients		<- "user_account"
+	defdexpa$db$tablenames$roles		<- "users_roles"
+
+	defdexpa$db$tablenames$marketproducts	<- "market_product_pattern"
+	defdexpa$db$tablenames$mmarketproducts	<- "mmarket_product_pattern"
+
 	### XML attributes Names ###########################################################
-	defdexpa$xml <- list()	
+	defdexpa$xml <- list()
+	defdexpa$xml$staticfiles 		<- c("enaviMarkets_enavi_market.xml", "OutsideBuildingRoom.xml", "OutsideSolarSensor.xml", 
+							"outsideTemperature.xml", "outsideWind_location.xml", "PropertyLocation.xml")
 	
 	### Figure Settings ###########################################################
 	defdexpa$fig <- list()
@@ -62,7 +80,27 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 							"2" = "blue",
 							"3" = "orange",
 							"6" = "red")
+
+	### Naming Settings ############################################################
+	defdexpa$naming$statuses 		<- c(	"0" = "UNHANDELED",
+							"1" = "ACCEPTED",
+							"2" = "PARTLY_ACCEPTED",
+							"3" = "DECLINED",
+							"6" = "INVALID")
+
+	### Market Server Settings ############################################################	
+	defdexpa$server$url		<- "http://localhost:8080"
+	defdexpa$server$api$products	<- "config-products"
+	defdexpa$server$api$start	<- "admin/start"
+	defdexpa$server$api$shutdown	<- "admin/shutdown"
+	defdexpa$server$api$status	<- "admin/status"
+	defdexpa$server$username	<- "admin"
+	defdexpa$server$password	<- "multimodalES"
 	
+	### EMG Settings ############################################################	
+	defdexpa$emg$url		<- "http://localhost:8443"
+	defdexpa$emg$api$shutdown	<- "rest/admin?target=shutdown&user=rest&pw=rest"
+
 	### Debug Settings ############################################################
 	defdexpa$debug <- list()
 	# the higher, the more verbose

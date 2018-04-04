@@ -35,7 +35,7 @@ output_figure_init <- function(dexpa, outdir = dexpa$dirs$output$figures, filena
 			outdir,
 			filename,
 			outputformat,
-			name = "dexpa.output.figure.init")
+			name = "dexr.output.figure.init")
 	
 	if (ensurePath) {
 		shbasic::sh.ensurePath(outdir)
@@ -68,7 +68,7 @@ output_figure_init <- function(dexpa, outdir = dexpa$dirs$output$figures, filena
 			numLines,
 			dexpa$fig$width * dexpa$fig$resfactor * numCols,
 			numCols,
-			name = "dexpa.output.figure.init")
+			name = "dexr.output.figure.init")
 	
 	if (outputformat == "png") {
 		grDevices::png(file=paste(outdir, '/', filename,".png",sep=""),

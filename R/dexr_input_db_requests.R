@@ -9,7 +9,7 @@ input_db_requests <- function(dexp) {
 	
 	futile.logger::flog.info("Retrieve request data from PostgreSQL database %s",
 			dexp$db$dbname,
-			name = "dexp.input.db.requests")
+			name = "dexr.input.db.requests")
 	
 	con <- input_db_getconnection(dexp)
 	
@@ -25,7 +25,7 @@ input_db_requests <- function(dexp) {
 						e.energy_accepted,
 						e.price_requested,
 						e.price_cleared,
-						rn.name 			AS status,
+						e.status 			AS status,
 						mp.description 		AS product_id,
 						mp.clearing_id
 					FROM 
@@ -33,14 +33,12 @@ input_db_requests <- function(dexp) {
 						energy_request e,
 						user_account u,
 						market_product_pattern p,
-						mmarket_product_pattern mp,
-						requests_status_names rn 
+						mmarket_product_pattern mp 
 					WHERE 
 						m.request_uid = e.uid AND
 						e.product_id = p.product_id AND
 						p.product_id = mp.product_pattern_product_id AND
-						m.user_account_id = u.id AND
-						rn.id = e.status;")
+						m.user_account_id = u.id;")
 		
 	df_requests$submission_time <- ms_to_date(df_requests$submission_time, timezone="Europe/Berlin")
 	df_requests$start_time <- ms_to_date(df_requests$start_time, timezone="Europe/Berlin")

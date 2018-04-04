@@ -1,0 +1,30 @@
+---
+title: "Configure and run experiments with dexR"
+author: "Sascha Holzhauer"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Configure and run experiments with dexR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\usepackage[utf8]{inputenc}
+---
+
+
+# Steps to configure
+
+* Creation of Config CSV tables
+  + Clients
+  + Loads
+  + Buildings
+  + Generations
+  + PVplants
+  + LoadProfiles
+* Creation of Param_Configs-table
+  + definition of config ID
+  + links to CSV files
+
+# Configuring EMG
+
+![](png/dexR_config_emg.png)

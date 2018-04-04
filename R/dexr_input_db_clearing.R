@@ -9,11 +9,11 @@ input_db_clearings <- function(dexpa) {
 	
 	futile.logger::flog.info("Retrieve clearing data from PostgreSQL database %s",
 			dexpa$db$dbname,
-			name = "dexpa.input.db.clearing")
+			name = "dexr.input.db.clearing")
 	
 	con <- input_db_getconnection(dexpa)
 	
-	df_cinfos <- DBI::dbGetQuerydbGetQuery(con, "
+	df_cinfos <- DBI::dbGetQuery(con, "
 					SELECT
 						id,
 						clearing_time,

@@ -1,23 +1,20 @@
 ## ---- eval=FALSE---------------------------------------------------------
-#  ## DexpProject.R
+#  ## DexpaProject.R
 #  [...]
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  # Only contained when the particular script is only executed on a specific maschine!
-#  # Otherwise. the maschine=specific file needs to be executed before.
-#  source("/PATH-TO/dexp-machine_XY.R")
+#  # Only contained when the particular script is only executed on a specific machine!
+#  # Otherwise. the machine-specific file needs to be executed before.
+#  source("/PATH-TO/dexpa-machine_XY.R")
 #  
-#  # simp$dirs$simp is set by maschine-specific file:
-#  setwd(paste(dexp$dirs$dexp, dexp$sim$folder, "project/", dexp$sim$task, sep="/"))
-#  # usually, the setting/scenario specific dexp.R is a level above:
-#  source("../dexp.R")
+#  # dexpa$dirs$scripts is set by machine-specific file:
+#  setwd(paste(dexpa$dirs$scripts, sep="/"))
+#  # usually, the setting/scenario specific dexpa.R is a level above:
+#  source("../dexpa.R")
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  futile.logger::flog.threshold(futile.logger::DEBUG, name='dexp')
-#  futile.logger::flog.threshold(futile.logger::TRACE, name='dexp.input')
-
-## ---- eval=FALSE---------------------------------------------------------
-#  futile.logger::flog.appender(appender.file(filename), name='test.logger')
+#  ## DexpaProject.R
+#  [...]
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  csv_LandUseIndex_rbinded <- data
@@ -34,4 +31,11 @@
 #  hist(cellData$LandUseIndex, breaks=3, col="red")
 #  dev.off()
 #  
+
+## ---- eval=FALSE---------------------------------------------------------
+#  futile.logger::flog.threshold(futile.logger::DEBUG, name='dexr')
+#  futile.logger::flog.threshold(futile.logger::TRACE, name='dexr.input')
+
+## ---- eval=FALSE---------------------------------------------------------
+#  futile.logger::flog.appender(appender.file(filename), name='dexr.output')
 

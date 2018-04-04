@@ -1,0 +1,95 @@
+---
+title: "DEX Comparison Report"
+author: Sascha Holzhauer
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+    beamer_presentation:
+        colortheme: orchid
+        df_print: kable
+        fig_width: 7
+        fig_height: 4
+        fig_caption: true
+        incremental: false
+        slide_level: 1
+        theme: Singapore
+        toc: true
+geometry: margin=1cm
+fontsize: 8pt
+---
+
+```{r, eval=TRUE, include = FALSE}
+setwd(paste(dexpa$dirs$scripts, sep="/"))
+```
+
+# Parameters
+## Product Information (`r input_db_runID(dexpa)`)
+```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
+invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
+dexR::output_table_param_products(dexpa)
+invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
+```
+***
+## Product Information `r input_db_runID(dp2)`
+```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
+invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
+dexR::output_table_param_products(dp2)
+invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
+```
+***
+## Market Information (`r input_db_runID(dexpa)`)
+```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
+invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
+dexR::output_table_param_marketinfo(dexpa)
+invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
+```
+## Market Information (`r input_db_runID(dp2)`)
+```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
+invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
+dexR::output_table_param_marketinfo(dp2)
+invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
+```
+
+# Time Series
+## Clearing Information
+
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+dexR::hl_figure_clearing_comp_numConsideredRequests(dexpa, dp2)
+```
+
+***
+
+## Price Statistics
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+dexpa$fig$height <- 750
+dexR::hl_figure_clearing_comp_clearingPriceByCTbyProduct(dexpa, dp2)
+```
+
+***
+
+## Request Statistics by status
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+dexpa$fig$height <- 950
+dexR::hl_figure_requests_numRequests_comp_byStatusBySubmT(dexpa, dp2)
+```
+
+***
+
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+dexpa$fig$height <- 950
+dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(dexpa, dp2)
+```
+
+***
+
+## Request Statistics by product
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+dexpa$fig$height <- 750
+dexR::hl_figure_requests_numRequests_comp_byProductBySubmT(dexpa, dp2)
+```
+
+***
+
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+dexpa$fig$height <- 750
+dexR::hl_figure_requests_numRequests_comp_byProductByStartT(dexpas)
+```

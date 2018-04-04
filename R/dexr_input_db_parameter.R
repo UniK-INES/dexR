@@ -5,18 +5,17 @@
 #' 
 #' @author Sascha Holzhauer
 #' @export
-input_db_param_products <- function(dexp) {
+input_db_param_products <- function(dexpa) {
 	
 	futile.logger::flog.info("Retrieve market product pattern information from PostgreSQL database %s",
-			dexp$db$dbname,
-			name = "dexp.input.db.param")
+			dexpa$db$dbname,
+			name = "dexr.input.db.param")
 	
-	con <- input_db_getconnection(dexp)
+	con <- input_db_getconnection(dexpa)
 	
 	df_products <- DBI::dbGetQuery(con, "
 					SELECT
 						*
-						
 					FROM 
 						market_product_pattern p,
 						mmarket_product_pattern mp
@@ -35,20 +34,19 @@ input_db_param_products <- function(dexp) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-input_db_param_timing <- function(dexp) {
+input_db_param_marketinfo <- function(dexp) {
 	
-	futile.logger::flog.info("Retrieve timing information from PostgreSQL database %s",
+	futile.logger::flog.info("Retrieve market information from PostgreSQL database %s",
 			dexp$db$dbname,
-			name = "dexp.input.db.param")
+			name = "dexr.input.db.param")
 	
 	con <- input_db_getconnection(dexp)
 	
 	df_products <- DBI::dbGetQuery(con, "
 					SELECT
 					*
-					
 					FROM 
-						time_information");
+						market_information");
 	
 	
 	DBI::dbDisconnect(con)
@@ -65,7 +63,7 @@ input_db_param_users <- function(dexp) {
 	
 	futile.logger::flog.info("Retrieve user information from PostgreSQL database %s",
 			dexp$db$dbname,
-			name = "dexp.input.db.param")
+			name = "dexr.input.db.param")
 	
 	con <- input_db_getconnection(dexp)
 	
