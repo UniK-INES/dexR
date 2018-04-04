@@ -6,12 +6,41 @@
 #' 
 #' @author Sascha Holzhauer
 #' @export
-createFullReport <- function(dexpa, outputfile, output_dir = dexpa$dirs$output$reports) {
+createFullReport <- function(dexpa, outputfile, rmdfile="DEX_report_full.Rmd", output_dir = dexpa$dirs$output$reports) {
 	
 	dexpa$fig$init <- function(simp, outdir, filename) {}
 	dexpa$fig$close<- function() {}
 	
-	rmarkdown::render(	input 		= system.file("reports", "DEX_report_full.Rmd", package="dexR"),
+	report.env <- new.env()
+	assign("dexpa", dexpa, envir=report.env)
+	
+	rmarkdown::render(	input 		= system.file("reports", rmdfile, package="dexR"),
 						output_file = outputfile,
-						output_dir  = output_dir)
+						output_dir  = output_dir,
+						envir = report.env)
+}
+#' Create the comparison report
+#' @param dexpa parameter object 
+#' @param outputfile filename of resulting PDF file
+#' @param output_dir destination folder
+#' @return PDF file
+#' 
+#' @author Sascha Holzhauer
+#' @export
+createCompareReport <- function(dexpas, outputfile, rmdfile="DEX_report_compare.Rmd", output_dir = dexpa$dirs$output$reports) {
+	
+	dexpa$fig$init <- function(simp, outdir, filename) {}
+	dexpa$fig$close<- function() {}
+	
+	report.env <- new.env()
+	assign("dexpas", dexpas, envir=report.env)	
+	for (i in length(dexpas)) {
+		assign(names(dexpas)[i], dexpas[i], envir=report.env)
+	}
+	
+	
+	rmarkdown::render(	input = system.file("reports", rmdfile, package="dexR"),
+			output_file = outputfile,
+			output_dir  = output_dir,
+			envir = report.env)
 }

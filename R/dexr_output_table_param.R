@@ -14,7 +14,7 @@ output_table_param_products <- function(dexpa) {
 								"closing_time",
 								"max_price",
 								"min_price"
-							)], format="markdown", caption="Timing information", 
+							)], format="markdown", caption="Product information", 
 				col.names = c(	"Product",
 								"Delivery start",
 								"Duration",
@@ -30,7 +30,10 @@ output_table_param_products <- function(dexpa) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_table_param_timing <- function(dexpa) {
-	timing <- input_db_param_timing(dexpa)
-	knitr::kable(timing, format="markdown", caption="Timing information", col.names = NA)
+output_table_param_marketinfo <- function(dexpa) {
+	timing <- input_db_param_marketinfo(dexpa)
+	knitr::kable(timing, format="markdown", caption="Market information", 
+			col.names = c(	"UID", 
+							"Fine/untraded kWh",
+							"Fine/Missing reading"))
 }

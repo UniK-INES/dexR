@@ -206,57 +206,58 @@ hr {
 <body>
 <h1>Concept</h1>
 
-<p>The package provides various functions to load data from db and XML configuration files, convert, and finally visualise it.
-Therefore, in a chain of production these functions need to be combined. At the same time, there are a number
+<p>The package provides various functions to load data from db and XML configuration files, convert, and finally visualise it. Therefore, in a chain of production these functions need to be combined. At the same time, there are a number
 of high level functions which integrate the more basic functions but leave less scope for customisation. These
-high level functions start with hl. </p>
+high level functions start with &#39;hl&#39;. </p>
 
 <h2>Parameters</h2>
 
-<p>There is a dexp (DEX Properties) list which contains all project-specific properties, directories, 
-and  parameters. The basic idea is to define a dexp list for each project and machine and execute the dexp defining 
+<p>There is a dexpa (DEX Parameters) list which contains all project-specific properties, directories, 
+and  parameters. The basic idea is to define a dexpa list for each project and machine and execute the dexpa defining 
 R code every time you start a script with the according project:</p>
 
 <ol>
-<li><p>Before or withing the script, the machine-specific DEXP configuration (dexp-maschine_XY.R) is loaded.</p></li>
-<li><p>The machine-specific DEXP includes the project-specific file (dexpProject.R.).</p></li>
-<li><p>The project-specfic file loads the default parameter list.</p></li>
+<li><p>Before or within the script, the machine-specific DEXPA configuration (dexpa-maschine_XY.R) is loaded.</p></li>
+<li><p>The machine-specific DEXPA includes the project-specific file (dexpaProject.R.).</p></li>
+<li><p>The project-specific file loads the default parameter list.</p></li>
 <li><p>The script itself may then override particular parameter values with &ldquo;local&rdquo; properties 
 (e.g. runID, image resolutions). Often it is a good idea to store setting/scenario specific values in a 
-separate file (dexp.R) within the setting/scenario R folder. </p></li>
+separate file (dexpa.R) within the setting/scenario R folder. </p></li>
 </ol>
 
-<pre><code class="r">## DexpProject.R
+<pre><code class="r">## DexpaProject.R
 [...]
 </code></pre>
 
-<p>The machine-specific dexp part in an according script contains the (machine-specific) path 
-to itself and to the machine-independent dexp part script (dexpProject.R), loads that general part and 
-may overwrite certain parameters. The roject dexp file initially merges the defined parameters in the 
+<p>The machine-specific dexpa part in an according script contains the (machine-specific) path 
+to itself and to the machine-independent dexpa part script (dexpaProject.R), loads that general part and 
+may overwrite certain parameters. The project dexpa file initially merges the defined parameters in the 
 general dexR default parameter list to apply dexR defaults when no other specification is given.</p>
 
 <p>Using the parameter set during an initial execution of the machine-dependent scripts at startup, each 
-script using dexR should load the dexp code anew. During that process, the entire dexp list 
+script using dexR should load the dexpa code anew. During that process, the entire dexpa list 
 including all possible changes are removed from memory and loaded anew. Following above suggestions,
-a script first loading the setting/scenario specific dexp.R would look like this:</p>
+a script first loading the setting/scenario specific dexpa.R would look like this:</p>
 
-<pre><code class="r"># Only contained when the particular script is only executed on a specific maschine!
-# Otherwise. the maschine=specific file needs to be executed before.
-source(&quot;/PATH-TO/dexp-machine_XY.R&quot;)
+<pre><code class="r"># Only contained when the particular script is only executed on a specific machine!
+# Otherwise. the machine-specific file needs to be executed before.
+source(&quot;/PATH-TO/dexpa-machine_XY.R&quot;)
 
-# simp$dirs$simp is set by maschine-specific file:
-setwd(paste(dexp$dirs$dexp, dexp$sim$folder, &quot;project/&quot;, dexp$sim$task, sep=&quot;/&quot;))
-# usually, the setting/scenario specific dexp.R is a level above:
-source(&quot;../dexp.R&quot;)
+# dexpa$dirs$scripts is set by machine-specific file:
+setwd(paste(dexpa$dirs$scripts, sep=&quot;/&quot;))
+# usually, the setting/scenario specific dexpa.R is a level above:
+source(&quot;../dexpa.R&quot;)
 </code></pre>
 
-<p>The simp list consists of a number of sublists:</p>
+<p>The dexpa list consists of a number of sublists:</p>
 
 <ul>
 <li><p>sim</p></li>
 <li><p>dirs</p></li>
 <li><p>xml</p></li>
 <li><p>fig</p></li>
+<li><p>db</p></li>
+<li><p>colours</p></li>
 <li><p>debug</p></li>
 </ul>
 
@@ -273,26 +274,19 @@ Therefore, there are two ways to influence colour settings:</p>
 colour set names in a specific, dynamic way.</p></li>
 </ul>
 
-<h1>Debugging/Logging</h1>
-
-<p>dexR uses the package &#39;futile.logger&#39;. Initially, it sets up a console outputter 
-to log everything on INFO level. However, the logger can be configured in a detailed way.</p>
-
-<pre><code class="r">futile.logger::flog.threshold(futile.logger::DEBUG, name=&#39;dexp&#39;)
-futile.logger::flog.threshold(futile.logger::TRACE, name=&#39;dexp.input&#39;)
-</code></pre>
-
-<p>It is also possible to add handlers for further sinks.  </p>
-
-<pre><code class="r">futile.logger::flog.appender(appender.file(filename), name=&#39;test.logger&#39;)
-</code></pre>
-
-<p>Compare the documentation for package &#39;futile.logger&#39; for more detailed information.
-A tutorial is also <a href="http://www.r-bloggers.com/better-logging-in-r-aka-futile-logger-1-3-0-released/">available</a>.</p>
-
 <h1>Handling Data</h1>
 
-<h2>Run IDs</h2>
+<h2>Database Management</h2>
+
+<p>Since DEX stores data to a PostGreSQL database, data of different runs should be stored in different databases. To this end, the main database DEX is writing to needs to be either dumped to a files or duplicated to another database:</p>
+
+<h3>Dump DB and restore to different DB</h3>
+
+<pre><code class="r">## DexpaProject.R
+[...]
+</code></pre>
+
+<h2>Run IDs (TODO)</h2>
 
 <p>Usually, run IDs consist of the parameter ID (which is in runs.csv) and the random number seed applied in
 the simulations. However, the user may also decide to omit the random number part and use only the param ID as
@@ -329,7 +323,7 @@ hist(cellData$LandUseIndex, breaks=3, col=&quot;red&quot;)
 dev.off()
 </code></pre>
 
-<h2>Comparing Data (TODO)</h2>
+<h2>Comparing Runs/Scenarios (TODO)</h2>
 
 <p>The generic way of comparing data of several sources, i.e. combining the data to visualise in one plot, is the following:</p>
 
@@ -351,6 +345,23 @@ dev.off()
 <li>hl_comp_aggregate_aftcompositions</li>
 <li>hl_comp_cell_aftcomposition</li>
 </ul>
+
+<h1>Debugging/Logging</h1>
+
+<p>dexR uses the package &#39;futile.logger&#39;. Initially, it sets up a console outputter 
+to log everything on INFO level. However, the logger can be configured in a detailed way.</p>
+
+<pre><code class="r">futile.logger::flog.threshold(futile.logger::DEBUG, name=&#39;dexr&#39;)
+futile.logger::flog.threshold(futile.logger::TRACE, name=&#39;dexr.input&#39;)
+</code></pre>
+
+<p>It is also possible to add handlers for further sinks.  </p>
+
+<pre><code class="r">futile.logger::flog.appender(appender.file(filename), name=&#39;dexr.output&#39;)
+</code></pre>
+
+<p>Compare the documentation for package &#39;futile.logger&#39; for more detailed information.
+A tutorial is also <a href="http://www.r-bloggers.com/better-logging-in-r-aka-futile-logger-1-3-0-released/">available</a>.</p>
 
 <h1>Troubleshooting</h1>
 

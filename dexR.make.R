@@ -1,6 +1,6 @@
 library(roxygen2)
 library("devtools")
-full <- FALSE # TRUE required to update NAMESPACE by roxygen2
+full <- TRUE #required to update NAMESPACE by roxygen2
 
 # has_devel() 	# does not work because of 'C:\Program' is not recognized as an internal or 
 # external command, operable program or batch file.
