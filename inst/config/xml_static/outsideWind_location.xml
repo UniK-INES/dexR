@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><og:resource xmlns:og="http://www.ogema-source.net/REST" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <name>outsideWind</name>
+    <type>org.ogema.model.devices.sensoractordevices.WindSensor</type>
+    <path>outsideWind</path>
+    <decorating>false</decorating>
+    <active>true</active>
+    <resource>
+        <name>location</name>
+        <type>org.ogema.model.locations.Location</type>
+        <path>outsideWind/location</path>
+        <decorating>false</decorating>
+        <active>true</active>
+        <resourcelink>
+            <link>PropertyLocation</link>
+            <type>org.ogema.model.locations.GeographicLocation</type>
+            <name>geographicLocation</name>
+        </resourcelink>
+        <resourcelink>
+            <link>OutsideBuildingRoom</link>
+            <type>org.ogema.model.locations.Room</type>
+            <name>device</name>
+        </resourcelink>
+    </resource>
+    
+</og:resource>

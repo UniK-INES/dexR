@@ -1,0 +1,4 @@
+name,upperLimit,lowerLimit
+EnaviSimulatedStorageDevices_01,5000,-5000
+EnaviSimulatedStorageDevices_02,8000,-8000
+EnaviSimulatedStorageDevices_03,10000,-10000

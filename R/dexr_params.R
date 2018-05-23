@@ -23,8 +23,9 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$dirs$project			<- "./"
 	defdexpa$dirs$config			<- "./config"
 	
-	defdexpa$dirs$csvtemplates		<- "./template/csv"
-	defdexpa$dirs$xmltemplatesstatic	<- "./template/xml_static"
+	defdexpa$dirs$freemarkertemplate	<- system.file("config/freemarker", package="dexR")
+	defdexpa$dirs$csvtemplates		<- system.file("config/csv", package="dexR")
+	defdexpa$dirs$xmltemplatesstatic	<- system.file("config/xml-static", package="dexR")
 	defdexpa$dirs$backend			<- "./market-backend"
 	defdexpa$dirs$emgrundir			<- "./emg/rundirs/rundir-enavi"
 
