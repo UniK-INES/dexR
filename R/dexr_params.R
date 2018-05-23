@@ -124,29 +124,3 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 param_getDefaultDexpa <- function() {
 	param_mergeDefaultDexpa()
 }
-
-#' Get the dexpa parameter list for working with example data
-#' @return list of dexpa parameters to run examples
-#' 
-#' @author Sascha Holzhauer
-#' @export
-param_getExamplesDexpa <- function() {
-	dexpa <- param_mergeDefaultDexpa()
-
-	dexpa$dirs <- list()
-	dexpa$dirs$outputdir		<- system.file("extdata", "output/version", package = "craftyr")
-	
-	dexpa$dirs$output <- list()
-	dexpa$dirs$output$simulation	<- paste(dexpa$dirs$outputdir, "/simulation/", sep="")
-	dexpa$dirs$output$rdata		<- paste(dexpa$dirs$outputdir, "/rData/", sep="") 
-	dexpa$dirs$output$raster		<- paste(dexpa$dirs$outputdir, "/raster/", sep="") 
-	dexpa$dirs$output$figures	<- paste(dexpa$dirs$outputdir, "/figures/", sep="")
-	dexpa$dirs$output$reports	<- paste(dexpa$dirs$outputdir, "/reports/", sep="")
-	
-	dexpa$dirs$data				<- system.file("extdata", "data/version", package = "craftyr")
-	
-	dexpa$fig$init <- function(dexpa, outdir, filename) {}
-	dexpa$fig$close<- function() {}
-	dexpa$sim$id <- "Example"
-	dexpa
-}
