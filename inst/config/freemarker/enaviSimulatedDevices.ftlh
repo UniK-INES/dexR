@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><og:resource xmlns:og="http://www.ogema-source.net/REST" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="og:ResourceList">
+    <name>enaviSimulatedDevices</name>
+    <type>org.ogema.core.model.ResourceList</type>
+    <path>enaviSimulatedDevices</path>
+    <decorating>false</decorating>
+    <active>false</active>
+    <#list buildings as building>
+    <resource>
+        <name>${building.name}</name>
+        <type>org.ogema.model.locations.Building</type>
+        <path>enaviSimulatedDevices/${building.name}</path>
+        <decorating>true</decorating>
+        <active>true</active>
+        <resource>
+            <name>electricityConnection</name>
+            <type>org.ogema.model.connections.ElectricityConnection</type>
+            <path>enaviSimulatedDevices/${building.name}/electricityConnection</path>
+            <decorating>true</decorating>
+            <active>true</active>
+            <resource>
+                <name>powerSensor</name>
+                <type>org.ogema.model.sensors.ElectricPowerSensor</type>
+                <path>enaviSimulatedDevices/${building.name}/electricityConnection/powerSensor</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <resource xsi:type="og:FloatResource">
+                    <name>reading</name>
+                    <type>org.ogema.core.model.units.PowerResource</type>
+                    <path>enaviSimulatedDevices/${building.name}/electricityConnection/powerSensor/reading</path>
+                    <decorating>false</decorating>
+                    <active>true</active>
+                    <resourcelink>
+                        <link>enaviSimulatedDevices/${building.name}/electricityConnection/powerSensor/reading/forecast</link>
+                        <type>org.ogema.core.model.schedule.AbsoluteSchedule</type>
+                        <name>forecast</name>
+                    </resourcelink>
+                    <value>${building.reading}</value>
+                    <unit>W</unit>
+                </resource>
+            </resource>
+        </resource>
+    </resource>
+    </#list>
+
+    <#list pvplants as pvplant>
+    <resource>
+        <name>${pvplant.name}</name>
+        <type>org.ogema.model.devices.generators.PVPlant</type>
+        <path>enaviSimulatedDevices/${pvplant.name}</path>
+        <decorating>true</decorating>
+        <active>true</active>
+        <resource xsi:type="og:TimeResource">
+            <name>simulationUpdateFrequency</name>
+            <type>org.ogema.core.model.simple.TimeResource</type>
+            <path>enaviSimulatedDevices/${pvplant.name}/simulationUpdateFrequency</path>
+            <decorating>true</decorating>
+            <active>true</active>
+            <value>${pvplant.simulationUpdateFrequency}</value>
+        </resource>
+        <resource xsi:type="og:StringResource">
+            <name>simulationProvider</name>
+            <type>org.ogema.core.model.simple.StringResource</type>
+            <path>enaviSimulatedDevices/${pvplant.name}/simulationProvider</path>
+            <decorating>true</decorating>
+            <active>true</active>
+            <value>${pvplant.simulationProvider}</value>
+        </resource>
+        <resource>
+            <name>electricityConnection</name>
+            <type>org.ogema.model.connections.ElectricityConnection</type>
+            <path>enaviSimulatedDevices/${pvplant.name}/electricityConnection</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resource>
+                <name>powerSensor</name>
+                <type>org.ogema.model.sensors.ElectricPowerSensor</type>
+                <path>enaviSimulatedDevices/${pvplant.name}/electricityConnection/powerSensor</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <resource xsi:type="og:FloatResource">
+                    <name>reading</name>
+                    <type>org.ogema.core.model.units.PowerResource</type>
+                    <path>enaviSimulatedDevices/${pvplant.name}/electricityConnection/powerSensor/reading</path>
+                    <decorating>false</decorating>
+                    <active>true</active>
+                    <resourcelink>
+                        <link>enaviSimulatedDevices/${pvplant.name}/electricityConnection/powerSensor/reading/forecast</link>
+                        <type>org.ogema.core.model.schedule.AbsoluteSchedule</type>
+                        <name>forecast</name>
+                    </resourcelink>
+                    <value>${pvplant.reading}</value>
+                    <unit>W</unit>
+                </resource>
+            </resource>
+        </resource>
+        <resource xsi:type="og:ResourceList">
+            <name>irradiationSensors</name>
+            <type>org.ogema.core.model.ResourceList</type>
+            <path>enaviSimulatedDevices/${pvplant.name}/irradiationSensors</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resourcelink>
+                <link>OutsideSolarSensor</link>
+                <type>org.ogema.model.sensors.SolarIrradiationSensor</type>
+                <name>sensor_0</name>
+            </resourcelink>
+            <elementType>org.ogema.model.sensors.SolarIrradiationSensor</elementType>
+        </resource>
+        <resource xsi:type="og:FloatResource">
+            <name>efficiency</name>
+            <type>org.ogema.core.model.simple.FloatResource</type>
+            <path>enaviSimulatedDevices/${pvplant.name}/efficiency</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <value>${pvplant.efficiency}</value>
+        </resource>
+        <resource xsi:type="og:TimeResource">
+            <name>simulationForecastUpdateFrequency</name>
+            <type>org.ogema.core.model.simple.TimeResource</type>
+            <path>enaviSimulatedDevices/${pvplant.name}/simulationForecastUpdateFrequency</path>
+            <decorating>true</decorating>
+            <active>true</active>
+            <value>${pvplant.simulationForecastUpdateFrequency}</value>
+        </resource>
+        <resource xsi:type="og:FloatResource">
+            <name>panelArea</name>
+            <type>org.ogema.core.model.units.AreaResource</type>
+            <path>enaviSimulatedDevices/${pvplant.name}/panelArea</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <value>${pvplant.panelArea}</value>
+            <unit>m²</unit>
+        </resource>
+    </resource>
+    </#list>
+
+    <#list storageDevices as storageDevice>
+    <resource>
+        <name>${storageDevice.name}</name>
+        <type>org.ogema.model.devices.storage.ElectricityStorage</type>
+        <path>enaviSimulatedDevices/${storageDevice.name}</path>
+        <decorating>true</decorating>
+        <active>true</active>
+        <resource>
+            <name>electricityConnection</name>
+            <type>org.ogema.model.connections.ElectricityConnection</type>
+            <path>enaviSimulatedDevices/${storageDevice.name}/electricityConnection</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resource>
+                <name>powerSensor</name>
+                <type>org.ogema.model.sensors.ElectricPowerSensor</type>
+                <path>enaviSimulatedDevices/${storageDevice.name}/electricityConnection/powerSensor</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <resource>
+                    <name>ratedValues</name>
+                    <type>org.ogema.model.ranges.PowerRange</type>
+                    <path>enaviSimulatedDevices/${storageDevice.name}/electricityConnection/powerSensor/ratedValues</path>
+                    <decorating>false</decorating>
+                    <active>true</active>
+                    <resource xsi:type="og:FloatResource">
+                        <name>upperLimit</name>
+                        <type>org.ogema.core.model.units.PowerResource</type>
+                        <path>enaviSimulatedDevices/${storageDevice.name}/electricityConnection/powerSensor/ratedValues/upperLimit</path>
+                        <decorating>false</decorating>
+                        <active>true</active>
+                        <value>${storageDevice.upperLimit}</value>
+                        <unit>W</unit>
+                    </resource>
+                    <resource xsi:type="og:FloatResource">
+                        <name>lowerLimit</name>
+                        <type>org.ogema.core.model.units.PowerResource</type>
+                        <path>enaviSimulatedDevices/${storageDevice.name}/electricityConnection/powerSensor/ratedValues/lowerLimit</path>
+                        <decorating>false</decorating>
+                        <active>true</active>
+                        <value>${storageDevice.lowerLimit}</value>
+                        <unit>W</unit>
+                    </resource>
+                </resource>
+            </resource>
+        </resource>
+    </resource>
+    </#list>
+    <elementType>org.ogema.model.prototypes.PhysicalElement</elementType>
+</og:resource>

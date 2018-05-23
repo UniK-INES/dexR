@@ -1,0 +1,4 @@
+name,client,device,type
+EnaviWindPvRequests_01,EnaviClients_02,EnaviSimulatedWindDevices_01,PVPlant
+EnaviWindPvRequests_02,EnaviClients_03,EnaviSimulatedWindDevices_02,PVPlant
+EnaviWindPvRequests_03,EnaviClients_04,EnaviSimulatedWindDevices_03,PVPlant

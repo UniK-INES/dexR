@@ -28,12 +28,6 @@ R code every time you start a script with the according project:
 
 2. The machine-specific DEXPA includes the project-specific file (dexpaProject.R.).
 
-3. The project-specific file loads the default parameter list.
-
-4. The script itself may then override particular parameter values with "local" properties 
-(e.g. runID, image resolutions). Often it is a good idea to store setting/scenario specific values in a 
-separate file (dexpa.R) within the setting/scenario R folder. 
-
 ```{r, eval=FALSE}
 ## DexpaProject.R
 #### COMMON PACKAGES ###########################################################
@@ -58,6 +52,13 @@ dexpa$db$password		<- "<password>"
 dexpa$db$suname			<- "postgres"
 dexpa$db$supassword		<- "<supassword>"
 ```
+
+3. The project-specific file loads the default parameter list.
+
+4. The script itself may then override particular parameter values with "local" properties 
+(e.g. runID, image resolutions). Often it is a good idea to store setting/scenario specific values in a 
+separate file (dexpa.R) within the setting/scenario R folder. 
+
 
 The machine-specific dexpa part in an according script contains the (machine-specific) path 
 to itself and to the machine-independent dexpa part script (dexpaProject.R), loads that general part and 

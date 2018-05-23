@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><og:resource xmlns:og="http://www.ogema-source.net/REST" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <name>OutsideSolarSensor</name>
+    <type>org.ogema.model.sensors.SolarIrradiationSensor</type>
+    <path>OutsideSolarSensor</path>
+    <decorating>false</decorating>
+    <active>true</active>
+    <resource xsi:type="og:FloatResource">
+        <name>reading</name>
+        <type>org.ogema.core.model.units.EnergyPerAreaResource</type>
+        <path>OutsideSolarSensor/reading</path>
+        <decorating>false</decorating>
+        <active>true</active>
+        <resourcelink>
+            <link>OutsideSolarSensor/reading/forecast</link>
+            <type>org.ogema.core.model.schedule.AbsoluteSchedule</type>
+            <name>forecast</name>
+        </resourcelink>
+        <value>29.4568</value>
+        <unit>W/m²</unit>
+    </resource>
+    <resource>
+        <name>location</name>
+        <type>org.ogema.model.locations.Location</type>
+        <path>OutsideSolarSensor/location</path>
+        <decorating>false</decorating>
+        <active>true</active>
+        <resourcelink>
+            <link>PropertyLocation</link>
+            <type>org.ogema.model.locations.GeographicLocation</type>
+            <name>geographicLocation</name>
+        </resourcelink>
+        <resourcelink>
+            <link>OutsideBuildingRoom</link>
+            <type>org.ogema.model.locations.Room</type>
+            <name>device</name>
+        </resourcelink>
+    </resource>
+</og:resource>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><og:resource xmlns:og="http://www.ogema-source.net/REST" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <name>OutsideBuildingRoom</name>
+    <type>org.ogema.model.locations.Room</type>
+    <path>OutsideBuildingRoom</path>
+    <decorating>false</decorating>
+    <active>true</active>
+    <resource xsi:type="og:FloatResource">
+        <name>heatCapacity</name>
+        <type>org.ogema.core.model.units.ThermalEnergyCapacityResource</type>
+        <path>OutsideBuildingRoom/heatCapacity</path>
+        <decorating>false</decorating>
+        <active>true</active>
+        <value>INF</value>
+        <unit>J/K</unit>
+    </resource>
+    <resourcelink>
+        <link>outsideTemperature</link>
+        <type>org.ogema.model.sensors.TemperatureSensor</type>
+        <name>temperatureSensor</name>
+    </resourcelink>
+    <resource xsi:type="og:IntegerResource">
+        <name>type</name>
+        <type>org.ogema.core.model.simple.IntegerResource</type>
+        <path>OutsideBuildingRoom/type</path>
+        <decorating>false</decorating>
+        <active>true</active>
+        <value>0</value>
+    </resource>
+</og:resource>

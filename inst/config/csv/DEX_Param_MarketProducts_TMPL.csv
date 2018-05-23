@@ -1,0 +1,3 @@
+"product_id","auction_interval","closing_time","delivery_period_duration","energy_resolutionkwh","first_delivery_period_start","max_price","min_price","opening_time","mmproduct_id","active","clearing_id","product_pattern_product_id","description"
+1,"1m","-1m",60000,0,2018-03-12 10:57:00,3000,-3000,"-5m",1,TRUE,"UNIFORM",1,"Uniform, 1min"
+2,"2m","-2m",120000,0,2018-03-12 10:57:00,3000,-3000,"-10m",2,TRUE,"UNIFORM",2,"Uniform, 2min"

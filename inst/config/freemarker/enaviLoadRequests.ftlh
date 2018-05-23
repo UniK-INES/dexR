@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><og:resource xmlns:og="http://www.ogema-source.net/REST" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="og:ResourceList">
+    <name>enaviLoadRequests</name>
+    <type>org.ogema.core.model.ResourceList</type>
+    <path>enaviLoadRequests</path>
+    <decorating>false</decorating>
+    <active>false</active>
+   <#list loads as load>
+    <resource>
+        <name>${load.name}</name>
+        <type>de.iwes.enavi.util.DeviceBasedRequestConfiguration</type>
+        <path>enaviLoadRequests/${load.name}</path>
+        <decorating>true</decorating>
+        <active>true</active>
+        <resource>
+            <name>priceFluctuation</name>
+            <type>org.ogema.model.smartgriddata.Price</type>
+            <path>enaviLoadRequests/${load.name}/priceFluctuation</path>
+            <decorating>true</decorating>
+            <active>true</active>
+            <resource xsi:type="og:FloatResource">
+                <name>price</name>
+                <type>org.ogema.core.model.simple.FloatResource</type>
+                <path>enaviLoadRequests/${load.name}/priceFluctuation/price</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <value>${load.price_fluctuation}</value>
+            </resource>
+        </resource>
+        <resourcelink>
+            <link>enaviClients/${load.client}</link>
+            <type>de.iwes.enavi.util.EnaviClient</type>
+            <name>client</name>
+        </resourcelink>
+        <resource>
+            <name>averagePrice</name>
+            <type>org.ogema.model.smartgriddata.Price</type>
+            <path>enaviLoadRequests/${load.name}/averagePrice</path>
+            <decorating>true</decorating>
+            <active>true</active>
+            <resource xsi:type="og:FloatResource">
+                <name>price</name>
+                <type>org.ogema.core.model.simple.FloatResource</type>
+                <path>enaviLoadRequests/${load.name}/averagePrice/price</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <value>${load.price_average}</value>
+            </resource>
+        </resource>
+        <resource xsi:type="og:ResourceList">
+            <name>requests</name>
+            <type>org.ogema.core.model.ResourceList</type>
+            <path>enaviLoadRequests/${load.name}/requests</path>
+            <decorating>true</decorating>
+            <active>false</active>
+            <elementType>org.ogema.model.smartgriddata.ElectricEnergyRequest</elementType>
+        </resource>
+        <resourcelink>
+            <link>enaviSimulatedDevices/${load.building}</link>
+            <type>org.ogema.model.locations.Building</type>
+            <name>device</name>
+        </resourcelink>
+    </resource>
+    </#list>
+    <elementType>de.iwes.enavi.util.DeviceBasedRequestConfiguration</elementType>
+</og:resource>

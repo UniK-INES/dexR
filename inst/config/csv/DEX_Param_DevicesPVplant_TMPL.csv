@@ -1,0 +1,4 @@
+name,simulationUpdateFrequency,simulationProvider,reading,efficiency,simulationForecastUpdateFrequency,panelArea
+EnaviSimulatedWindDevices_01,10000,simulatedWindAndPvSimple,-2659.32,0.15,3600000,60
+EnaviSimulatedWindDevices_02,10000,simulatedWindAndPvSimple,-5000,0.15,3600000,80
+EnaviSimulatedWindDevices_03,10000,simulatedWindAndPvSimple,-8000,0.15,3600000,120
