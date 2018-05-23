@@ -104,7 +104,7 @@ Colours for different purposes are defined in sublists of `dexpa$colours$product
 
 ## Database Management
 
-Since DEX stores data to a PostGreSQL database, data of different runs should be stored in different databases. To this end, the main database DEX is writing to, needs to be either dumped to a files or duplicated to another database:
+Since DEX stores data to a PostGreSQL database, data of different runs should be stored in different databases. To this end, the main database DEX is writing to, needs to be either dumped to a file or duplicated to another database:
 
 ### Dump DB and restore to different DB
 
@@ -119,6 +119,19 @@ dexR::input_db_dump2db(dp1, dumpfile=paste("dump_", dp1$sim$id, sep=""))
 
 Each simulation run should have a unique ID which is to be assigned to `dexpa$sim$id`.
 
+## Simulation Course
+
+1. Copy CSV templates
+2. Edit CSV tables
+3. Market-Backend Warm-up/initialisation
+4. Configure market products and clients in DB
+5. Start market backend
+6. Generate EMG XML configuration
+7. Start EMG client(s)
+8. Start simulation timer
+9. Stop EMG
+10.Dump DB to file
+11.Stop market backend 
 
 ## Comparing Runs/Scenarios
 

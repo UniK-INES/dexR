@@ -6,7 +6,7 @@ Date: 2018-02-09
 Authors@R: person("Sascha", "Holzhauer", email = "Sascha.Holzhauer@uni-kassel.de", role = c("aut", "cre"))
 Depends: R (>= 3.3.2)
 Imports:
-	DBI,
+	DBI (>= 1.0.0),
     futile.logger,
     ggplot2,
     knitr,
@@ -14,6 +14,8 @@ Imports:
     plyr,
     RPostgreSQL,
     R.oo,
+    RCurl,
+    svDialogs,
     RColorBrewer,
     reshape2,
     rmarkdown,

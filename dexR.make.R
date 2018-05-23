@@ -11,8 +11,6 @@ setwd("/daten/INES/workspace/")
 #create(pkgsName)
 
 setwd(paste("./", pkgsName, sep=""))
-#devtools::use_vignette("craftyr-intro")
-#devtools::use_vignette("craftyr-raster")
 
 if (full) {
 	document()
@@ -28,12 +26,6 @@ if (full) {
 
 
 install(pkgsName)
-# devtools::install_bitbucket("geoslurg/craftyr@default")
-# for eddie (use qlogin session: qlogin -l h_vmem=2G):
-# module load R/3.2.2
-# R
-# .libPaths(.libPaths()[2])
-# devtools::install_bitbucket("craftyr", username="geoslurg", ref="default")
 if (full) {
 	browseVignettes("dexR")
 }

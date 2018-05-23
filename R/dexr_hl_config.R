@@ -21,8 +21,8 @@ hl_config_exportMarketProducts <- function(dexpa, dexpa_template, targetdir=past
 hl_config_copycsvtemplates <- function(dexpa, targetdir=paste(dexpa$dirs$config, dexpa$sim$id,sep="/")) {
 	shbasic::sh.ensurePath(targetdir)
 	for (f in list.files(path = dexpa$dirs$csvtemplates, full.names=T)) {
-		file.copy(from = f, to = gsub("TMPL", dexpa$sim$id,
-						gsub("template/csv", paste("parameters",dexpa$sim$id, sep="/"), f)), overwrite = T)
+		file.copy(from = f, to = paste(dexpa$dirs$config, dexpa$sim$id, gsub("TMPL", dexpa$sim$id,
+						basename(f)), sep="/"), overwrite = T)
 	}
 }
 #' Stores market products from CSV file to PostGreSQL database.
