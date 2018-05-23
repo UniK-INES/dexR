@@ -31,7 +31,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$dirs$output <- list()
 	defdexpa$dirs$outputdir			<- paste(defdexpa$dirs$project, "output/version/", sep="")	
 	defdexpa$dirs$output$rdata		<- paste(defdexpa$dirs$outputdir, "rData/", sep="")
-	defdexpa$dirs$output$dbdumps		<- paste(defdexpa$dirs$outputdir, "dbdumps/", sep="") 
+	defdexpa$dirs$output$dbdumps		<- paste(defdexpa$dirs$outputdir, "dbdumps/", sep="")
+	defdexpa$dirs$output$logs		<- paste(defdexpa$dirs$outputdir, "logs/", sep="")
 	defdexpa$dirs$output$figures		<- paste(defdexpa$dirs$outputdir, "figures/", sep="")
 	defdexpa$dirs$output$reports		<- paste(defdexpa$dirs$outputdir, "reports/", sep="")
 	
@@ -98,8 +99,9 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$server$password	<- "multimodalES"
 	
 	### EMG Settings ############################################################	
-	defdexpa$emg$url		<- "http://localhost:8443"
+	defdexpa$emg$url			<- "https://localhost:8443"
 	defdexpa$emg$api$shutdown	<- "rest/admin?target=shutdown&user=rest&pw=rest"
+	defdexpa$emg$emgstartuptime	<- 20
 
 	### Debug Settings ############################################################
 	defdexpa$debug <- list()

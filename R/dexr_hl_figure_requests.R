@@ -39,14 +39,15 @@ hl_figure_requests_numRequests_byStatusBySubmT <- function(dexpa) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpa, dp2) {
-	data1 <- input_db_requests(dexpa)
-	data1$id <- input_db_runID(dexpa)
-	data2 <- input_db_requests(dp2)
-	data2$id <- input_db_runID(dp2)
-	data <- rbind(data1, data2)
+hl_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpas) {
+	data = data.frame()
+	for (dp in dexpas) {	
+		d <- input_db_requests(dp)
+		d$id <- input_db_runID(dp)
+		data <- rbind(data, d)
+	}
 	if (nrow(data) > 0) {
-		output_figure_requests_numRequests_comp_byStatusByStartT(dexpa, data)
+		output_figure_requests_numRequests_comp_byStatusByStartT(dexpas[1], data)
 	} else {
 		futile.logger::flog.warn("No requests retrieved from PostgreSQL database %s!",
 				dexp$db$dbname,
@@ -60,14 +61,15 @@ hl_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpa, dp2) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_figure_requests_numRequests_comp_byStatusBySubmT <- function(dexpa, dp2) {
-	data1 <- input_db_requests(dexpa)
-	data1$id <- input_db_runID(dexpa)
-	data2 <- input_db_requests(dp2)
-	data2$id <- input_db_runID(dp2)
-	data <- rbind(data1, data2)
+hl_figure_requests_numRequests_comp_byStatusBySubmT <- function(dexpas) {
+	data = data.frame()
+	for (dp in dexpas) {	
+		d <- input_db_requests(dp)
+		d$id <- input_db_runID(dp)		
+		data <- rbind(data, d)
+	}
 	if (nrow(data) > 0) {
-		output_figure_requests_numRequests_comp_byStatusBySubmT(dexpa, data) 
+		output_figure_requests_numRequests_comp_byStatusBySubmT(dexpas[1], data) 
 	} else {
 		futile.logger::flog.warn("No requests retrieved from PostgreSQL database %s!",
 				dexp$db$dbname,
@@ -81,14 +83,15 @@ hl_figure_requests_numRequests_comp_byStatusBySubmT <- function(dexpa, dp2) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_figure_requests_numRequests_comp_byProductByStartT <- function(dexpa, dp2) {
-	data1 <- input_db_requests(dexpa)
-	data1$id <- input_db_runID(dexpa)
-	data2 <- input_db_requests(dp2)
-	data2$id <- input_db_runID(dp2)
-	data <- rbind(data1, data2)
+hl_figure_requests_numRequests_comp_byProductByStartT <- function(dexpas) {
+	data = data.frame()
+	for (dp in dexpas) {	
+		d <- input_db_requests(dp)
+		d$id <- input_db_runID(dp)		
+		data <- rbind(data, d)
+	}
 	if (nrow(data) > 0) {
-		output_figure_requests_numRequests_comp_byProductByStartT(dexpa, data)
+		output_figure_requests_numRequests_comp_byProductByStartT(dexpas[1], data)
 	} else {
 		futile.logger::flog.warn("No requests retrieved from PostgreSQL database %s!",
 				dexp$db$dbname,
@@ -105,7 +108,8 @@ hl_figure_requests_numRequests_comp_byProductByStartT <- function(dexpa, dp2) {
 hl_figure_requests_numRequests_comp_byProductBySubmT <- function(dexpas) {
 	data = data.frame()
 	for (dp in dexpas) {	
-		d <- input_db_requests(dexpa)
+		d <- input_db_requests(dp)
+		d$id <- input_db_runID(dp)
 		data <- rbind(data, d)
 	}
 	if (nrow(data) > 0) {
