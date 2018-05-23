@@ -57,9 +57,6 @@ var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/<
 hljs.initHighlightingOnLoad();
 </script>
 
-<!-- MathJax scripts -->
-<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
 
 
 <style type="text/css">
@@ -206,7 +203,7 @@ hr {
 <body>
 <h1>Concept</h1>
 
-<p>The package provides various functions to load data from db and XML configuration files, convert, and finally visualise it. Therefore, in a chain of production these functions need to be combined. At the same time, there are a number
+<p>The package provides various functions to run experiments, load data from db and XML configuration files, convert, and finally visualise it. Therefore, in a chain of production these functions need to be combined. At the same time, there are a number
 of high level functions which integrate the more basic functions but leave less scope for customisation. These
 high level functions start with &#39;hl&#39;. </p>
 
@@ -219,15 +216,36 @@ R code every time you start a script with the according project:</p>
 <ol>
 <li><p>Before or within the script, the machine-specific DEXPA configuration (dexpa-maschine_XY.R) is loaded.</p></li>
 <li><p>The machine-specific DEXPA includes the project-specific file (dexpaProject.R.).</p></li>
+</ol>
+
+<pre><code class="r">## DexpaProject.R
+#### COMMON PACKAGES ###########################################################
+library(shbasic)
+
+#### FUNCTIONS #################################################################
+#eg. for simp$dirs$param$getparamdir
+
+### Simulation Data ############################################################
+if (!exists(&quot;dexpa&quot;)) dexpa &lt;-  dexR::param_getDefaultDexpa()
+
+### DB Settings ##################################################################
+if(!is.list(dexpa$db)) dexpa$db &lt;- list()
+dexpa$db$host           &lt;- &quot;localhost&quot;
+dexpa$db$port           &lt;- &quot;5432&quot;
+dexpa$db$dbname         &lt;- &quot;enavi&quot;
+dexpa$db$username       &lt;- &quot;enavi&quot;
+dexpa$db$password       &lt;- &quot;&lt;password&gt;&quot;
+
+dexpa$db$suname         &lt;- &quot;postgres&quot;
+dexpa$db$supassword     &lt;- &quot;&lt;supassword&gt;&quot;
+</code></pre>
+
+<ol>
 <li><p>The project-specific file loads the default parameter list.</p></li>
 <li><p>The script itself may then override particular parameter values with &ldquo;local&rdquo; properties 
 (e.g. runID, image resolutions). Often it is a good idea to store setting/scenario specific values in a 
 separate file (dexpa.R) within the setting/scenario R folder. </p></li>
 </ol>
-
-<pre><code class="r">## DexpaProject.R
-[...]
-</code></pre>
 
 <p>The machine-specific dexpa part in an according script contains the (machine-specific) path 
 to itself and to the machine-independent dexpa part script (dexpaProject.R), loads that general part and 
@@ -261,82 +279,56 @@ source(&quot;../dexpa.R&quot;)
 <li><p>debug</p></li>
 </ul>
 
-<h3>Defining Colours (TODO)</h3>
+<h3>Defining Colours</h3>
 
-<p>Craftyr functions take colour set names which are passed to the generic colour setting function to obtain sets of colours
-(simp$colours$GenericFun). The function is implemented in crafty and maps common colour sets (AFT, Capitals, Services, Regions,
-Runids, binary colour set for e.g. adoption) to colour sets defined via particular simp parameters (e.g. simp$colours$AFT).
-Therefore, there are two ways to influence colour settings:</p>
-
-<ul>
-<li><p>change the assignment to specific colour sets (simp\(colours\)<Set>)</p></li>
-<li><p>change the assignment for the generic colour setting function, using your own implementation that may deal with defined 
-colour set names in a specific, dynamic way.</p></li>
-</ul>
+<p>Colours for different purposes are defined in sublists of <code>dexpa$colours$products</code>, eg. <code>products</code> and <code>statuses</code>.</p>
 
 <h1>Handling Data</h1>
 
 <h2>Database Management</h2>
 
-<p>Since DEX stores data to a PostGreSQL database, data of different runs should be stored in different databases. To this end, the main database DEX is writing to needs to be either dumped to a files or duplicated to another database:</p>
+<p>Since DEX stores data to a PostGreSQL database, data of different runs should be stored in different databases. To this end, the main database DEX is writing to, needs to be either dumped to a file or duplicated to another database:</p>
 
 <h3>Dump DB and restore to different DB</h3>
 
-<pre><code class="r">## DexpaProject.R
-[...]
+<pre><code class="r">dexR::input_db_db2dump(dexpa, dumpdir = paste(&quot;dump_&quot;, dexpa$sim$id, sep=&quot;&quot;))
+dp1             &lt;- dexpa
+dp1$db$dbname   &lt;- &quot;enavi_01-01&quot;
+dexR::input_db_dump2db(dp1, dumpfile=paste(&quot;dump_&quot;, dp1$sim$id, sep=&quot;&quot;))
 </code></pre>
 
-<h2>Run IDs (TODO)</h2>
+<h2>Simulation Run IDs</h2>
 
-<p>Usually, run IDs consist of the parameter ID (which is in runs.csv) and the random number seed applied in
-the simulations. However, the user may also decide to omit the random number part and use only the param ID as
-run ID. Crafty is able to deal with both versions in principle. When the param ID is required (e.g. to retrieve
-parameter data from a table) the number before a potential &#39;-&#39; is extracted automatically.</p>
+<p>Each simulation run should have a unique ID which is to be assigned to <code>dexpa$sim$id</code>.</p>
 
-<h2>Storing Data (TODO)</h2>
+<h2>Simulation Course</h2>
 
-<p>Raster output data from the model could involve many files of considerable size. Therefore, it is a good idea to store
-processed and aggregated data for further use. R provides the possibility of storing R objects into a file.</p>
+<ol>
+<li>Copy CSV templates</li>
+<li>Edit CSV tables</li>
+<li>Market-Backend Warm-up/initialisation</li>
+<li>Configure market products and clients in DB</li>
+<li>Start market backend</li>
+<li>Generate EMG XML configuration</li>
+<li>Start EMG client(s)</li>
+<li>Start simulation timer</li>
+<li>Stop EMG
+10.Dump DB to file
+11.Stop market backend </li>
+</ol>
 
-<p>To make use of that feature, input routines should write the resulting R object to disk, and processing and visualisation
-routines shall load it from disk again. This way, the input routine only needs to performed once unless the raw data
-changes. Crucial is a consistent naming of R objects! To manage data it is possible to assign an ID during storage, which is added to the filename. This way it is possible to use the same script (which
-uses specific names for objects) with multiple data. Also make sure that IDs make clear what data is stored (e.g. regions, scenarios) since there is currently no mechanism to check whether loaded data
-corresponds to current SIMP settings.</p>
+<h2>Comparing Runs/Scenarios</h2>
 
-<pre><code class="r">csv_LandUseIndex_rbinded &lt;- data
-input_tools_save(simp, &quot;csv_LandUseIndex_rbinded&quot;)
-rm (csv_LandUseIndex_rbinded)
-</code></pre>
-
-<p>To load an object to the global environment again, just execute</p>
-
-<pre><code class="r">input_tools_load(simp, &quot;csv_LandUseIndex_rbinded&quot;)
-</code></pre>
-
-<h2>Using craftyr to Put Custom Plots in the Right Place (TODO)</h2>
-
-<pre><code class="r">data(package=&quot;craftyr&quot;)
-source(&quot;../demo/simp-machine.R&quot;)
-simp$fig$init(simp, filename = &quot;example/hist_aft.png&quot;)
-hist(cellData$LandUseIndex, breaks=3, col=&quot;red&quot;)
-dev.off()
-</code></pre>
-
-<h2>Comparing Runs/Scenarios (TODO)</h2>
-
-<p>The generic way of comparing data of several sources, i.e. combining the data to visualise in one plot, is the following:</p>
+<p>The generic way of comparing data of several simulation runs, i.e. combining the data to visualise in one plot, is the following:</p>
 
 <ol>
 <li>For each data set to compare
 
 <ul>
-<li>Load data</li>
-<li>Edit Runid</li>
+<li>Store dumpfile into database</li>
+<li>Generate a dex-param-list for each run and store them in a list</li>
 </ul></li>
-<li>Combine data</li>
-<li>Save data with a new simp (new id/new output folder)</li>
-<li>Use the new dataname with the new simp (includes the new id and folder) to apply a function as normal</li>
+<li>Pass the list of dexpa objects to a comparison function</li>
 </ol>
 
 <p>However, there a few high level functions that take a list of simp configurations and do not require the storage of combined data:</p>

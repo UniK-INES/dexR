@@ -1,6 +1,24 @@
 ## ---- eval=FALSE---------------------------------------------------------
 #  ## DexpaProject.R
-#  [...]
+#  #### COMMON PACKAGES ###########################################################
+#  library(shbasic)
+#  
+#  #### FUNCTIONS #################################################################
+#  #eg. for simp$dirs$param$getparamdir
+#  
+#  ### Simulation Data ############################################################
+#  if (!exists("dexpa")) dexpa <-  dexR::param_getDefaultDexpa()
+#  
+#  ### DB Settings ##################################################################
+#  if(!is.list(dexpa$db)) dexpa$db <- list()
+#  dexpa$db$host			<- "localhost"
+#  dexpa$db$port			<- "5432"
+#  dexpa$db$dbname			<- "enavi"
+#  dexpa$db$username		<- "enavi"
+#  dexpa$db$password		<- "<password>"
+#  
+#  dexpa$db$suname			<- "postgres"
+#  dexpa$db$supassword		<- "<supassword>"
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  # Only contained when the particular script is only executed on a specific machine!
@@ -13,24 +31,10 @@
 #  source("../dexpa.R")
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  ## DexpaProject.R
-#  [...]
-
-## ---- eval=FALSE---------------------------------------------------------
-#  csv_LandUseIndex_rbinded <- data
-#  input_tools_save(simp, "csv_LandUseIndex_rbinded")
-#  rm (csv_LandUseIndex_rbinded)
-
-## ---- eval=FALSE---------------------------------------------------------
-#  input_tools_load(simp, "csv_LandUseIndex_rbinded")
-
-## ---- eval=FALSE---------------------------------------------------------
-#  data(package="craftyr")
-#  source("../demo/simp-machine.R")
-#  simp$fig$init(simp, filename = "example/hist_aft.png")
-#  hist(cellData$LandUseIndex, breaks=3, col="red")
-#  dev.off()
-#  
+#  dexR::input_db_db2dump(dexpa, dumpdir = paste("dump_", dexpa$sim$id, sep=""))
+#  dp1 			<- dexpa
+#  dp1$db$dbname 	<- "enavi_01-01"
+#  dexR::input_db_dump2db(dp1, dumpfile=paste("dump_", dp1$sim$id, sep=""))
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  futile.logger::flog.threshold(futile.logger::DEBUG, name='dexr')
