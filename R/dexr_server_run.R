@@ -18,8 +18,8 @@ server_start <- function(dexpa) {
 #' @export
 server_shutdown <- function(dexpa) {
 	futile.logger::flog.info("Stopping Market Backend server...", name = "dexr.hl.experiment")
-	httr::GET(paste(dexpa$server$url,dexpa$server$api$shutdown,sep="/"),
-			httr::authenticate(dexpa$server$username, dexpa$server$password, type = "basic"))
+	try(httr::POST(paste(dexpa$server$url,dexpa$server$api$shutdown,sep="/"),
+			httr::authenticate(dexpa$server$username, dexpa$server$password, type = "basic")), silent=T)
 }
 #' Retrieve backend server status information
 #' @param dexpa 
@@ -28,8 +28,9 @@ server_shutdown <- function(dexpa) {
 #' @author Sascha Holzhauer
 #' @export
 server_status <- function(dexpa) {
-	httr::GET(paste(dexpa$server$url,dexpa$server$api$status,sep="/"),
+	req <- httr::GET(paste(dexpa$server$url,dexpa$server$api$status,sep="/"),
 			httr::authenticate(dexpa$server$username, dexpa$server$password, type = "basic"))
+	httr::content(req, as = "parsed")
 }
 #' Checks whether the server is ready for requests.
 #' @param dexpa 

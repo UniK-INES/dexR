@@ -24,6 +24,10 @@ input_db_getconnection <- function(dexpa) {
 #' @author Sascha Holzhauer
 #' @export
 input_db_dump2db <- function(dexpa, dumpfile) {
+	futile.logger::flog.info("Import dump %s to database %s..." ,
+			dumpfile,
+			dexpa$db$dbname,
+			name = "dexr.input.db.dump")
 	# Superuser required as long as other user does not have rights for new database:
 	Sys.setenv("PGPASSWORD"=dexpa$db$supassword)
 	
@@ -49,6 +53,10 @@ input_db_dump2db <- function(dexpa, dumpfile) {
 #' @author Sascha Holzhauer
 #' @export
 input_db_db2dump <- function(dexpa, dumpdir) {
+	futile.logger::flog.info("Dump database %s to dumpdir %s..." ,
+			dexpa$db$dbname,
+			dumpdir,
+			name = "dexr.input.db.dump")
 	# Superuser required as long as other user does not have rights for new database:
 	Sys.setenv("PGPASSWORD"=dexpa$db$supassword)
 	
@@ -63,7 +71,7 @@ input_db_db2dump <- function(dexpa, dumpdir) {
 #' @export
 input_db_dropdb <- function(dexpa) {
 	con <- input_db_getconnection(dexpa)
-	DBI::dbGetQuery(con, paste("DROP DATABASE", dexpa$db$dbname))
+	DBI::dbGetQuery(con, paste('DROP DATABASE "', dexpa$db$dbname, '"', sep=""))
 	DBI::dbDisconnect(con)	
 }
 #' Genrate run ID string of the given database configuration.

@@ -39,8 +39,9 @@ hl_config_marketProducts2db <- function(dexpa, sourcedir=dexpa$dirs$config,
 	futile.logger::flog.info("Configure Market Backend products...", name = "dexr.hl.config.backend")
 	products <- read.csv(file=paste(sourcedir, dexpa$sim$id, sourcefile,sep="/"), stringsAsFactors=F)
 	for (i in 1:nrow(products)) {
-		products[i, "first_delivery_period_start"] <- as.numeric(lubridate::round_date(Sys.time(), 
-						paste(products[i,"delivery_period_duration"]/1000," sec", sep="")))*1000	
+		# lubridate does not deal with secs > 60 as expected (https://github.com/tidyverse/lubridate/issues/661)
+		products[i, "first_delivery_period_start"] <- as.numeric(lubridate::ceiling_date(Sys.time(), 
+						paste(products[i,"delivery_period_duration"]/60000," mins", sep="")))*1000	
 	}
 	products[,"first_delivery_period_start"] <- as.numeric(products[,"first_delivery_period_start"])
 	
@@ -59,6 +60,7 @@ hl_config_marketProducts2db <- function(dexpa, sourcedir=dexpa$dirs$config,
 	DBI::dbGetQuery(con, paste("TRUNCATE", dexpa$db$tablenames$mmarketproducts, "CASCADE;"))
 	RPostgreSQL::dbWriteTable(con, dexpa$db$tablenames$mmarketproducts, 
 			value=products[,colnames_mmarket_product_pattern$column_name], append=T, row.names=F)
+	DBI::dbDisconnect(con)
 }
 #' Stores client and role data from CSV file to PostGreSQL database.
 #' The database tables are _not_ emptied before submission.
@@ -102,4 +104,5 @@ hl_config_clients2db <- function(dexpa, sourcedir=dexpa$dirs$config,
 					dexpa$db$tablenames$roles,"';", sep=""))
 	RPostgreSQL::dbWriteTable(con, dexpa$db$tablenames$roles, 
 			value=clients[,colnames_roles$column_name], append=T, row.names=F)
+	DBI::dbDisconnect(con)
 }
