@@ -46,7 +46,7 @@ hl_experiment_runemg <- function(dexpa, outfilesys = "") {
 	futile.logger::flog.info("Creating EMG XML configuration (output to %s)...", outfilesys, name = "dexr.hl.experiment")
 	system(wait=TRUE, paste("java",
 		" -Dfile.encoding=UTF-8",
-		" -classpath /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/resources.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jsse.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jce.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/charsets.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/sunjce_provider.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/nashorn.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/sunec.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/sunpkcs11.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/zipfs.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/localedata.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/cldrdata.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/java-atk-wrapper.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/jaccess.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/icedtea-sound.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/dnsns.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext/jfxrt.jar:/home/sascha/git/enavi/emg/src/emg-config-tool/emg-config-tool/target/classes:/home/sascha/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar:/home/sascha/.m2/repository/org/freemarker/freemarker/2.3.27-incubating/freemarker-2.3.27-incubating.jar:/home/sascha/.m2/repository/org/apache/commons/commons-csv/1.5/commons-csv-1.5.jar:/home/sascha/.m2/repository/commons-cli/commons-cli/1.4/commons-cli-1.4.jar:/home/sascha/.m2/repository/ch/qos/logback/logback-classic/1.3.0-alpha4/logback-classic-1.3.0-alpha4.jar:/home/sascha/.m2/repository/ch/qos/logback/logback-core/1.3.0-alpha4/logback-core-1.3.0-alpha4.jar:/home/sascha/.m2/repository/org/slf4j/slf4j-api/1.8.0-beta1/slf4j-api-1.8.0-beta1.jar de.unik.ines.enavi.ctool.EmgConfigManager",
+		" -classpath ", defdexpa$classpath$emg,
 		" -i ", dexpa$sim$id,
 		" -o ", dexpa$dirs$config,
 		" -t ", dexpa$dirs$freemarkertemplate,
@@ -73,7 +73,7 @@ hl_experiment_runemg <- function(dexpa, outfilesys = "") {
 	#system2(wait=FALSE, "bash", args = paste(
 	#	"./start.sh -clean --properties config/sh_ogema.properties", sep=""))
 
-	setwd("/home/sascha/git/enavi/emg/src/emg-config-tool/emg-config-tool/target/classes")
+	setwd(dexpa$dirs$emgconfigtool)
 	system2(wait=FALSE, "java", args = paste("de.unik.ines.enavi.ctool.RunEmg ", round(dexpa$sim$duration/dexpa$sim$timefactor), " ",
 					dexpa$dirs$config, dexpa$sim$id, sep=""),
 			stdout=outfilesys, stderr=outfilesys)

@@ -37,6 +37,9 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$dirs$output$figures		<- paste(defdexpa$dirs$outputdir, "figures/", sep="")
 	defdexpa$dirs$output$reports		<- paste(defdexpa$dirs$outputdir, "reports/", sep="")
 	
+	defdexpa$dirs$emgconfigtool		<- "set dexpa$dirs$emgconfigtool"
+	defdexpa$classpath$emg			<- "set dexpa$classpath$emg"
+
 	### DB Settings ##################################################################
 	defdexpa$db <- list()	
 	defdexpa$db$host			<- "localhost"
