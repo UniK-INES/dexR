@@ -46,7 +46,7 @@ hl_experiment_runemg <- function(dexpa, outfilesys = "") {
 	futile.logger::flog.info("Creating EMG XML configuration (output to %s)...", outfilesys, name = "dexr.hl.experiment")
 	system(wait=TRUE, paste("java",
 		" -Dfile.encoding=UTF-8",
-		" -classpath ", defdexpa$classpath$emg,
+		" -classpath ", dexpa$classpath$emg,
 		" -i ", dexpa$sim$id,
 		" -o ", dexpa$dirs$config,
 		" -t ", dexpa$dirs$freemarkertemplate,
