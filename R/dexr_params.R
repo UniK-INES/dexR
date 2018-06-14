@@ -25,9 +25,11 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	
 	defdexpa$dirs$freemarkertemplate	<- system.file("config/freemarker", package="dexR")
 	defdexpa$dirs$csvtemplates		<- system.file("config/csv", package="dexR")
-	defdexpa$dirs$xmltemplatesstatic	<- system.file("config/xml-static", package="dexR")
+	defdexpa$dirs$xmltemplatesstatic	<- system.file("config/xml_static", package="dexR")
 	defdexpa$dirs$backend			<- "./market-backend"
-	defdexpa$dirs$emgrundir			<- "./emg/rundirs/rundir-enavi"
+	
+	# If empty, the a path relativ to dexpa$dirs$emgconfigtool is used!
+	defdexpa$dirs$emgrundir			<- NULL
 
 	defdexpa$dirs$output <- list()
 	defdexpa$dirs$outputdir			<- paste(defdexpa$dirs$project, "output/version/", sep="")	
@@ -38,7 +40,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$dirs$output$reports		<- paste(defdexpa$dirs$outputdir, "reports/", sep="")
 	
 	defdexpa$dirs$emgconfigtool		<- "set dexpa$dirs$emgconfigtool"
-	defdexpa$classpath$emg			<- "set dexpa$classpath$emg"
+	# not used any more
+	#defdexpa$classpath$emg			<- "set dexpa$classpath$emg"
 
 	### DB Settings ##################################################################
 	defdexpa$db <- list()	

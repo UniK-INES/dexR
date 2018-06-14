@@ -69,14 +69,14 @@ dexR::hl_figure_clearing_comp_clearingPriceByCTbyProduct(dp1, dp2)
 ## Request Statistics by status
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dp1$fig$height <- 950
-dexR::hl_figure_requests_numRequests_comp_byStatusBySubmT(c(dp1, dp2))
+dexR::hl_figure_requests_numRequests_comp_byStatusBySubmT(list(dp1, dp2))
 ```
 
 ***
 
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dp1$fig$height <- 950
-dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(c(dp1, dp2))
+dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(list(dp1, dp2))
 ```
 
 ***
@@ -84,12 +84,12 @@ dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(c(dp1, dp2))
 ## Request Statistics by product
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dp1$fig$height <- 750
-dexR::hl_figure_requests_numRequests_comp_byProductBySubmT(c(dp1, dp2))
+dexR::hl_figure_requests_numRequests_comp_byProductBySubmT(list(dp1, dp2))
 ```
 
 ***
 
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dp1$fig$height <- 750
-dexR::hl_figure_requests_numRequests_comp_byProductByStartT(dp1)
+dexR::hl_figure_requests_numRequests_comp_byProductByStartT(list(dp1, dp2))
 ```
