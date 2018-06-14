@@ -43,6 +43,9 @@ input_db_dump2db <- function(dexpa, dumpfile) {
 	con <- dexR::input_db_getconnection(dp2)
 	DBI::dbGetQuery(con, paste("GRANT ALL ON SCHEMA public TO ", dexpa$db$username, ";", sep=""))
 	DBI::dbDisconnect(con)
+	
+	futile.logger::flog.info("Importing dump completed" ,
+			name = "dexr.input.db.dump")
 }
 
 #' Exports the database configured in the given parameter object to the given dumpfile
@@ -57,11 +60,19 @@ input_db_db2dump <- function(dexpa, dumpdir) {
 			dexpa$db$dbname,
 			dumpdir,
 			name = "dexr.input.db.dump")
+	
+	shbasic::sh.ensurePath(paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"))
+	
 	# Superuser required as long as other user does not have rights for new database:
 	Sys.setenv("PGPASSWORD"=dexpa$db$supassword)
 	
 	system(paste("pg_dump",  "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, 
-					"--no-password --format directory --blobs --file",  paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"), dexpa$db$dbname))	
+					"--no-password --format directory --blobs --file",  paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"), dexpa$db$dbname))
+	
+	futile.logger::flog.info("Dumping database %s finished." ,
+			dexpa$db$dbname,
+			dumpdir,
+			name = "dexr.input.db.dump")
 }
 #' Drop database that is defined in dexpa
 #' @param dexpa 
@@ -70,9 +81,16 @@ input_db_db2dump <- function(dexpa, dumpdir) {
 #' @author Sascha Holzhauer
 #' @export
 input_db_dropdb <- function(dexpa) {
-	con <- input_db_getconnection(dexpa)
-	DBI::dbGetQuery(con, paste('DROP DATABASE "', dexpa$db$dbname, '"', sep=""))
-	DBI::dbDisconnect(con)	
+	futile.logger::flog.info("Drop database %s..." ,
+			dexpa$db$dbname,
+			name = "dexr.input.db.drop")
+	
+	Sys.setenv("PGPASSWORD"=dexpa$db$supassword)
+	system(paste("dropdb", "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, "--no-password", dexpa$db$dbname, sep=" "))
+	
+	futile.logger::flog.info("Database %s dropped." ,
+			dexpa$db$dbname,
+			name = "dexr.input.db.drop")
 }
 #' Genrate run ID string of the given database configuration.
 #' @param dexpa 

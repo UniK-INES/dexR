@@ -1,8 +1,8 @@
 Package: dexR
 Type: Package
 Title: Analysing and Reporting DEX Experiments
-Version: 0.1
-Date: 2018-02-09
+Version: 0.2
+Date: 2018-06-11
 Authors@R: person("Sascha", "Holzhauer", email = "Sascha.Holzhauer@uni-kassel.de", role = c("aut", "cre"))
 Depends: R (>= 3.3.2)
 Imports:
@@ -11,6 +11,7 @@ Imports:
     ggplot2,
     knitr,
     kfigr,
+    lubridate,
     plyr,
     RPostgreSQL,
     R.oo,
@@ -20,6 +21,8 @@ Imports:
     reshape2,
     rmarkdown,
     shbasic,
+    sys,
+    tinytex,
     XML,
     xtable
 Maintainer: Sascha Holzhauer <Sascha.Holzhauer@uni-kassel.de>

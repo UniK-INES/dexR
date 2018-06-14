@@ -29,8 +29,11 @@ output_figure_requests_numRequests_byStatusByStartT <- function(dexpa, data) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_requests_numRequests_byStatusBySubmT <- function(dexpa, data) {
+output_figure_requests_numRequests_byStatusBySubmT <- function(dexpa, data, subtimerounding = "1 minute") {
 	# count requests
+	# aggregate submission time (as it is too diverse to show, otherwise)
+	data$submission_time <- lubridate::round_date(data$submission_time, subtimerounding)
+	
 	data <- plyr::ddply(data, c("status", "submission_time"), function(d) {
 				d$num_requests = nrow(d)
 				d

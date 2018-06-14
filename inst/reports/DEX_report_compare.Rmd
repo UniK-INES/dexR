@@ -17,7 +17,7 @@ setwd(paste(dexpa$dirs$scripts, sep="/"))
 ```
 
 # Parameters
-## Product Information (`r input_db_runID(dexpa)`)
+## Product Information (`r input_db_runID(dp1)`)
 ```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 dexR::output_table_param_products(dexpa)
@@ -29,10 +29,10 @@ invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 dexR::output_table_param_products(dp2)
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
-## Market Information (`r input_db_runID(dexpa)`)
+## Market Information (`r input_db_runID(dp1)`)
 ```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
-dexR::output_table_param_marketinfo(dexpa)
+dexR::output_table_param_marketinfo(dp1)
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
 ## Market Information (`r input_db_runID(dp2)`)
@@ -46,19 +46,19 @@ invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ## Clearing Information
 
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
-dexR::hl_figure_clearing_comp_numConsideredRequests(dexpa, dp2)
+dexR::hl_figure_clearing_comp_numConsideredRequests(list(dp1, dp2))
 ```
 
 ## Price Statistics
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpa$fig$height <- 550
-dexR::hl_figure_clearing_comp_clearingPriceByCTbyProduct(dexpa, dp2)
+dexR::hl_figure_clearing_comp_clearingPriceByCTbyProduct(list(dp1, dp2))
 ```
 
 ## Request Statistics
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpa$fig$height <- 550
-dexR::hl_figure_requests_numRequests_comp_byStatusBySubmT(dexpa, dp2)
-dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(dexpa, dp2)
+dexR::hl_figure_requests_numRequests_comp_byStatusBySubmT(list(dp1, dp2))
+dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(list(dp1, dp2))
 ```
 
