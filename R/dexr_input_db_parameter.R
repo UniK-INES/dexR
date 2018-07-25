@@ -52,7 +52,7 @@ input_db_param_marketinfo <- function(dexp) {
 	DBI::dbDisconnect(con)
 	return(df_products)
 }
-#' Retrieve timing information from PostgreSQL database.
+#' Retrieve user parameters from PostgreSQL database.
 #' 
 #' @param dexp parameter object
 #' @return data.frame of requests 

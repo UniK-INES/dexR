@@ -1,7 +1,7 @@
-name,client,price_fluctuation,price_average,building
-EnaviLoadRequests_01,EnaviClients_01,0,0.4,EnaviSimulatedDevices_01
-EnaviLoadRequests_02,EnaviClients_02,0,1.2,EnaviSimulatedDevices_02
-EnaviLoadRequests_03,EnaviClients_03,0,0.7,EnaviSimulatedDevices_03
-EnaviLoadRequests_04,EnaviClients_04,0,0.8,EnaviSimulatedDevices_04
-EnaviLoadRequests_05,EnaviClients_05,0,1.1,EnaviSimulatedDevices_05
-EnaviLoadRequests_06,EnaviClients_05,0,0.9,EnaviSimulatedDevices_06
+name,client,price_fluctuation,price_average,averagePriceOffer,priceOfferFluctuation,building
+EnaviLoadRequests_01,EnaviClients_01,0,0.4,0.4,0,EnaviSimulatedDevices_01
+EnaviLoadRequests_02,EnaviClients_02,0,1.2,1.2,0,EnaviSimulatedDevices_02
+EnaviLoadRequests_03,EnaviClients_03,0,0.7,0.7,0,EnaviSimulatedDevices_03
+EnaviLoadRequests_04,EnaviClients_04,0,0.8,0.8,0,EnaviSimulatedDevices_04
+EnaviLoadRequests_05,EnaviClients_05,0,1.1,1.1,0,EnaviSimulatedDevices_05
+EnaviLoadRequests_06,EnaviClients_05,0,0.9,0.9,0,EnaviSimulatedDevices_06

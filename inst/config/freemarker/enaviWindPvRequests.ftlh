@@ -7,10 +7,84 @@
     <#list generations as generation>
     <resource>
         <name>${generation.name}</name>
-        <type>de.iwes.enavi.windpv.requests.model.PvConfiguration</type>
+        <type>de.iwes.enavi.windpv.requests.model.${generation.type}Configuration</type>
         <path>enaviWindPvRequests/${generation.name}</path>
         <decorating>true</decorating>
         <active>true</active>
+        <resource>
+            <name>priceFluctuation</name>
+            <type>org.ogema.model.smartgriddata.Price</type>
+            <path>enaviWindPvRequests/${generation.name}/priceFluctuation</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resource xsi:type="og:FloatResource">
+                <name>price</name>
+                <type>org.ogema.core.model.simple.FloatResource</type>
+                <path>enaviWindPvRequests/${generation.name}/priceFluctuation/price</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <value>${generation.priceFluctuation}</value>
+            </resource>
+        </resource>
+        <resourcelink>
+            <link>enaviClients/${generation.client}</link>
+            <type>de.iwes.enavi.util.EnaviClient</type>
+            <name>client</name>
+        </resourcelink>
+        <resource>
+            <name>averagePrice</name>
+            <type>org.ogema.model.smartgriddata.Price</type>
+            <path>enaviWindPvRequests/${generation.name}/averagePrice</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resource xsi:type="og:FloatResource">
+                <name>price</name>
+                <type>org.ogema.core.model.simple.FloatResource</type>
+                <path>enaviWindPvRequests/${generation.name}/averagePrice/price</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <value>${generation.averagePrice}</value>
+            </resource>
+        </resource>
+        <resource>
+            <name>averagePriceOffer</name>
+            <type>org.ogema.model.smartgriddata.Price</type>
+            <path>enaviWindPvRequests/${generation.name}/averagePriceOffer</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resource xsi:type="og:FloatResource">
+                <name>price</name>
+                <type>org.ogema.core.model.simple.FloatResource</type>
+                <path>enaviWindPvRequests/${generation.name}/averagePriceOffer/price</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <value>${generation.averagePriceOffer}</value>
+            </resource>
+        </resource>
+        <resource xsi:type="og:ResourceList">
+            <name>requests</name>
+            <type>org.ogema.core.model.ResourceList</type>
+            <path>enaviWindPvRequests/${generation.name}/requests</path>
+            <decorating>true</decorating>
+            <active>false</active>           
+            <elementType>org.ogema.model.smartgriddata.ElectricEnergyRequest</elementType>
+        </resource>
+        <resource>
+            <name>priceOfferFluctuation</name>
+            <type>org.ogema.model.smartgriddata.Price</type>
+            <path>enaviWindPvRequests/${generation.name}/priceOfferFluctuation</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resource xsi:type="og:FloatResource">
+                <name>price</name>
+                <type>org.ogema.core.model.simple.FloatResource</type>
+                <path>enaviWindPvRequests/${generation.name}/priceOfferFluctuation/price</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <value>${generation.priceOfferFluctuation}</value>
+            </resource>
+        </resource>
+
         <resourcelink>
             <link>enaviClients/${generation.client}</link>
             <type>de.iwes.enavi.util.EnaviClient</type>

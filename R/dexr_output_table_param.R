@@ -37,3 +37,24 @@ output_table_param_marketinfo <- function(dexpa) {
 							"Fine/untraded kWh",
 							"Fine/Missing reading"))
 }
+#' Returns a kable markdown table with client information
+#' @param dexpa 
+#' @return kable markdown table
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_table_param_clients <- function(dexpa, linespertable = 10) {
+	data <- input_csv_clientdata(dexpa)
+	output = c()
+	for (i in seq(1,nrow(data), linespertable)) {
+		
+		
+		output <- append(output, knitr::kable(data[i:(i+linespertable-1),], format="markdown", 
+						caption="Client information", row.names=F,
+				col.names = c(	"Name", 
+						"Price fluc.",
+						"Price avg.",
+						"Consump.")))
+		output <- append(output, "***")
+	}
+}

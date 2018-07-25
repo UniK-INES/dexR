@@ -46,6 +46,21 @@
                 <value>${load.price_average}</value>
             </resource>
         </resource>
+        <resource>
+            <name>averagePriceOffer</name>
+            <type>org.ogema.model.smartgriddata.Price</type>
+            <path>enaviLoadRequests/${load.name}/averagePriceOffer</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resource xsi:type="og:FloatResource">
+                <name>price</name>
+                <type>org.ogema.core.model.simple.FloatResource</type>
+                <path>enaviLoadRequests/${load.name}/averagePriceOffer/price</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <value>${load.averagePriceOffer}</value>
+            </resource>
+        </resource>
         <resource xsi:type="og:ResourceList">
             <name>requests</name>
             <type>org.ogema.core.model.ResourceList</type>
@@ -59,6 +74,21 @@
             <type>org.ogema.model.locations.Building</type>
             <name>device</name>
         </resourcelink>
+        <resource>
+            <name>priceOfferFluctuation</name>
+            <type>org.ogema.model.smartgriddata.Price</type>
+            <path>enaviLoadRequests/${load.name}/priceOfferFluctuation</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resource xsi:type="og:FloatResource">
+                <name>price</name>
+                <type>org.ogema.core.model.simple.FloatResource</type>
+                <path>enaviLoadRequests/${load.name}/priceOfferFluctuation/price</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <value>${load.priceOfferFluctuation}</value>
+            </resource>
+        </resource>
     </resource>
     </#list>
     <elementType>de.iwes.enavi.util.DeviceBasedRequestConfiguration</elementType>

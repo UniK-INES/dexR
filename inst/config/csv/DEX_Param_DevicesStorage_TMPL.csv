@@ -1,4 +1,4 @@
-name,upperLimit,lowerLimit
-EnaviSimulatedStorageDevices_01,5000,-5000
-EnaviSimulatedStorageDevices_02,8000,-8000
-EnaviSimulatedStorageDevices_03,10000,-10000
+name,upperLimit,lowerLimit,reading,ratedEnergy_lowerLimit,ratedEnergy_upperLimit,stateControl,stateFeedback
+EnaviSimulatedStorageDevices_01,5000,-5000,0.5,0,7.20E+07,0,0
+EnaviSimulatedStorageDevices_02,8000,-8000,0.5,0,7.20E+07,0,0
+EnaviSimulatedStorageDevices_03,10000,-10000,0.5,0,7.20E+07,0,0
