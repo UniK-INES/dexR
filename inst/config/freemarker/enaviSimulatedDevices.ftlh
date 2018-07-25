@@ -42,6 +42,125 @@
     </resource>
     </#list>
 
+    <#list windplants as windplant>
+    <resource>
+        <name>${windplant.name}</name>
+        <type>org.ogema.model.devices.generators.WindPlant</type>
+        <path>enaviSimulatedDevices/${windplant.name}</path>
+        <decorating>true</decorating>
+        <active>true</active>
+        <resource xsi:type="og:TimeResource">
+            <name>simulationUpdateFrequency</name>
+            <type>org.ogema.core.model.simple.TimeResource</type>
+            <path>enaviSimulatedDevices/${windplant.name}/simulationUpdateFrequency</path>
+            <decorating>true</decorating>
+            <active>true</active>
+            <value>${windplant.simulationUpdateFrequency}</value>
+        </resource>
+        <resource xsi:type="og:StringResource">
+            <name>simulationProvider</name>
+            <type>org.ogema.core.model.simple.StringResource</type>
+            <path>enaviSimulatedDevices/${windplant.name}/simulationProvider</path>
+            <decorating>true</decorating>
+            <active>true</active>
+            <value>${windplant.simulationProvider}</value>
+        </resource>
+        <resource>
+            <name>electricityConnection</name>
+            <type>org.ogema.model.connections.ElectricityConnection</type>
+            <path>enaviSimulatedDevices/${windplant.name}/electricityConnection</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resource>
+                <name>powerSensor</name>
+                <type>org.ogema.model.sensors.ElectricPowerSensor</type>
+                <path>enaviSimulatedDevices/${windplant.name}/electricityConnection/powerSensor</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <resource xsi:type="og:FloatResource">
+                    <name>reading</name>
+                    <type>org.ogema.core.model.units.PowerResource</type>
+                    <path>enaviSimulatedDevices/${windplant.name}/electricityConnection/powerSensor/reading</path>
+                    <decorating>false</decorating>
+                    <active>true</active>
+                    <resourcelink>
+                        <link>enaviSimulatedDevices/${windplant.name}/electricityConnection/powerSensor/reading/forecast</link>
+                        <type>org.ogema.core.model.schedule.AbsoluteSchedule</type>
+                        <name>forecast</name>
+                    </resourcelink>
+                    <value>${windplant.reading}</value>
+                    <unit>W</unit>
+                </resource>
+            </resource>
+        </resource>
+        <resource xsi:type="og:FloatResource">
+            <name>efficiency</name>
+            <type>org.ogema.core.model.simple.FloatResource</type>
+            <path>enaviSimulatedDevices/${windplant.name}/efficiency</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <value>${windplant.efficiency}</value>
+        </resource>
+        <resource xsi:type="og:TimeResource">
+            <name>simulationForecastUpdateFrequency</name>
+            <type>org.ogema.core.model.simple.TimeResource</type>
+            <path>enaviSimulatedDevices/${windplant.name}/simulationForecastUpdateFrequency</path>
+            <decorating>true</decorating>
+            <active>true</active>
+            <value>${windplant.simulationForecastUpdateFrequency}</value>
+        </resource>
+        <resource xsi:type="og:FloatResource">
+            <name>cutInSpeed</name>
+            <type>org.ogema.core.model.units.VelocityResource</type>
+            <path>enaviSimulatedDevices/${windplant.name}/cutInSpeed</path>
+            <decorating>true</decorating>
+            <active>true</active>
+            <value>${windplant.cutInSpeed}</value>
+            <unit>m/s</unit>
+        </resource>
+        <resource xsi:type="og:FloatResource">
+            <name>rotorArea</name>
+            <type>org.ogema.core.model.units.AreaResource</type>
+            <path>enaviSimulatedDevices/${windplant.name}/rotorArea</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <value>${windplant.rotorArea}</value>
+            <unit>m²</unit>
+        </resource>
+        <resource xsi:type="og:FloatResource">
+            <name>cutOutSpeed</name>
+            <type>org.ogema.core.model.units.VelocityResource</type>
+            <path>enaviSimulatedDevices/${windplant.name}/cutOutSpeed</path>
+            <decorating>true</decorating>
+            <active>true</active>
+            <value>${windplant.cutOutSpeed}</value>
+            <unit>m/s</unit>
+        </resource>
+        <resource xsi:type="og:FloatResource">
+            <name>ratedSpeed</name>
+            <type>org.ogema.core.model.units.VelocityResource</type>
+            <path>enaviSimulatedDevices/${windplant.name}/ratedSpeed</path>
+            <decorating>true</decorating>
+            <active>true</active>
+            <value>${windplant.ratedSpeed}13.5</value>
+            <unit>m/s</unit>
+        </resource>
+        <resource xsi:type="og:ResourceList">
+            <name>windSensors</name>
+            <type>org.ogema.core.model.ResourceList</type>
+            <path>enaviSimulatedDevices/${windplant.name}/windSensors</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resourcelink>
+                <link>outsideWind</link>
+                <type>org.ogema.model.devices.sensoractordevices.WindSensor</type>
+                <name>${windplant.outsideWind}</name>
+            </resourcelink>
+            <elementType>org.ogema.model.devices.sensoractordevices.WindSensor</elementType>
+        </resource>
+    </resource>
+    </#list>
+
     <#list pvplants as pvplant>
     <resource>
         <name>${pvplant.name}</name>
@@ -180,6 +299,70 @@
                 </resource>
             </resource>
         </resource>
+       <resource>
+            <name>chargeSensor</name>
+            <type>org.ogema.model.sensors.StateOfChargeSensor</type>
+            <path>enaviSimulatedDevices/${storageDevice.name}/chargeSensor</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resource xsi:type="og:FloatResource">
+                <name>reading</name>
+                <type>org.ogema.core.model.simple.FloatResource</type>
+                <path>enaviSimulatedDevices/${storageDevice.name}/chargeSensor/reading</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <value>${storageDevice.reading}</value>
+            </resource>
+        </resource>
+        <resource>
+            <name>ratedEnergy</name>
+            <type>org.ogema.model.ranges.EnergyRange</type>
+            <path>enaviSimulatedDevices/${storageDevice.name}/ratedEnergy</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resource xsi:type="og:FloatResource">
+                <name>upperLimit</name>
+                <type>org.ogema.core.model.units.EnergyResource</type>
+                <path>enaviSimulatedDevices/${storageDevice.name}/ratedEnergy/upperLimit</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <value>${storageDevice.ratedEnergy_upperLimit}</value>
+                <unit>J</unit>
+            </resource>
+            <resource xsi:type="og:FloatResource">
+                <name>lowerLimit</name>
+                <type>org.ogema.core.model.units.EnergyResource</type>
+                <path>enaviSimulatedDevices/${storageDevice.name}/ratedEnergy/lowerLimit</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <value>${storageDevice.ratedEnergy_lowerLimit}</value>
+                <unit>J</unit>
+            </resource>
+        </resource>
+        <resource>
+            <name>setting</name>
+            <type>org.ogema.model.actors.MultiSwitch</type>
+            <path>enaviSimulatedDevices/${storageDevice.name}/setting</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resource xsi:type="og:FloatResource">
+                <name>stateControl</name>
+                <type>org.ogema.core.model.simple.FloatResource</type>
+                <path>enaviSimulatedDevices/${storageDevice.name}/setting/stateControl</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <value>${storageDevice.stateControl}</value>
+            </resource>
+            <resource xsi:type="og:FloatResource">
+                <name>stateFeedback</name>
+                <type>org.ogema.core.model.simple.FloatResource</type>
+                <path>enaviSimulatedDevices/${storageDevice.name}/setting/stateFeedback</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <value>${storageDevice.stateFeedback}</value>
+            </resource>
+        </resource>
+
     </resource>
     </#list>
     <elementType>org.ogema.model.prototypes.PhysicalElement</elementType>

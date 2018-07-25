@@ -17,6 +17,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$sim$id				<- c("NN")
 	defdexpa$sim$duration			<- 30*60             # in sec
 	defdexpa$sim$timefactor			<- 1.0
+	defdexpa$sim$extrasecs			<- 0
 	
 	### Directories ################################################################
 	defdexpa$dirs <- list()
@@ -43,6 +44,10 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	# not used any more
 	#defdexpa$classpath$emg			<- "set dexpa$classpath$emg"
 
+	### Files ################################################################
+	defdexpa$files$paramconfigs		<- paste(defdexpa$dirs$config, "DEX_Param_Configs.csv", sep="/")
+	defdexpa$files$runinfos			<- paste(defdexpa$dirs$project, "DEX_Runs.csv", sep="/")
+	
 	### DB Settings ##################################################################
 	defdexpa$db <- list()	
 	defdexpa$db$host			<- "localhost"

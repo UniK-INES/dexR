@@ -6,6 +6,9 @@
 #' @export
 hl_figure_clearing_numConsideredRequests <- function(dexpa) {
 	data <- input_db_clearings(dexpa)
+	if (nrow(data)==0) {
+		R.oo::throw.default("DB contains to clearing information (table clearing_info)!")
+	}
 	output_figure_clearing_numConsideredRequests_byCTbyProduct(dexpa, data)
 }
 #' Retrieve data and store figure about the clearing price per clearing by clearing time and by product

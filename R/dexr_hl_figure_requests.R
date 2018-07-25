@@ -68,6 +68,7 @@ hl_figure_requests_numRequests_comp_byStatusBySubmT <- function(dexpas) {
 	data = data.frame()
 	for (dp in dexpas) {
 		# dp <- dexpas[[1]]
+		# dp <- dexpas[[2]]
 		d <- input_db_requests(dp)
 		if (nrow(d) == 0) {
 			# R.oo::throw.default("No requests in DB for ID ", dp$id, "!")
@@ -75,9 +76,10 @@ hl_figure_requests_numRequests_comp_byStatusBySubmT <- function(dexpas) {
 				dp$db$dbname,
 				dp$id,
 				name = "dexr.hl.requests")
- 		}
-		d$id <- input_db_runID(dp)		
-		data <- rbind(data, d)
+ 		} else {
+			d$id <- input_db_runID(dp)		
+			data <- rbind(data, d)
+		}
 	}
 	if (nrow(data) > 0) {
 		output_figure_requests_numRequests_comp_byStatusBySubmT(dexpas[[1]], data) 

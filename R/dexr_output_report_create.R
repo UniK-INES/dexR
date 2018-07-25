@@ -38,7 +38,7 @@ createCompareReport <- function(dexpas, outputfile, rmdfile="DEX_report_compare.
 	report.env <- new.env()
 	assign("dexpas", dexpas, envir=report.env)	
 	for (i in length(dexpas)) {
-		assign(names(dexpas)[i], dexpas[i], envir=report.env)
+		assign(names(dexpas)[[i]], dexpas[[i]], envir=report.env)
 	}
 	
 	# FIXME fails: using the wrong user in db connection

@@ -61,7 +61,15 @@ input_db_db2dump <- function(dexpa, dumpdir) {
 			dumpdir,
 			name = "dexr.input.db.dump")
 	
-	shbasic::sh.ensurePath(paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"))
+	if (file.exists(paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"))) {
+		unlink(paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"), recursive=TRUE)
+		futile.logger::flog.warn("Removed existing directory %s/%s." ,
+				dexpa$dirs$output$dbdumps,
+				dumpdir,
+				name = "dexr.input.db.dump")
+	} else {
+		shbasic::sh.ensurePath(paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"))
+	}
 	
 	# Superuser required as long as other user does not have rights for new database:
 	Sys.setenv("PGPASSWORD"=dexpa$db$supassword)

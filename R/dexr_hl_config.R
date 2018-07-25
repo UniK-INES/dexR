@@ -30,18 +30,21 @@ hl_config_copycsvtemplates <- function(dexpa, targetdir=paste(dexpa$dirs$config,
 #' @param dexpa 
 #' @param sourcedir 
 #' @param sourcefile 
+#' @param firstDeliveryPeriodStart as POSIX object
 #' @return table in DB
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_config_marketProducts2db <- function(dexpa, sourcedir=dexpa$dirs$config, 
-		sourcefile=paste("DEX_Param_MarketProducts_", dexpa$sim$id, ".csv", sep="")) {
-	futile.logger::flog.info("Configure Market Backend products...", name = "dexr.hl.config.backend")
-	products <- read.csv(file=paste(sourcedir, dexpa$sim$id, sourcefile,sep="/"), stringsAsFactors=F)
+hl_config_marketProducts2db <- function(dexpa, sourcedir=paste(dexpa$dirs$config,dexpa$sim$id, sep="/"), 
+		sourcefile=paste("DEX_Param_MarketProducts_", dexpa$sim$id, ".csv", sep=""),
+		firstDeliveryPeriodStart = Sys.time()) {
+	futile.logger::flog.info("Configure Market Backend products (%s/%s)...", sourcedir, sourcefile, 
+			name = "dexr.hl.config.backend")
+	products <- read.csv(file=paste(sourcedir, sourcefile,sep="/"), stringsAsFactors=F)
 	for (i in 1:nrow(products)) {
 		# lubridate does not deal with secs > 60 as expected (https://github.com/tidyverse/lubridate/issues/661)
-		products[i, "first_delivery_period_start"] <- as.numeric(lubridate::ceiling_date(Sys.time(), 
-						paste(products[i,"delivery_period_duration"]/60000," mins", sep="")))*1000	
+		products[i, "first_delivery_period_start"] <- as.numeric(lubridate::ceiling_date(firstDeliveryPeriodStart, 
+						paste(products[i,"delivery_period_duration"]/60000," mins", sep="")) + dexpa$sim$extrasecs)*1000	
 	}
 	products[,"first_delivery_period_start"] <- as.numeric(products[,"first_delivery_period_start"])
 	
@@ -71,10 +74,13 @@ hl_config_marketProducts2db <- function(dexpa, sourcedir=dexpa$dirs$config,
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_config_clients2db <- function(dexpa, sourcedir=dexpa$dirs$config, 
+hl_config_clients2db <- function(dexpa,sourcedir = paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
 		sourcefile=paste("DEX_Param_EnaviClient_", dexpa$sim$id, ".csv", sep="")) {
-	futile.logger::flog.info("Configure Market Backend clients...", name = "dexr.hl.config.backend")
-	clients <- read.csv(file=paste(sourcedir, dexpa$sim$id, sourcefile, sep="/"))
+	
+	
+	futile.logger::flog.info("Configure Market Backend clients (%s/%s)...", sourcedir, sourcefile, 
+			name = "dexr.hl.config.backend")
+	clients <- read.csv(file=paste(sourcedir, sourcefile, sep="/"))
 	clients$id <- clients$user_id
 	
 	con <- input_db_getconnection(dexpa)
@@ -105,4 +111,6 @@ hl_config_clients2db <- function(dexpa, sourcedir=dexpa$dirs$config,
 	RPostgreSQL::dbWriteTable(con, dexpa$db$tablenames$roles, 
 			value=clients[,colnames_roles$column_name], append=T, row.names=F)
 	DBI::dbDisconnect(con)
+	
+	return(nrow(clients))
 }
