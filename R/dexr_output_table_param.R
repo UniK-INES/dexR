@@ -4,7 +4,7 @@
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_table_param_products <- function(dexpa) {
+output_table_param_products <- function(dexpa, format="markdown", caption="Product information") {
 	products <- input_db_param_products(dexpa)
 	knitr::kable(products[, c(	"description",
 								"first_delivery_period_start",
@@ -14,7 +14,7 @@ output_table_param_products <- function(dexpa) {
 								"closing_time",
 								"max_price",
 								"min_price"
-							)], format="markdown", caption="Product information", 
+							)], format=format, caption = caption, 
 				col.names = c(	"Product",
 								"Delivery start",
 								"Duration",
@@ -30,12 +30,22 @@ output_table_param_products <- function(dexpa) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_table_param_marketinfo <- function(dexpa) {
-	timing <- input_db_param_marketinfo(dexpa)
-	knitr::kable(timing, format="markdown", caption="Market information", 
-			col.names = c(	"UID", 
-							"Fine/untraded kWh",
-							"Fine/Missing reading"))
+output_table_param_marketinfo <- function(dexpa, format="markdown", caption="Market information") {
+	timing <- cbind(input_db_param_marketinfo(dexpa)[,c("uid")],
+			input_csv_runinfos(dexpa)[,c("TF", "Basetime", "Offset", "Duration")],
+			input_db_param_marketinfo(dexpa)[,-c(1)])
+	
+	#timing$Basetime <- paste(substring(timing$Basetime, 1,2), substring(timing$Basetime, 4), sep="")
+	#timing$Basetime <- format(strptime(gsub("CEST ","",as.character(timing$Basetime)), tz="CEST", format = "%a %b %e %H:%M:%S %Y"), format = "%Y-%m-%d %H:%M:%S")
+	timing$Basetime <- format(strptime(timing$Basetime, tz="CEST", format = "%F %T"), format = "%y-%m-%d %H:%M:%S")
+	knitr::kable(timing, format=format,  row.names=F, caption=caption, 
+			col.names = c(	"UID",
+							"TF",
+							"Basetime",
+							"Offset",
+							"Dur (h)",
+							"F/untr kWh",
+							"F/Miss read"))
 }
 #' Returns a kable markdown table with client information
 #' @param dexpa 
@@ -43,18 +53,33 @@ output_table_param_marketinfo <- function(dexpa) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_table_param_clients <- function(dexpa, linespertable = 10) {
+output_table_param_clients <- function(dexpa, format="markdown", caption="Client information", linespertable = 18,
+		file=NULL, filextension="tex", prefix="") {
 	data <- input_csv_clientdata(dexpa)
-	output = c()
+	
+	data$annualConsumption = data$annualConsumption / 10^9
+	data$profileType = substr(data$profileType,1,2)
+	
 	for (i in seq(1,nrow(data), linespertable)) {
-		
-		
-		output <- append(output, knitr::kable(data[i:(i+linespertable-1),], format="markdown", 
-						caption="Client information", row.names=F,
+		# i=19
+		tab <- knitr::kable(data[i:min(nrow(data),(i+linespertable-1)),], format=format, 
+				caption=caption, row.names=F, digits = 3,
 				col.names = c(	"Name", 
-						"Price fluc.",
-						"Price avg.",
-						"Consump.")))
-		output <- append(output, "***")
+						"P fluc",
+						"P avg",
+						"Cons (GJ)",
+						"Prof",
+						"RotorArea",
+						"PanelArea"))
+	
+		if (!is.null(file)) {
+			if (prefix != "") write(prefix, file = paste(file, "_", i, ".", filextension,sep=""))
+			write(tab, file = paste(file, "_", i, ".", filextension,sep=""), append=prefix!="")	
+		} else {
+			print(tab)
+		}
+		if (i + linespertable <= nrow(data)) {
+			cat("\n***")
+		}
 	}
 }

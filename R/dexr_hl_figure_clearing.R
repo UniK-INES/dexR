@@ -7,7 +7,7 @@
 hl_figure_clearing_numConsideredRequests <- function(dexpa) {
 	data <- input_db_clearings(dexpa)
 	if (nrow(data)==0) {
-		R.oo::throw.default("DB contains to clearing information (table clearing_info)!")
+		R.oo::throw.default("DB contains no clearing information (table clearing_info)!")
 	}
 	output_figure_clearing_numConsideredRequests_byCTbyProduct(dexpa, data)
 }
@@ -29,8 +29,14 @@ hl_figure_clearing_clearingPriceByCTbyProduct <- function(dexpa) {
 #' @export
 hl_figure_clearing_comp_numConsideredRequests <- function(dexpa, dp2) {
 	data1 <- input_db_clearings(dexpa)
+	if (nrow(data1)==0) {
+		R.oo::throw.default("DB contains no clearing information (table clearing_info) for DB ", dexpa$db$dbname, "!")
+	}
 	data1$id <- input_db_runID(dexpa)
 	data2 <- input_db_clearings(dp2)
+	if (nrow(data2)==0) {
+		R.oo::throw.default("DB contains no clearing information (table clearing_info) for DB ", dp2$db$dbname, "!")
+	}
 	data2$id <- input_db_runID(dp2)
 	
 	output_figure_clearing_comp_numConsideredRequests_byCTbyProduct(dexpa, data = rbind(data1, data2))

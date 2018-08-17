@@ -1,0 +1,4 @@
+name,client,storage,priceFluctuation,averagePrice,averagePriceOffer,priceOfferFluctuation
+StorageRequestConfigs_01,EnaviClients_01,EnaviSimulatedStorageDevices_01,0.05,0.02,0.2,0.1
+StorageRequestConfigs_02,EnaviClients_02,EnaviSimulatedStorageDevices_02,0.05,0.02,0.2,0.1
+StorageRequestConfigs_03,EnaviClients_03,EnaviSimulatedStorageDevices_03,0.05,0.02,0.2,0.1

@@ -25,9 +25,55 @@ input_csv_clientdata <- function(dexpa) {
 	loadProfiles <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
 					paramConfigs[idMatch,"loadProfiles"], sep="/"))
 	
-	data <- merge(clients, loads, by.x="name_emg", by.y="client", all.y=T)
-	data <- merge(data, loadProfiles, by.x="building", by.y="powerSensor", all.y=T)
+	generations <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
+					paramConfigs[idMatch,"generations"], sep="/"))
 	
-	data <- data[, c("name_emg", "price_fluctuation", "price_average", "annualConsumption")]
+	pvplants <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
+					paramConfigs[idMatch,"pvplants"], sep="/"))
+	
+	windplants <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
+					paramConfigs[idMatch,"windplants"], sep="/"))
+	
+	data <- merge(clients, loads, by.x="name_emg", by.y="client", all=T)
+	data <- merge(data, loadProfiles, by.x="building", by.y="powerSensor", all=T)
+	
+	colnames(generations)[match( 
+						c("name", "averagePrice", "priceFluctuation", "averagePriceOffer", "priceOfferFluctuation"), 
+						colnames(generations))] <- c("nameGen", "averagePriceGen","priceFluctuationGen",
+						"averagePriceOfferGen", "priceOfferFluctuationGen")
+	
+	data <- merge(data, generations, by.x="name_emg", by.y="client", all=T)
+	data <- merge(data, pvplants, by.x="device", by.y="name", all=T)
+	colnames(data)[colnames(data)=="name"] <- "namePV"
+	colnames(data)[colnames(data)=="efficiency"] <- "efficiencyPV"
+	colnames(data)[colnames(data)=="simulationUpdateFrequency"] <- "simulationUpdateFrequencyPV"
+	colnames(data)[colnames(data)=="simulationProvider"] <- "simulationProviderPV"
+	colnames(data)[colnames(data)=="reading"] <- "readingPV"
+	colnames(data)[colnames(data)=="simulationForecastUpdateFrequency"] <- "simulationForecastUpdateFrequencyPV"
+	
+	data <- merge(data, windplants, by.x="device", by.y="name", all=T)
+	colnames(data)[colnames(data)=="name"] <- "nameWind"
+	colnames(data)[colnames(data)=="efficiency"] <- "efficiencyWind"
+	colnames(data)[colnames(data)=="simulationUpdateFrequency"] <- "simulationUpdateFrequencyWind"
+	colnames(data)[colnames(data)=="simulationProvider"] <- "simulationProviderWind"
+	colnames(data)[colnames(data)=="reading"] <- "readingWind"
+	colnames(data)[colnames(data)=="simulationForecastUpdateFrequency"] <- "simulationForecastUpdateFrequencyWind"
+	
+	data <- data[, c("name_emg", "price_fluctuation", "price_average", "annualConsumption", 
+					"profileType", "rotorArea", "panelArea")]
 	data
+}
+
+#' Extract the runinfos entry from CSV file for the dexpa's sim ID
+#' 
+#' In case there are more than one entries, return the latest.
+#' @param dexpa 
+#' @return data.frame with one row
+#' 
+#' @author Sascha Holzhauer
+#' @export
+input_csv_runinfos <- function(dexpa) {
+	runinfos <- read.csv(file = dexpa$files$runinfos)
+	runinfos <- runinfos[runinfos$ID == dexpa$sim$id,]
+	runinfos[nrow(runinfos),]
 }

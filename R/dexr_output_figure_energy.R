@@ -9,13 +9,16 @@ lubridate::`%within%`
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_energy_requested_byStatusByStartT <- function(dexpa, data) {
+output_figure_energy_requested_byStatusByStartT <- function(dexpa, data, type="residual", skiplegend=F) {
 	# count requests
 	
 	# TODO apply fix in output_figure_energy_requested_comp_sumByLoadGenByStartT to other functions!
 	data <- plyr::ddply(data, c("status", "start_time"), function(d) {
 				new = data.frame(
-					"energy" = sum(d[, "energy_requested"]),
+					"energy" = sum(d[
+									if (type=="load") d$energy_requested>0
+									else if (type=="generation") d$energy_requested<0
+									else TRUE, "energy_requested"]),
 					"status" = d$status[1],
 					"start_time" = d$start_time[1])
 				new
@@ -29,6 +32,7 @@ output_figure_energy_requested_byStatusByStartT <- function(dexpa, data) {
 					ggplot2::ylab("Requested energy")
 			),  x_column = "start_time", group_column = "status", 
 			group_colors = dexpa$colours$statuses,
+			ggplotaddons = if (skiplegend) ggplot2::theme(legend.position="none") else NULL, 
 			position = "stack", returnplot = FALSE)
 }
 #' Output figure: Requested energy sum per submission time.
@@ -63,11 +67,13 @@ output_figure_energy_requested_sumByStartT <- function(dexpa, data) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_energy_requested_comp_byStatusByStartT <- function(dexpa, data) {
+output_figure_energy_requested_comp_byStatusByStartT <- function(dexpa, data, type="residual", skiplegend=F) {
 	# count requests
 	data <- plyr::ddply(data, c("id", "status", "start_time"), function(d) {
 				new = data.frame(
-						"energy" = sum(d[, "energy_requested"]),
+						"energy" = sum(d[if (type=="load") d$energy_requested>0
+												else if (type=="generation") d$energy_requested<0
+												else TRUE, "energy_requested"]),
 						"status" = d$status[1],
 						"start_time" = d$start_time[1],
 						"id" = d$id)
@@ -78,11 +84,12 @@ output_figure_energy_requested_comp_byStatusByStartT <- function(dexpa, data) {
 			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
 			facet_column = "status", facet_ncol = 1, filename = "dex_energy_requested_comp_byStatusByCT",
 			alpha=1.0, ggplotaddons = list(
+					if (skiplegend) ggplot2::theme(legend.position="none") else ggplot2::theme(
+										legend.position = "bottom"
+								), 
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Requested energy"),
-					ggplot2::theme(
-							legend.position = "bottom"
-					)
+					ggplot2::ylab("Requested energy")
+					
 			),  x_column = "start_time", group_column = "id", 
 			position = "dodge", returnplot = FALSE)
 }

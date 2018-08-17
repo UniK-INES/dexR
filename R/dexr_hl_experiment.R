@@ -21,8 +21,8 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 	system2(wait=FALSE, "mvn", args=paste("-f ", dexpa$dirs$backend, " spring-boot:run ",
 					"-Dde.unik.enavi.market.testing.load=FALSE ",
 					"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
-					"-Dde.unik.enavi.market.time.basetime=", basetime, " ", 
-					"-Dde.unik.enavi.market.time.offset=", offset, sep=""),
+					"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
+					"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
 			stdout=outfilesys, stderr=outfilesys)
 	
 	control = 0
@@ -115,7 +115,7 @@ hl_experiment_runemg <- function(dexpa, outfilesys = "") {
 			" -dd '",paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"devicesStorage"], sep=""), "'",
 			" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"requestConfig"], sep=""), "'",
 			" -sc '",paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"ogemaConfig"], sep=""), "'",
-		 "\"", sep=""))
+		 "\"", sep=""), stdout=outfilesys, stderr=outfilesys)
 	} else {	
 		system2(wait=TRUE, "mvn", args = paste(" exec:java "," -Dexec.mainClass=de.unik.ines.enavi.ctool.EmgConfigManager"," -Dexec.args=\"", 
 			" -i ", dexpa$sim$id,
@@ -132,7 +132,7 @@ hl_experiment_runemg <- function(dexpa, outfilesys = "") {
 			" -dd '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_DevicesStorage_", dexpa$sim$id, ".csv", sep=""), "'",
 			" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_RequestConfig_", dexpa$sim$id, ".csv", sep=""), "'",
 			" -sc '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_OgemaConfig_", dexpa$sim$id, ".csv", sep=""), "'",
-		 "\"", sep=""))
+		 "\"", sep=""), stdout=outfilesys, stderr=outfilesys)
 	}
 
 	# copy static XML files:
@@ -199,9 +199,11 @@ hl_experiment_stopemg <- function(dexpa) {
 hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round(Sys.time(),"mins"))*1000,
 		offset = round(basetime - as.numeric(Sys.time())*1000), outputfile = "", outfilemarket = "", outfileemg = "") {
 	
+	futile.logger::flog.info("Basetime: %f", basetime)
+	
 	futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
 			name="dexr.hl.experiment")
-	futile.logger::flog.info("Expected to finish at about %s.", Sys.time() + round(dp1$sim$duration/dp1$sim$timefactor),
+	futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + round(dp1$sim$duration/dp1$sim$timefactor), tz="CEST"),
 			name="dexr.hl.experiment.duration")
 
 	if (outputfile != "") {
@@ -247,6 +249,8 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	runinfo$dexrVersion <- packageDescription("dexR")$Version
 	
 	runinfo$TF			<- dexpa$sim$timefactor
+	runinfo$Basetime	<- format(as.POSIXlt(basetime/1000, origin = "1970-01-01"))
+	runinfo$Offset		<- format(as.POSIXct(abs(offset/1000), origin = "1970-01-01"), "%jd %H:%M:%S")
 	runinfo$Duration	<- dexpa$sim$duration/(60*60)
 	runinfo$NumClients	<- infoData$numClients
 	
