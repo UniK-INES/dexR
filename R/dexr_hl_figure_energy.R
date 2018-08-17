@@ -39,7 +39,7 @@ hl_figure_energy_requested_sumByStartT <- function(dexpa) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_figure_energy_requested_comp_byStatusByStartT <- function(dexpas) {
+hl_figure_energy_requested_comp_byStatusByStartT <- function(dexpas, skiplegend=F, type="residual") {
 	data = data.frame()
 	for (dp in dexpas) {
 		# dp = dexpas[[1]]
@@ -57,7 +57,7 @@ hl_figure_energy_requested_comp_byStatusByStartT <- function(dexpas) {
 		}
 	}
 	if (nrow(data) > 0) {
-		output_figure_energy_requested_comp_byStatusByStartT(dexpas[[1]], data)
+		output_figure_energy_requested_comp_byStatusByStartT(dexpas[[1]], data, type=type, skiplegend=skiplegend)
 	}
 }
 #' Retrieves requests data from DB and creates figure of requested energy by delivery start time.

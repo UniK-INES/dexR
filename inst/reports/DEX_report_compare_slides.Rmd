@@ -4,19 +4,19 @@ author: Sascha Holzhauer
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
     beamer_presentation:
-        keep_tex: true
+        keep_tex: false
         colortheme: orchid
         df_print: kable
         fig_width: 7
         fig_height: 4
         fig_caption: true
         incremental: false
-        slide_level: 1
+        slide_level: 3
         theme: Singapore
         fonttheme: "structurebold"
         toc: true
-geometry: margin=1cm
-fontsize: 7pt
+        template: comparison_slides.tex
+fontsize: 8pt
 ---
 
 ```{r, eval=TRUE, include = FALSE}
@@ -35,107 +35,127 @@ dexpas <- lapply(dexpas, function(dp) {
 ```
 # Parameters
 ## General Information
-* ID: `r input_db_runID(dp1)`
-* Date: `r format(Sys.time(), "%a %b %d %H:%M:%S %Y")`
-
-
+### General Information
+* IDs:
 ```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 for (dp in dexpas) {
 	cat('\n')
-	paste("## Product Information", input_db_runID(dp), sep="") 
-	dexR::output_table_param_products(dp)
+	cat("  + ", input_db_runID(dp), sep = "")
+}
+cat('\n')
+invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
+```
+* Date: `r format(Sys.time(), "%a %b %d %H:%M:%S %Y")`
+
+## Product Information
+### Product Information
+```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
+invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
+for (dp in dexpas) {
+	cat('\n')
+	cat("#### Product Information (", input_db_runID(dp), ")", sep = "") 
+	print(dexR::output_table_param_products(dp))
 }
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
-***
-## Product Information `r input_db_runID(dp2)`
+
+## Market Information
+### Market Information
 ```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
-dexR::output_table_param_products(dp2)
-invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
-```
-***
-## Market Information (`r input_db_runID(dp1)`)
-```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
-invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
-dexR::output_table_param_marketinfo(dp1)
-invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
-```
-## Market Information (`r input_db_runID(dp2)`)
-```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
-invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
-dexR::output_table_param_marketinfo(dp2)
+for (dp in dexpas) {
+	cat('\n')
+	cat("#### Market Information (", input_db_runID(dp), ")", sep = "")
+	print(dexR::output_table_param_marketinfo(dp))
+}
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
 
 ## Client Information
-```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
+```{r, eval=TRUE, results="asis", message=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
-dexR::output_table_param_clients(dp1)
+for (dp in dexpas) {
+	cat("\n### Client Information (", input_db_runID(dp), ")", sep = "") 
+	dexR::output_table_param_clients(dp)
+}
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
 
-# Time Series
-## Clearing Information
-
+# Time Series: Clearing
+## Clearing: Number of considered requests
+### Clearing: Number of considered requests
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexR::hl_figure_clearing_comp_numConsideredRequests(dp1, dp2)
 ```
 
-***
-
-## Price Statistics
+## Clearing: Price Statistics
+### Clearing: Price Statistics
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dp1$fig$height <- 750
 dexR::hl_figure_clearing_comp_clearingPriceByCTbyProduct(dp1, dp2)
 ```
 
-***
-## Requested Energy by Status
+# Time Series: Energy
+## Requested Energy by Status (Residual)
+### Requested Energy by Status (Residual)
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 750
-dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas)
+dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas, type="residual", skiplegend=T)
 ```
 
-***
-## Requested Energy
+## Requested Energy by Status (Load)
+### Requested Energy by Status (Load)
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+dexpas[[1]]$fig$height <- 750
+dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas, type="load", skiplegend=T)
+```
+
+## Requested Energy by Status (Generation)
+### Requested Energy by Status (Generation)
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+dexpas[[1]]$fig$height <- 750
+dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas, type="generation", skiplegend=T)
+```
+
+
+## Requested Energy summed
+### Requested Energy summed
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 750
 dexR::hl_figure_energy_requested_comp_sumByStartT(dexpas)
 ```
 
-***
 ## Requested Energy (Generation, Load, Residual)
+### Requested Energy (Generation, Load, Residual)
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 750
 dexR::hl_figure_energy_requested_comp_sumLoadGenByStartT(dexpas)
 ```
 
-***
-## Request Statistics by status
+# Time Series: Requests
+## Request Statistics by status and submission time
+### Request Statistics by status and submission time
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 950
 dexR::hl_figure_requests_numRequests_comp_byStatusBySubmT(dexpas)
 ```
 
-***
-
+### Request Statistics by status and delivery start time
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 950
 dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(dexpas)
 ```
 
-***
-
-## Request Statistics by product
+## Request Statistics by product and submission time
+### Request Statistics by product and submission time
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 750
 dexR::hl_figure_requests_numRequests_comp_byProductBySubmT(dexpas)
 ```
 
-***
-
+## Request Statistics by product and delivery start time
+### Request Statistics by product and delivery start time
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 750
 dexR::hl_figure_requests_numRequests_comp_byProductByStartT(dexpas)
