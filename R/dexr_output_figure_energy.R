@@ -124,7 +124,7 @@ output_figure_energy_requested_comp_sumByStartT <- function(dexpa, data) {
 #' Output figure: Requested energy per submission time and status.
 #' 
 #' Requirement: Delivery periods of all products must be a multiple of the shortest delivery period (with start and end
-#' times matching those of the shorted delivery period product)!
+#' times matching those of the shortest delivery period product)!
 #' 
 #' @param dexpa 
 #' @param data 
@@ -156,11 +156,11 @@ output_figure_energy_requested_comp_sumByLoadGenByStartT <- function(dexpa, data
 			if (df[r, "energy_requested"] > 0) {
 				result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
 					"Load"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-							"Load"] + df[r, "energy_requested"]
+							"Load"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
 			} else {
 				result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
 						"Gen"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-								"Gen"] + df[r, "energy_requested"]
+								"Gen"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
 			}
 		}
 		result$start_time <- lubridate::int_start(result$start_time)

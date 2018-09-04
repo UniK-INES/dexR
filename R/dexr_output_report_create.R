@@ -30,7 +30,8 @@ createFullReport <- function(dexpa, outputfile, rmdfile="DEX_report_full.Rmd", o
 #' 
 #' @author Sascha Holzhauer
 #' @export
-createCompareReport <- function(dexpas, outputfile, rmdfile="DEX_report_compare.Rmd", output_dir = dexpa$dirs$output$reports) {
+createCompareReport <- function(dexpas, outputfile, rmdfile="DEX_report_compare.Rmd", output_dir = dexpa$dirs$output$reports, 
+	clean=T, run_pandoc=T) {
 	
 	dexpa$fig$init <- function(simp, outdir, filename) {}
 	dexpa$fig$close<- function() {}
@@ -42,9 +43,10 @@ createCompareReport <- function(dexpas, outputfile, rmdfile="DEX_report_compare.
 	}
 	
 	# FIXME fails: using the wrong user in db connection
-	tryCatch(rmarkdown::render(	input = system.file("reports", rmdfile, package="dexR"),
+	tryCatch(rmarkdown::render(input = system.file("reports", rmdfile, package="dexR"),
 			output_file = outputfile,
 			output_dir  = output_dir,
+			clean = clean, run_pandoc = run_pandoc,
 			envir = report.env), error=function(e) {
 				print(paste("Error generating report ",e,sep=""))
 			})

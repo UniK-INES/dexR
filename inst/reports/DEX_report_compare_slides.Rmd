@@ -15,7 +15,7 @@ output:
         theme: Singapore
         fonttheme: "structurebold"
         toc: true
-        template: comparison_slides.tex
+        template: DEX_tmpl_comparison_slides.tex
 fontsize: 8pt
 ---
 
