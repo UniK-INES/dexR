@@ -67,21 +67,22 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 	futile.logger::flog.info(message, name = "dexr.hl.experiment")
 	return(infoData)
 }
-#' Run EMGs to experiment
+#' Create configuration for EMGs to experiment
 #' @param dexpa 
 #' @return -
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_experiment_runemg <- function(dexpa, outfilesys = "") {
+hl_experiment_configemg <- function(dexpa, outfilesys = "") {
+	
 	## create XML configuration:
 	if (outfilesys == "") {
 		outfilesystxt = "CONSOLE"
 	} else {
 		outfilesystxt = outfilesys
 	}
+	
 	futile.logger::flog.info("Creating EMG XML configuration (output to %s)...", outfilesystxt, name = "dexr.hl.experiment")
-	path = getwd();
 	
 	setwd(paste(dexpa$dirs$emgconfigtool, "/../..", sep=""))
 	
@@ -89,7 +90,7 @@ hl_experiment_runemg <- function(dexpa, outfilesys = "") {
 		paramConfigs <- readODS::read_ods(dexpa$files$paramconfigs, sheet = 1, col_names = TRUE)
 	} else {
 		paramConfigs <- read.csv(dexpa$files$paramconfigs, header = TRUE, sep = ",", quote = "\"",
-			dec = ".", fill = TRUE, comment.char = "")
+				dec = ".", fill = TRUE, comment.char = "")
 	}
 	
 	# Check Runs.csv for requested ID:
@@ -100,46 +101,58 @@ hl_experiment_runemg <- function(dexpa, outfilesys = "") {
 	}
 	if (!is.na(idMatch)) {
 		# Read CSV sources from DEX_Param_Configs.csv:
-				system2(wait=TRUE, "mvn", args = paste(" exec:java "," -Dexec.mainClass=de.unik.ines.enavi.ctool.EmgConfigManager"," -Dexec.args=\"", 
-			" -i ", dexpa$sim$id,
-			" -o '", dexpa$dirs$config, "'",
-			" -t '", dexpa$dirs$freemarkertemplate, "'",
-			" -c '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"clients"], sep=""), "'",
-			" -l '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"loads"], sep=""), "'",
-			" -g '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"generations"], sep=""), "'",
-			" -b '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"buildings"], sep=""), "'",
-			" -p '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"pvplants"], sep=""), "'",
-			" -w '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"windplants"], sep=""), "'",
-			" -s '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"loadProfiles"], sep=""), "'",
-			" -d '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"storages"], sep=""), "'",
-			" -dd '",paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"devicesStorage"], sep=""), "'",
-			" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"requestConfig"], sep=""), "'",
-			" -sc '",paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"ogemaConfig"], sep=""), "'",
-		 "\"", sep=""), stdout=outfilesys, stderr=outfilesys)
+		system2(wait=TRUE, "mvn", args = paste(" exec:java "," -Dexec.mainClass=de.unik.ines.enavi.ctool.EmgConfigManager"," -Dexec.args=\"", 
+						" -i ", dexpa$sim$id,
+						" -o '", dexpa$dirs$config, "'",
+						" -t '", dexpa$dirs$freemarkertemplate, "'",
+						" -c '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"clients"], sep=""), "'",
+						" -l '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"loads"], sep=""), "'",
+						" -g '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"generations"], sep=""), "'",
+						" -b '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"buildings"], sep=""), "'",
+						" -p '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"pvplants"], sep=""), "'",
+						" -w '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"windplants"], sep=""), "'",
+						" -s '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"loadProfiles"], sep=""), "'",
+						" -d '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"storages"], sep=""), "'",
+						" -dd '",paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"devicesStorage"], sep=""), "'",
+						" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"requestConfig"], sep=""), "'",
+						" -sc '",paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"ogemaConfig"], sep=""), "'",
+						"\"", sep=""), stdout=outfilesys, stderr=outfilesys)
 	} else {	
 		system2(wait=TRUE, "mvn", args = paste(" exec:java "," -Dexec.mainClass=de.unik.ines.enavi.ctool.EmgConfigManager"," -Dexec.args=\"", 
-			" -i ", dexpa$sim$id,
-			" -o '", dexpa$dirs$config, "'",
-			" -t '", dexpa$dirs$freemarkertemplate, "'",
-			" -c '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_EnaviClient_", dexpa$sim$id, ".csv", sep=""), "'",
-			" -l '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_Loads_", dexpa$sim$id, ".csv", sep=""), "'",
-			" -g '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_Generations_", dexpa$sim$id, ".csv", sep=""), "'",
-			" -b '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_DevicesBuilding_", dexpa$sim$id, ".csv", sep=""), "'",
-			" -p '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_DevicesPVplant_", dexpa$sim$id, ".csv", sep=""), "'",
-			" -w '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_DevicesWindplant_", dexpa$sim$id, ".csv", sep=""), "'",
-			" -s '", paste(dexpa$dirs$config, "/",  dexpa$sim$id, "/DEX_Param_LoadProfiles_", dexpa$sim$id, ".csv", sep=""), "'",
-			" -d '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_Storages_", dexpa$sim$id, ".csv", sep=""), "'",
-			" -dd '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_DevicesStorage_", dexpa$sim$id, ".csv", sep=""), "'",
-			" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_RequestConfig_", dexpa$sim$id, ".csv", sep=""), "'",
-			" -sc '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_OgemaConfig_", dexpa$sim$id, ".csv", sep=""), "'",
-		 "\"", sep=""), stdout=outfilesys, stderr=outfilesys)
+						" -i ", dexpa$sim$id,
+						" -o '", dexpa$dirs$config, "'",
+						" -t '", dexpa$dirs$freemarkertemplate, "'",
+						" -c '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_EnaviClient_", dexpa$sim$id, ".csv", sep=""), "'",
+						" -l '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_Loads_", dexpa$sim$id, ".csv", sep=""), "'",
+						" -g '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_Generations_", dexpa$sim$id, ".csv", sep=""), "'",
+						" -b '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_DevicesBuilding_", dexpa$sim$id, ".csv", sep=""), "'",
+						" -p '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_DevicesPVplant_", dexpa$sim$id, ".csv", sep=""), "'",
+						" -w '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_DevicesWindplant_", dexpa$sim$id, ".csv", sep=""), "'",
+						" -s '", paste(dexpa$dirs$config, "/",  dexpa$sim$id, "/DEX_Param_LoadProfiles_", dexpa$sim$id, ".csv", sep=""), "'",
+						" -d '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_Storages_", dexpa$sim$id, ".csv", sep=""), "'",
+						" -dd '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_DevicesStorage_", dexpa$sim$id, ".csv", sep=""), "'",
+						" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_RequestConfig_", dexpa$sim$id, ".csv", sep=""), "'",
+						" -sc '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_OgemaConfig_", dexpa$sim$id, ".csv", sep=""), "'",
+						"\"", sep=""), stdout=outfilesys, stderr=outfilesys)
 	}
-
+	
 	# copy static XML files:
 	for (f in dexpa$xml$staticfiles) {
 		file.copy(from = paste(dexpa$dirs$xmltemplatesstatic, f, sep="/"), to = paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""),
 				overwrite = TRUE)
 	}
+}
+#' Run EMGs to experiment
+#' @param dexpa 
+#' @return -
+#' 
+#' @author Sascha Holzhauer
+#' @export
+hl_experiment_runemg <- function(dexpa, outfilesys = "") {
+	
+	path = getwd();
+	
+	hl_experiment_configemg(dexpa, outfilesys=outfilesys)
 
 	futile.logger::flog.info("Starting EMG...", name = "dexr.hl.experiment.emg")
 	
@@ -190,6 +203,40 @@ hl_experiment_stopemg <- function(dexpa) {
 	try(httr::POST(paste(dexpa$emg$url,dexpa$emg$api$shutdown,sep="/"), httr::config(ssl_verifypeer = 0)))
 	futile.logger::flog.info("Emg stopped.", name = "dexr.hl.experiment")
 }
+#' Append current run information to runInfos file.
+#' @param dexpa 
+#' @param basetime 
+#' @param offset 
+#' @param infoData 
+#' @return append runInfos file
+#' 
+#' @author Sascha Holzhauer
+#' @export
+hl_write_runinfos <- function(dexpa, basetime, offset, infoData) {
+	runinfos <- read.csv(dexpa$files$runinfos, header = TRUE, sep = ",", quote = "\"",
+			dec = ".", fill = TRUE, comment.char = "")
+	runinfo <- list()
+	runinfo$RunNumber 	<- runinfos[nrow(runinfos), "RunNumber"] + 1
+	runinfo$ID 			<- dexpa$sim$id
+	runinfo$Date		<- format(Sys.time(), "%D")
+	runinfo$Time		<- format(Sys.time(), "%H:%M:%S")
+	runinfo$Stage		<- "SIM"
+	runinfo$dexrVersion <- packageDescription("dexR")$Version
+	
+	runinfo$TF			<- dexpa$sim$timefactor
+	runinfo$Basetime	<- format(as.POSIXlt(basetime/1000, origin = "1970-01-01"), tz="UTC")
+	# %j gives 1 for the first day - not correct for duration
+	runinfo$OffsetHR	<- paste(if (offset<0) "-" else "", format(as.POSIXct(abs(offset)/1000, origin = "1969-12-31", tz="UTC"), 
+					"%jd %HH %MM %SS"), sep="")
+	runinfo$Offset		<- offset
+	runinfo$Duration	<- dexpa$sim$duration/(60*60)
+	runinfo$NumClients	<- infoData$numClients
+	
+	runinfos 			<- data.table::rbindlist(list(runinfos, runinfo), fill=T, use.names=T)
+	
+	#write_ods(runinfos, dexpa$files$runinfos)
+	write.csv(runinfos, dexpa$files$runinfos, row.names = F)
+}
 #' Concuct experiment from starting backend server to creation of full report
 #' @param dexpa 
 #' @return report, database
@@ -236,29 +283,30 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 		sink(type="message")
 	}
 	
-	#require(readODS)
-	#runinfos <- read_ods(dexpa$files$runinfos, sheet = 1)
-	runinfos <- read.csv(dexpa$files$runinfos, header = TRUE, sep = ",", quote = "\"",
-			dec = ".", fill = TRUE, comment.char = "")
-	runinfo <- list()
-	runinfo$RunNumber 	<- runinfos[nrow(runinfos), "RunNumber"] + 1
-	runinfo$ID 			<- dexpa$sim$id
-	runinfo$Date		<- format(Sys.time(), "%D")
-	runinfo$Time		<- format(Sys.time(), "%H:%M:%S")
-	runinfo$Stage		<- "SIM"
-	runinfo$dexrVersion <- packageDescription("dexR")$Version
+	hl_write_runinfos(dexpa, basetime, offset, infoData)
+}
+#' Runs experiments and create the required config folder (for cluster execution)
+#' 
+#' Also sets reasonable default values for log files for this application.
+#' 
+#' @param dexpa 
+#' @param basetime 
+#' @param offset 
+#' @param outputfile 
+#' @param outfilemarket 
+#' @param outfileemg  
+#' @return -
+#' 
+#' @author Sascha Holzhauer
+#' @export
+hl_experiment_cluster <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))*1000,
+		offset = round(basetime - as.numeric(Sys.time())*1000), 
+		outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$sim$rseed, ".log", sep=""), 
+		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$sim$rseed, "_market.log", sep=""),
+		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$sim$rseed, "_emg.log", sep="")) {
 	
-	runinfo$TF			<- dexpa$sim$timefactor
-	runinfo$Basetime	<- format(as.POSIXlt(basetime/1000, origin = "1970-01-01"))
-	runinfo$Offset		<- format(as.POSIXct(abs(offset/1000), origin = "1970-01-01"), "%jd %H:%M:%S")
-	runinfo$Duration	<- dexpa$sim$duration/(60*60)
-	runinfo$NumClients	<- infoData$numClients
+	shbasic::sh.ensurePath(paste(dexpa$dirs$config, dexpa$sim$id,sep="/"))
 	
-	runinfos 			<- data.table::rbindlist(list(runinfos, runinfo), fill=T, use.names=T)
-	
-	
-	
-	#write_ods(runinfos, dexpa$files$runinfos)
-	#write_ods(runinfos, "/daten/INES/X/DEX/data/DEX_Runs2.ods")
-	write.csv(runinfos, dexpa$files$runinfos, row.names = F)
+	hl_experiment(dexpa=dexpa, shutdownmarket = T, basetime = basetime, offset = offset, 
+			outputfile = outputfile, outfilemarket = outfilemarket, outfileemg = outfileemg)	
 }

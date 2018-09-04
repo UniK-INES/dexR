@@ -66,7 +66,8 @@ input_csv_clientdata <- function(dexpa) {
 
 #' Extract the runinfos entry from CSV file for the dexpa's sim ID
 #' 
-#' In case there are more than one entries, return the latest.
+#' In case there are more than one entries, return the latest. In case there is none found for the given dexpa ID, the last row
+#' is returned.
 #' @param dexpa 
 #' @return data.frame with one row
 #' 
@@ -74,6 +75,11 @@ input_csv_clientdata <- function(dexpa) {
 #' @export
 input_csv_runinfos <- function(dexpa) {
 	runinfos <- read.csv(file = dexpa$files$runinfos)
-	runinfos <- runinfos[runinfos$ID == dexpa$sim$id,]
+	rinfos <- runinfos[runinfos$ID == dexpa$sim$id,]
+	if (nrow(rinfos)==0) {
+		runinfos <- runinfos[nrow(runinfos),]
+	} else {
+		runinfos <- rinfos
+	}
 	runinfos[nrow(runinfos),]
 }
