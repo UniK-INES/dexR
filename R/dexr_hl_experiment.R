@@ -18,13 +18,23 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 			name = "dexr.hl.experiment.runbackend")
 	
 	# Instatiate server:
-	system2(wait=FALSE, "mvn", args=paste("-f ", dexpa$dirs$backend, " spring-boot:run ",
-					"-Dde.unik.enavi.market.testing.load=FALSE ",
-					"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
-					"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
-					"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
-			stdout=outfilesys, stderr=outfilesys)
-	
+	if (dexpa$server$usemvn) {
+		system2(wait=FALSE, "mvn", args=paste("-f ", dexpa$dirs$backend, " spring-boot:run ",
+						"-Dspring.profiles.active=", dexpa$server$profile, " ",
+						"-Dde.unik.enavi.market.testing.load=FALSE ",
+						"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
+						"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
+						"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
+				stdout=outfilesys, stderr=outfilesys)
+	} else {
+		system2(wait=FALSE, "java", args=paste("-jar ", dexpa$files$serverjar, " ",
+						"-Dspring.profiles.active=", dexpa$server$profile, " ",
+						"-Dde.unik.enavi.market.testing.load=FALSE ",
+						"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
+						"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
+						"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
+				stdout=outfilesys, stderr=outfilesys)
+	}
 	control = 0
 	while (!server_isrunning(dexpa) && control < 30) {
 		# wait...
@@ -99,9 +109,13 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 		futile.logger::flog.warn("ID %s not present in config table (%s)!", dexpa$sim$id, dexpa$files$paramconfigs, 
 				name = "dexr.hl.experiment.runemg")
 	}
+
+	outfilesystmp = paste(dexpa$dirs$tmp, "outfilesys_tmp.txt", sep="/")
+
 	if (!is.na(idMatch)) {
 		# Read CSV sources from DEX_Param_Configs.csv:
-		system2(wait=TRUE, "mvn", args = paste(" exec:java "," -Dexec.mainClass=de.unik.ines.enavi.ctool.EmgConfigManager"," -Dexec.args=\"", 
+		system2(wait=TRUE, "java", args = paste(" -cp ",
+						dexpa$files$emgconfigtool, " de.unik.ines.enavi.ctool.EmgConfigManager",
 						" -i ", dexpa$sim$id,
 						" -o '", dexpa$dirs$config, "'",
 						" -t '", dexpa$dirs$freemarkertemplate, "'",
@@ -116,9 +130,10 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 						" -dd '",paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"devicesStorage"], sep=""), "'",
 						" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"requestConfig"], sep=""), "'",
 						" -sc '",paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"ogemaConfig"], sep=""), "'",
-						"\"", sep=""), stdout=outfilesys, stderr=outfilesys)
+						sep=""), stdout=outfilesystmp, stderr=outfilesystmp)
 	} else {	
-		system2(wait=TRUE, "mvn", args = paste(" exec:java "," -Dexec.mainClass=de.unik.ines.enavi.ctool.EmgConfigManager"," -Dexec.args=\"", 
+		system2(wait=TRUE, "java", args = paste(" -cp ",
+						dexpa$files$emgconfigtool, " de.unik.ines.enavi.ctool.EmgConfigManager",
 						" -i ", dexpa$sim$id,
 						" -o '", dexpa$dirs$config, "'",
 						" -t '", dexpa$dirs$freemarkertemplate, "'",
@@ -133,8 +148,18 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 						" -dd '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_DevicesStorage_", dexpa$sim$id, ".csv", sep=""), "'",
 						" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_RequestConfig_", dexpa$sim$id, ".csv", sep=""), "'",
 						" -sc '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_OgemaConfig_", dexpa$sim$id, ".csv", sep=""), "'",
-						"\"", sep=""), stdout=outfilesys, stderr=outfilesys)
+						sep=""), stdout=outfilesystmp, stderr=outfilesystmp)
 	}
+	
+	# append loggings to outfilesys:
+	sink(NULL)
+	sink(NULL, type="message")
+	file.append(outfilesys, outfilesystmp)
+	file.remove(outfilesystmp)
+
+	con <- file(outfilesys, open="a")
+	sink(con, append=TRUE)
+	sink(con, append=TRUE, type="message")
 	
 	# copy static XML files:
 	for (f in dexpa$xml$staticfiles) {
@@ -148,9 +173,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_experiment_runemg <- function(dexpa, outfilesys = "") {
-	
-	path = getwd();
+hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 	
 	hl_experiment_configemg(dexpa, outfilesys=outfilesys)
 
@@ -160,20 +183,18 @@ hl_experiment_runemg <- function(dexpa, outfilesys = "") {
 	#Sys.setenv(VMOPTS = paste("-Dorg.ogema.app.resadmin.replay_oncleanstart_path=", dexpa$dirs$config, dexpa$sim$id, sep=""))
 	#setwd(dexpa$dirs$emgrundir)
 	#system2(wait=FALSE, "bash", args = paste(
-	#	"./start.sh -clean --properties config/sh_ogema.properties", sep=""))
+	#	"./start.sh -clean --properties config/sh_ogema.properties", sep=""))	
 
-	setwd(dexpa$dirs$emgconfigtool)	
-
-	system2(wait=FALSE, "java", args = paste("de.unik.ines.enavi.ctool.RunEmg", 
+	system2(wait=FALSE, "java", args = paste(" -cp ",
+					dexpa$files$emgconfigtool, "de.unik.ines.enavi.ctool.RunEmg", 
 			paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""), dexpa$dirs$emgrundir),
-			stdout=outfilesys, stderr=outfilesys)
+			stdout=outfileemg, stderr=outfileemg)
 
 	# https://www.rdocumentation.org/packages/sys/versions/1.5/topics/exec
 	#	pid = sys::exec_background("java", args = c("de.unik.ines.enavi.ctool.RunEmg", 	
 	#					paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""), dexpa$dirs$emgrundir),
 	#			std_out=outfilesys, std_err=outfilesys)
 	
-	setwd(path)
 	futile.logger::flog.info("Wait during EMG startup (%d sec)...", dexpa$emg$emgstartuptime, name = "dexr.hl.experiment")
 	Sys.sleep(dexpa$emg$emgstartuptime)
 	
@@ -244,7 +265,7 @@ hl_write_runinfos <- function(dexpa, basetime, offset, infoData) {
 #' @author Sascha Holzhauer
 #' @export
 hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round(Sys.time(),"mins"))*1000,
-		offset = round(basetime - as.numeric(Sys.time())*1000), outputfile = "", outfilemarket = "", outfileemg = "") {
+		offset = round(basetime - as.numeric(Sys.time())*1000), outputfile = "", outfilemarket = "", outfileemg = "", outfile) {
 	
 	futile.logger::flog.info("Basetime: %f", basetime)
 	
@@ -262,7 +283,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset)
 	
-	hl_experiment_runemg(dexpa, outfilesys = outfileemg)
+	hl_experiment_runemg(dexpa, outfileemg = outfileemg, outfilesys = outputfile)
 	
 	futile.logger::flog.info("Wait for simulation to complete (Duration: %d / factor: %d = %f", dexpa$sim$duration, 
 			dexpa$sim$timefactor, dexpa$sim$duration/dexpa$sim$timefactor, name = "dexr.hl.experiment")
