@@ -113,6 +113,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$server$password	<- "multimodalES"
 	defdexpa$server$profile		<- "requests"
 	defdexpa$server$usemvn		<- TRUE
+	defdexpa$server$controlinterval <- 2
+	defdexpa$server$controls		<- 30
 	
 	### EMG Settings ############################################################	
 	defdexpa$emg$url			<- "https://localhost:8443"
