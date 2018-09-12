@@ -42,11 +42,11 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 		# wait...
 		futile.logger::flog.info("Again, check availability of market backend server...",
 				name = "dexr.hl.experiment")
-		Sys.sleep(2)
+		Sys.sleep(dexpa$server$controlinterval)
 		control = control + 1
 	}
 	
-	if (control >= 30) {
+	if (control >= dexpa$server$controls) {
 		R.oo::throw.default("Starting market backend server NOT successful!")
 	}
 	
