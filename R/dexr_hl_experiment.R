@@ -10,29 +10,31 @@
 hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numeric(round(Sys.time(),"mins"))*1000,
 		offset = round(basetime - as.numeric(Sys.time())*1000)) {
 	infoData <- list()
-	futile.logger::flog.info("Starting Market Backend server (output to %s) with offset=%s/factor=%d/basetime=%s...", 
+	futile.logger::flog.info("Starting Market Backend server (output to %s) with offset=%s/factor=%d/basetime=%s and with profile %s...", 
 			outfilesys,
 			format(as.POSIXct(offset/1000, tz="GTM", origin = "1970-01-01"), "%H:%M:%S"),
 			dexpa$sim$timefactor,
 			as.POSIXlt(basetime/1000, origin = "1970-01-01"),
+			dexpa$server$profile,
 			name = "dexr.hl.experiment.runbackend")
 	
 	# Instatiate server:
+	# It's important that the -D parameters are before the <application>.jar otherwise they are not recognized.
 	if (dexpa$server$usemvn) {
 		system2(wait=FALSE, "mvn", args=paste("-f ", dexpa$dirs$backend, " spring-boot:run ",
-						"-Dspring.profiles.active=", dexpa$server$profile, " ",
-						"-Dde.unik.enavi.market.testing.load=FALSE ",
-						"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
-						"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
-						"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
+						"--spring.profiles.active=", dexpa$server$profile, " ",
+						"--de.unik.enavi.market.testing.load=FALSE ",
+						"--de.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
+						"--de.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
+						"--de.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
 				stdout=outfilesys, stderr=outfilesys)
 	} else {
 		system2(wait=FALSE, "java", args=paste("-jar ", dexpa$files$serverjar, " ",
-						"-Dspring.profiles.active=", dexpa$server$profile, " ",
-						"-Dde.unik.enavi.market.testing.load=FALSE ",
-						"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
-						"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
-						"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
+						"--spring.profiles.active=", dexpa$server$profile, " ",
+						"--de.unik.enavi.market.testing.load=FALSE ",
+						"--de.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
+						"--de.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
+						"--de.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
 				stdout=outfilesys, stderr=outfilesys)
 	}
 	control = 0

@@ -1,7 +1,7 @@
 #' Merge the given list into the default dexpa parameter list.
 #' Applies \code{\link[utils]{mergeList}}.
 #' @param dexpa 
-#' @return given list modified by adding undefined parameter of dexpa default paramter list.
+#' @return given list modified by adding undefined parameter of dexpa default parameter list.
 #' 
 #' @author Sascha Holzhauer
 #' @export
