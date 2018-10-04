@@ -38,7 +38,7 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 				stdout=outfilesys, stderr=outfilesys)
 	}
 	control = 0
-	while (!server_isrunning(dexpa) && control < 30) {
+	while (!server_isrunning(dexpa) && control < dexpa$server$controls) {
 		# wait...
 		futile.logger::flog.info("Again, check availability of market backend server...",
 				name = "dexr.hl.experiment")
