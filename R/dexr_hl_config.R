@@ -27,13 +27,23 @@ hl_config_copycsvtemplates <- function(dexpa, targetdir=paste(dexpa$dirs$config,
 }
 #' Stores market products from CSV file to PostGreSQL database.
 #' The database tables are emptied before submission.
-#' @param dexpa 
+#' 
+#' @param dexpa
+#' \itemize{
+#' 	\item \code{dexpa$dirs$config}
+#' 	\item \code{dexpa$sim$id}
+#'  \item \code{dexpa$sim$extrasecs}
+#'  \item \code{dexpa$db$tablenames$marketproducts}
+#'  \item \code{dexpa$db$tablenames$mmarketproducts}
+#' }
 #' @param sourcedir 
 #' @param sourcefile 
 #' @param firstDeliveryPeriodStart as POSIX object
 #' @return table in DB
 #' 
 #' @author Sascha Holzhauer
+#' @seealso \code{\link[dexr]{input_db_getconnection}}
+#' @seealso \code{\link[RPostgreSQL]{dbWriteTable}}
 #' @export
 hl_config_marketProducts2db <- function(dexpa, sourcedir=paste(dexpa$dirs$config,dexpa$sim$id, sep="/"), 
 		sourcefile=paste("DEX_Param_MarketProducts_", dexpa$sim$id, ".csv", sep=""),
