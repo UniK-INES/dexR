@@ -22,19 +22,19 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 	# It's important that the -D parameters are before the <application>.jar otherwise they are not recognized.
 	if (dexpa$server$usemvn) {
 		system2(wait=FALSE, "mvn", args=paste("-f ", dexpa$dirs$backend, " spring-boot:run ",
-						"--spring.profiles.active=", dexpa$server$profile, " ",
-						"--de.unik.enavi.market.testing.load=FALSE ",
-						"--de.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
-						"--de.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
-						"--de.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
+						"-Dspring.profiles.active=", dexpa$server$profile, " ",
+						"-Dde.unik.enavi.market.testing.load=FALSE ",
+						"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
+						"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
+						"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
 				stdout=outfilesys, stderr=outfilesys)
 	} else {
 		system2(wait=FALSE, "java", args=paste("-jar ", dexpa$files$serverjar, " ",
-						"--spring.profiles.active=", dexpa$server$profile, " ",
-						"--de.unik.enavi.market.testing.load=FALSE ",
-						"--de.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
-						"--de.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
-						"--de.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
+						"-Dspring.profiles.active=", dexpa$server$profile, " ",
+						"-Dde.unik.enavi.market.testing.load=FALSE ",
+						"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
+						"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
+						"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
 				stdout=outfilesys, stderr=outfilesys)
 	}
 	control = 0
