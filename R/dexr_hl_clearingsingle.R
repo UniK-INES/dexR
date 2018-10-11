@@ -5,11 +5,7 @@
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_clearingsingle <- function(dexpa, starttime, title = NULL, filename = "GetIntersectionPrice", dexpa_comp = NULL) {
-	
-	if (is.null(starttime)) {
-		R.oo::throw.default("Parameter starttime may not be NULL!")
-	}
+hl_clearingsingle <- function(dexpa, starttime=NULL, title = NULL, filename = "GetIntersectionPrice", dexpa_comp = NULL) {
 	
 	market_df=input_db_requests_clearing(dexpa, starttime=starttime)
 	start_times<-unique(market_df$start_time)

@@ -29,10 +29,10 @@ output_figure_energy_requested_byStatusByStartT <- function(dexpa, data, type="r
 			facet_ncol = 1, filename = "dex_energy_requested_byStatusByCT",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Requested energy")
+					ggplot2::ylab("Requested energy"),
+					if (skiplegend) ggplot2::theme(legend.position="none") else NULL
 			),  x_column = "start_time", group_column = "status", 
-			group_colors = dexpa$colours$statuses,
-			ggplotaddons = if (skiplegend) ggplot2::theme(legend.position="none") else NULL, 
+			group_colors = dexpa$colours$statuses,  
 			position = "stack", returnplot = FALSE)
 }
 #' Output figure: Requested energy sum per submission time.
