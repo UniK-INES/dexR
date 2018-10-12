@@ -24,7 +24,6 @@ input_db_getconnection <- function(dexpa) {
 #' @export
 input_db_createdb <- function(dexpa) {
 	futile.logger::flog.info("Create database %s..." ,
-			dumpfile,
 			dexpa$db$dbname,
 			name = "dexr.input.db.create")
 	# Superuser required as long as other user does not have rights for new database:
