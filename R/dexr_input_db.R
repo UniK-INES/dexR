@@ -16,6 +16,33 @@ input_db_getconnection <- function(dexpa) {
 			user = dexpa$db$username, password = dexpa$db$password)
 	return(con)
 }
+#' Creates the database configured in the given parameter object
+#' @param dexpa parameter object
+#' @return -
+#' 
+#' @author Sascha Holzhauer
+#' @export
+input_db_createdb <- function(dexpa) {
+	futile.logger::flog.info("Create database %s..." ,
+			dumpfile,
+			dexpa$db$dbname,
+			name = "dexr.input.db.create")
+	# Superuser required as long as other user does not have rights for new database:
+	Sys.setenv("PGPASSWORD"=dexpa$db$supassword)
+	
+	system(paste("createdb -T", dexpa$db$dbname_template, "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, "--no-password", dexpa$db$dbname, sep=" "))
+	
+	# set privileges:
+	dp2 <- dexpa
+	dp2$db$username = dexpa$db$suname
+	dp2$db$password = dexpa$db$supassword
+	con <- dexR::input_db_getconnection(dp2)
+	DBI::dbGetQuery(con, paste("GRANT ALL ON SCHEMA public TO ", dexpa$db$username, ";", sep=""))
+	DBI::dbDisconnect(con)
+	
+	futile.logger::flog.info("Creation of DB completed." ,
+			name = "dexr.input.db.create")
+}
 #' Imports the given dumpfile into the database configured in the given parameter object
 #' @param dexpa parameter object
 #' @param dumpfile dumpfile to import

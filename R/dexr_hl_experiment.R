@@ -23,7 +23,7 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 	if (dexpa$server$usemvn) {
 		system2(wait=FALSE, "mvn", args=paste("-f ", dexpa$dirs$backend, " spring-boot:run ",
 						"-Dspring.profiles.active=", dexpa$server$profile, " ",
-						"-Dspring.datasource.url=jdbc:postgresql://", dexpa$db$host,":", dexpa$db$port, "/", dexpa$db$dbname,
+						"-Dspring.datasource.url=jdbc:postgresql://", dexpa$db$host,":", dexpa$db$port, "/", dexpa$db$dbname, " ",
 						"-Dde.unik.enavi.market.testing.load=FALSE ",
 						"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
 						"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
@@ -32,7 +32,7 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 	} else {
 		system2(wait=FALSE, "java", args=paste("-jar ", dexpa$files$serverjar, " ",
 						"--spring.profiles.active=", dexpa$server$profile, " ",
-						"--spring.datasource.url=jdbc:postgresql://", dexpa$db$host,":", dexpa$db$port, "/", dexpa$db$dbname,
+						"--spring.datasource.url=jdbc:postgresql://", dexpa$db$host,":", dexpa$db$port, "/", dexpa$db$dbname, " ",
 						"--de.unik.enavi.market.testing.load=FALSE ",
 						"--de.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
 						"--de.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
@@ -334,6 +334,10 @@ hl_experiment_cluster <- function(dexpa, basetime = as.numeric(round(Sys.time(),
 	
 	dexpa$db$dbname=dexpa$sim$id
 	
-	hl_experiment(dexpa=dexpa, shutdownmarket = T, basetime = basetime, offset = offset, 
-			outputfile = outputfile, outfilemarket = outfilemarket, outfileemg = outfileemg)	
+	dexR::input_db_createdb(dexpa)
+	
+	dexR::hl_experiment(dexpa=dexpa, shutdownmarket = T, basetime = basetime, offset = offset, 
+			outputfile = outputfile, outfilemarket = outfilemarket, outfileemg = outfileemg)
+	
+	dexR::input_db_dropdb(dexpa)
 }
