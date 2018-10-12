@@ -37,6 +37,7 @@ input_db_createdb <- function(dexpa) {
 	dp2$db$password = dexpa$db$supassword
 	con <- dexR::input_db_getconnection(dp2)
 	DBI::dbGetQuery(con, paste("GRANT ALL ON SCHEMA public TO ", dexpa$db$username, ";", sep=""))
+	DBI::dbGetQuery(con, "CREATE extension pgcrypto")
 	DBI::dbDisconnect(con)
 	
 	futile.logger::flog.info("Creation of DB completed." ,
