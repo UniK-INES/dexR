@@ -44,5 +44,5 @@ server_status <- function(dexpa) {
 server_isrunning <- function(dexpa) {
 	futile.logger::flog.debug("Check server (%s:%s) running...", dexpa$server$url, dexpa$server$port,
 			name = "dexr.server.run.status")
-	RCurl::url.exists(dexpa$server$url, ":", dexpa$server$port)
+	RCurl::url.exists(paste(dexpa$server$url, ":", dexpa$server$port, sep=""))
 }
