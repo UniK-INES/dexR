@@ -121,7 +121,11 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$server$portoffset 	<- 0
 	
 	### EMG Settings ############################################################	
-	defdexpa$emg$url			<- "https://localhost:8443"
+	defdexpa$emg$url			<- "https://localhost"
+	defdexpa$emg$port			<- "8443"
+	defdexpa$emg$startport		<- 8400
+	defdexpa$emg$portoffset 	<- 0
+	
 	defdexpa$emg$api$shutdown	<- "rest/admin?target=shutdown&user=rest&pw=rest"
 	defdexpa$emg$emgstartuptime	<- 20
 

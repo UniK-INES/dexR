@@ -194,7 +194,8 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 	system2(wait=FALSE, "java", args = paste(" -cp ",
 					dexpa$files$emgconfigtool, "de.unik.ines.enavi.ctool.RunEmg", 
 			paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""), dexpa$dirs$emgrundir,
-			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit)),
+			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit),
+			paste(dexpa$emg$port)),
 			stdout=outfileemg, stderr=outfileemg)
 
 	# https://www.rdocumentation.org/packages/sys/versions/1.5/topics/exec
@@ -228,7 +229,8 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 #' @export
 hl_experiment_stopemg <- function(dexpa) {
 	futile.logger::flog.info("Stopping EMG...", name = "dexr.hl.experiment")
-	try(httr::POST(paste(dexpa$emg$url,dexpa$emg$api$shutdown,sep="/"), httr::config(ssl_verifypeer = 0)))
+	try(httr::POST(paste(dexpa$emg$url, ":", dexpa$emg$port, "/", dexpa$emg$api$shutdown,sep=""), 
+					httr::config(ssl_verifypeer = 0)))
 	futile.logger::flog.info("Emg stopped.", name = "dexr.hl.experiment")
 }
 #' Append current run information to runInfos file.
@@ -337,7 +339,8 @@ hl_experiment_cluster <- function(dexpa, basetime = as.numeric(round(Sys.time(),
 	
 	dexpa$db$dbname		= dexpa$sim$id
 	dexpa$server$port 	= dexpa$server$startport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) + dexpa$server$portoffset
-			
+		dexpa$emg$port 	= dexpa$emg$startport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) + dexpa$emg$portoffset
+				
 	dexR::input_db_createdb(dexpa)
 	
 	dexR::hl_experiment(dexpa=dexpa, shutdownmarket = T, basetime = basetime, offset = offset, 
