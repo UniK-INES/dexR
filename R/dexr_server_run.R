@@ -6,7 +6,7 @@
 #' @export
 server_start <- function(dexpa) {
 	futile.logger::flog.info("Configure Market Backend clients...", name = "dexr.hl.config.backend")
-	r <- httr::GET(paste(dexpa$server$url,dexpa$server$api$start,sep="/"),
+	r <- httr::GET(paste(dexpa$server$url, ":", dexpa$server$port, dexpa$server$api$start,sep="/"),
 			httr::authenticate(dexpa$server$username, dexpa$server$password, type = "basic"))
 	return(if(httr::status_code(r)==200)"Starting Market Backend server succesful" else "Starting Market Backend server NOT successful")
 }
@@ -18,7 +18,7 @@ server_start <- function(dexpa) {
 #' @export
 server_shutdown <- function(dexpa) {
 	futile.logger::flog.info("Stopping Market Backend server...", name = "dexr.hl.experiment")
-	try(httr::POST(paste(dexpa$server$url,dexpa$server$api$shutdown,sep="/"),
+	try(httr::POST(paste(dexpa$server$url,":", dexpa$server$port, dexpa$server$api$shutdown,sep="/"),
 			httr::authenticate(dexpa$server$username, dexpa$server$password, type = "basic")), silent=T)
 	futile.logger::flog.info("Market Backend server stopped.", name = "dexr.hl.experiment")
 }
@@ -29,7 +29,7 @@ server_shutdown <- function(dexpa) {
 #' @author Sascha Holzhauer
 #' @export
 server_status <- function(dexpa) {
-	req <- httr::GET(paste(dexpa$server$url,dexpa$server$api$status,sep="/"),
+	req <- httr::GET(paste(dexpa$server$url,":", dexpa$server$port, dexpa$server$api$status,sep="/"),
 			httr::authenticate(dexpa$server$username, dexpa$server$password, type = "basic"))
 	httr::content(req, as = "parsed")
 }
@@ -40,5 +40,5 @@ server_status <- function(dexpa) {
 #' @author Sascha Holzhauer
 #' @export
 server_isrunning <- function(dexpa) {
-	RCurl::url.exists(dexpa$server$url)
+	RCurl::url.exists(dexpa$server$url, ":", dexpa$server$port)
 }
