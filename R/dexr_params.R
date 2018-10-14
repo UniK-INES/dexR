@@ -104,17 +104,21 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 							"6" = "INVALID")
 
 	### Market Server Settings ############################################################	
-	defdexpa$server$url		<- "http://localhost:8080"
+	defdexpa$server$url			<- "http://localhost"
 	defdexpa$server$api$products	<- "config-products"
 	defdexpa$server$api$start	<- "admin/start"
 	defdexpa$server$api$shutdown	<- "admin/shutdown"
 	defdexpa$server$api$status	<- "admin/status"
+	defdexpa$server$api$submit	<- "api/submit"
 	defdexpa$server$username	<- "admin"
 	defdexpa$server$password	<- "multimodalES"
 	defdexpa$server$profile		<- "requests"
 	defdexpa$server$usemvn		<- TRUE
 	defdexpa$server$controlinterval <- 2
 	defdexpa$server$controls		<- 30
+	defdexpa$server$port		<- 8080
+	defdexpa$server$startport	<- 8000
+	defdexpa$server$portoffset 	<- 0
 	
 	### EMG Settings ############################################################	
 	defdexpa$emg$url			<- "https://localhost:8443"

@@ -24,6 +24,7 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 		system2(wait=FALSE, "mvn", args=paste("-f ", dexpa$dirs$backend, " spring-boot:run ",
 						"-Dspring.profiles.active=", dexpa$server$profile, " ",
 						"-Dspring.datasource.url=jdbc:postgresql://", dexpa$db$host,":", dexpa$db$port, "/", dexpa$db$dbname, " ",
+						"-Dserver.port=", dexpa$server$port, " ",
 						"-Dde.unik.enavi.market.testing.load=FALSE ",
 						"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
 						"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
@@ -33,6 +34,7 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 		system2(wait=FALSE, "java", args=paste("-jar ", dexpa$files$serverjar, " ",
 						"--spring.profiles.active=", dexpa$server$profile, " ",
 						"--spring.datasource.url=jdbc:postgresql://", dexpa$db$host,":", dexpa$db$port, "/", dexpa$db$dbname, " ",
+						"--server.port=", dexpa$server$port, " ",
 						"--de.unik.enavi.market.testing.load=FALSE ",
 						"--de.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
 						"--de.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
@@ -191,7 +193,8 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 
 	system2(wait=FALSE, "java", args = paste(" -cp ",
 					dexpa$files$emgconfigtool, "de.unik.ines.enavi.ctool.RunEmg", 
-			paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""), dexpa$dirs$emgrundir),
+			paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""), dexpa$dirs$emgrundir,
+			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit)),
 			stdout=outfileemg, stderr=outfileemg)
 
 	# https://www.rdocumentation.org/packages/sys/versions/1.5/topics/exec
@@ -332,8 +335,9 @@ hl_experiment_cluster <- function(dexpa, basetime = as.numeric(round(Sys.time(),
 	
 	shbasic::sh.ensurePath(paste(dexpa$dirs$config, dexpa$sim$id,sep="/"))
 	
-	dexpa$db$dbname=dexpa$sim$id
-	
+	dexpa$db$dbname		= dexpa$sim$id
+	dexpa$server$port 	= dexpa$server$startport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) + dexpa$server$portoffset
+			
 	dexR::input_db_createdb(dexpa)
 	
 	dexR::hl_experiment(dexpa=dexpa, shutdownmarket = T, basetime = basetime, offset = offset, 
