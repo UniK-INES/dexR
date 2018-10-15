@@ -339,8 +339,11 @@ hl_experiment_cluster <- function(dexpa, basetime = as.numeric(round(Sys.time(),
 	
 	dexpa$db$dbname		= dexpa$sim$id
 	dexpa$server$port 	= dexpa$server$startport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) + dexpa$server$portoffset
-		dexpa$emg$port 	= dexpa$emg$startport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) + dexpa$emg$portoffset
-				
+	futile.logger::flog.debug("Set dexpa$server$port to: %d", dexpa$server$port, name="dexr.hl.experiment.cluster")
+	
+	dexpa$emg$port 		= dexpa$emg$startport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) + dexpa$emg$portoffset
+	futile.logger::flog.debug("Set dexpa$emg$port to: %d", dexpa$emg$port, name="dexr.hl.experiment.cluster")
+	
 	dexR::input_db_createdb(dexpa)
 	
 	dexR::hl_experiment(dexpa=dexpa, shutdownmarket = T, basetime = basetime, offset = offset, 

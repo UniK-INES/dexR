@@ -5,10 +5,10 @@
 #' @author Sascha Holzhauer
 #' @export
 server_start <- function(dexpa) {
-	futile.logger::flog.info("Configure Market Backend clients...", name = "dexr.server.run.start")
+	futile.logger::flog.info("Starting Market Backend server...", name = "dexr.server.run.start")
 	r <- httr::GET(paste(dexpa$server$url, ":", dexpa$server$port, dexpa$server$api$start,sep="/"),
 			httr::authenticate(dexpa$server$username, dexpa$server$password, type = "basic"))
-	return(if(httr::status_code(r)==200)"Starting Market Backend server succesful" else "Starting Market Backend server NOT successful")
+	return(if(httr::status_code(r)==200)"Starting Market Backend server successful" else "Starting Market Backend server NOT successful")
 }
 #' Stop backend server
 #' @param dexpa 
