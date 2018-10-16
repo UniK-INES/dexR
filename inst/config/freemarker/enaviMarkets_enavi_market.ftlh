@@ -4,6 +4,7 @@
     <path>enaviMarkets</path>
     <decorating>false</decorating>
     <active>true</active>
+    <#list markets as market>
     <resource>
         <name>enavi_market</name>
         <type>de.iwes.enavi.util.Marketplace</type>
@@ -16,8 +17,9 @@
             <path>enaviMarkets/enavi_market/marketURL</path>
             <decorating>false</decorating>
             <active>true</active>
-            <value>http://localhost:8080</value>
+            <value>http://localhost:${market.port}</value>
         </resource>
     </resource>
+    </#list>
     <elementType>de.iwes.enavi.util.Marketplace</elementType>
 </og:resource>
