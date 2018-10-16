@@ -194,7 +194,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 	system2(wait=FALSE, "java", args = paste(" -cp ",
 					dexpa$files$emgconfigtool, "de.unik.ines.enavi.ctool.RunEmg", 
 			paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""), dexpa$dirs$emgrundir,
-			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit),
+			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit, sep=""),
 			paste(dexpa$emg$port)),
 			stdout=outfileemg, stderr=outfileemg)
 
