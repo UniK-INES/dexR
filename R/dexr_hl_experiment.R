@@ -136,6 +136,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 						" -dd '",paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"devicesStorage"], sep=""), "'",
 						" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"requestConfig"], sep=""), "'",
 						" -sc '",paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"ogemaConfig"], sep=""), "'",
+						" -po '",dexpa$server$port, "'",
 						sep=""), stdout=outfilesystmp, stderr=outfilesystmp)
 	} else {	
 		system2(wait=TRUE, "java", args = paste(" -cp ",
@@ -154,6 +155,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 						" -dd '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_DevicesStorage_", dexpa$sim$id, ".csv", sep=""), "'",
 						" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_RequestConfig_", dexpa$sim$id, ".csv", sep=""), "'",
 						" -sc '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_OgemaConfig_", dexpa$sim$id, ".csv", sep=""), "'",
+						" -po '",dexpa$server$port, "'",
 						sep=""), stdout=outfilesystmp, stderr=outfilesystmp)
 	}
 	
@@ -193,7 +195,9 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 
 	system2(wait=FALSE, "java", args = paste(" -cp ",
 					dexpa$files$emgconfigtool, "de.unik.ines.enavi.ctool.RunEmg", 
-			paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""), dexpa$dirs$emgrundir,
+			paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""),
+			dexpa$sim$rseed,
+			dexpa$dirs$emgrundir,
 			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit, sep=""),
 			paste(dexpa$emg$port)),
 			stdout=outfileemg, stderr=outfileemg)
