@@ -190,13 +190,15 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 	
 	# copy rundir to node locally for every instance:
 	if (dexpa$emg$copyrundir) {
-		shbasic::sh.ensurePath(paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"))
-		file.copy(from=dexpa$dirs$emgrundir, to=paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"), 
-				overwrite = TRUE, recursive = TRUE, copy.mode = TRUE)
 		futile.logger::flog.debug("Copying EMG rundir from %s to %s...",
 				dexpa$dirs$emgrundir,
 				paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"),
 				name = "dexr.hl.experiment.emg")
+		shbasic::sh.ensurePath(paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"))
+		file.copy(from=dexpa$dirs$emgrundir, to=paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"), 
+				overwrite = TRUE, recursive = TRUE, copy.mode = TRUE)
+		futile.logger::flog.debug(paste(list.files(paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"),
+				include.dirs=T), collapse="\n"), name = "dexr.hl.experiment.emg") 
 		dexpa$dirs$emgrundir = paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_")
 	}
 	
