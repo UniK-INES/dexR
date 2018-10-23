@@ -213,7 +213,8 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 			dexpa$emg$rseed,
 			dexpa$dirs$emgrundir,
 			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit, sep=""),
-			paste(dexpa$emg$port)),
+			paste(dexpa$emg$port),
+			dexpa$emg$httpport),
 			stdout=outfileemg, stderr=outfileemg)
 
 	# https://www.rdocumentation.org/packages/sys/versions/1.5/topics/exec
@@ -366,6 +367,9 @@ hl_experiment_cluster <- function(dexpa, basetime = as.numeric(round(Sys.time(),
 	
 	dexpa$emg$port 		= dexpa$emg$startport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) + dexpa$emg$portoffset
 	futile.logger::flog.debug("Set dexpa$emg$port to: %d", dexpa$emg$port, name="dexr.hl.experiment.cluster")
+	
+	dexpa$emg$httpport 		= dexpa$emg$httpstartport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) + dexpa$emg$httpportoffset
+	futile.logger::flog.debug("Set dexpa$emg$httpport to: %d", dexpa$emg$httpport, name="dexr.hl.experiment.cluster")
 	
 	dexR::input_db_createdb(dexpa)
 	

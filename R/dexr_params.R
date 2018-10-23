@@ -125,9 +125,15 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	
 	### EMG Settings ############################################################	
 	defdexpa$emg$url			<- "https://localhost"
+	
 	defdexpa$emg$port			<- "8443"
 	defdexpa$emg$startport		<- 8400
 	defdexpa$emg$portoffset 	<- 0
+	
+	defdexpa$emg$httpport			<- "8088"
+	defdexpa$emg$httpstartport		<- 8000
+	defdexpa$emg$httpportoffset 	<- 0
+	
 	defdexpa$emg$rseed		 	<- 1
 	
 	defdexpa$emg$copyrundir	 	<- FALSE
