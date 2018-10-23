@@ -31,6 +31,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	
 	# If empty, the a path relativ to dexpa$dirs$emgconfigtool is used!
 	defdexpa$dirs$emgrundir			<- NULL
+	defdexpa$dirs$emgnoderundir		<- "/local/ogema-run-dir"
+	
 
 	defdexpa$dirs$output <- list()
 	defdexpa$dirs$outputdir			<- paste(defdexpa$dirs$project, "output/version/", sep="")	
@@ -119,12 +121,16 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$server$port		<- 8080
 	defdexpa$server$startport	<- 8000
 	defdexpa$server$portoffset 	<- 0
+	defdexpa$server$rseed		<- 0
 	
 	### EMG Settings ############################################################	
 	defdexpa$emg$url			<- "https://localhost"
 	defdexpa$emg$port			<- "8443"
 	defdexpa$emg$startport		<- 8400
 	defdexpa$emg$portoffset 	<- 0
+	defdexpa$emg$rseed		 	<- 1
+	
+	defdexpa$emg$copyrundir	 	<- FALSE
 	
 	defdexpa$emg$api$shutdown	<- "rest/admin?target=shutdown&user=rest&pw=rest"
 	defdexpa$emg$emgstartuptime	<- 20

@@ -188,6 +188,17 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 	futile.logger::flog.info("Starting EMG...", name = "dexr.hl.experiment.emg")
 	
 	
+	# copy rundir to node locally for every instance:
+	if (dexpa$emg$copyrundir) {
+		file.copy(from=dexpa$dirs$emgrundir, to=paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"), 
+				overwrite = TRUE, recursive = TRUE, copy.mode = TRUE)
+		futile.logger::flog.debug("Copying EMG rundir from %s to %s...",
+				dexpa$dirs$emgrundir,
+				paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"),
+				name = "dexr.hl.experiment.emg")
+		dexpa$dirs$emgrundir = paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_")
+	}
+	
 	#Sys.setenv(VMOPTS = paste("-Dorg.ogema.app.resadmin.replay_oncleanstart_path=", dexpa$dirs$config, dexpa$sim$id, sep=""))
 	#setwd(dexpa$dirs$emgrundir)
 	#system2(wait=FALSE, "bash", args = paste(
@@ -196,7 +207,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 	system2(wait=FALSE, "java", args = paste(" -cp ",
 					dexpa$files$emgconfigtool, "de.unik.ines.enavi.ctool.RunEmg", 
 			paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""),
-			dexpa$sim$rseed,
+			dexpa$emg$rseed,
 			dexpa$dirs$emgrundir,
 			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit, sep=""),
 			paste(dexpa$emg$port)),
@@ -236,6 +247,11 @@ hl_experiment_stopemg <- function(dexpa) {
 	try(httr::POST(paste(dexpa$emg$url, ":", dexpa$emg$port, "/", dexpa$emg$api$shutdown,sep=""), 
 					httr::config(ssl_verifypeer = 0)))
 	futile.logger::flog.info("Emg stopped.", name = "dexr.hl.experiment")
+	
+	if (dexpa$emg$copyrundir) {
+		file.remove(paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"))
+		futile.logger::flog.info("Emg-Rundir deleted.", name = "dexr.hl.experiment")
+	}
 }
 #' Append current run information to runInfos file.
 #' @param dexpa 
@@ -335,9 +351,9 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 #' @export
 hl_experiment_cluster <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))*1000,
 		offset = round(basetime - as.numeric(Sys.time())*1000), 
-		outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$sim$rseed, ".log", sep=""), 
-		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$sim$rseed, "_market.log", sep=""),
-		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$sim$rseed, "_emg.log", sep="")) {
+		outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$emg$rseed, ".log", sep=""), 
+		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep=""),
+		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep="")) {
 	
 	shbasic::sh.ensurePath(paste(dexpa$dirs$config, dexpa$sim$id,sep="/"))
 	
