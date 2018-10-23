@@ -199,7 +199,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 				overwrite = TRUE, recursive = TRUE, copy.mode = TRUE)
 		futile.logger::flog.debug(paste(list.files(paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"),
 				include.dirs=T), collapse="\n"), name = "dexr.hl.experiment.emg") 
-		dexpa$dirs$emgrundir = paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_")
+		dexpa$dirs$emgrundir = paste(dexpa$dirs$emgnoderundir, "_", dexpa$sim$id, "/rundir-enavi", sep="")
 	}
 	
 	#Sys.setenv(VMOPTS = paste("-Dorg.ogema.app.resadmin.replay_oncleanstart_path=", dexpa$dirs$config, dexpa$sim$id, sep=""))
