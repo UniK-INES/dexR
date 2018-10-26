@@ -197,8 +197,6 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 		shbasic::sh.ensurePath(paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"))
 		file.copy(from=dexpa$dirs$emgrundir, to=paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"), 
 				overwrite = TRUE, recursive = TRUE, copy.mode = TRUE)
-		futile.logger::flog.debug(paste(list.files(paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"),
-				include.dirs=T), collapse="\n"), name = "dexr.hl.experiment.emg") 
 		dexpa$dirs$emgrundir = paste(dexpa$dirs$emgnoderundir, "_", dexpa$sim$id, "/rundir-enavi", sep="")
 	}
 	

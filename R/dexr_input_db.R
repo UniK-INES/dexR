@@ -85,7 +85,7 @@ input_db_dump2db <- function(dexpa, dumpfile) {
 input_db_db2dump <- function(dexpa, dumpdir) {
 	futile.logger::flog.info("Dump database %s to dumpdir %s..." ,
 			dexpa$db$dbname,
-			dumpdir,
+			paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"),
 			name = "dexr.input.db.dump")
 	
 	if (file.exists(paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"))) {
@@ -94,8 +94,6 @@ input_db_db2dump <- function(dexpa, dumpdir) {
 				dexpa$dirs$output$dbdumps,
 				dumpdir,
 				name = "dexr.input.db.dump")
-	} else {
-		shbasic::sh.ensurePath(paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"))
 	}
 	
 	# Superuser required as long as other user does not have rights for new database:
