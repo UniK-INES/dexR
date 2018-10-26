@@ -131,7 +131,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$emg$portoffset 	<- 0
 	
 	defdexpa$emg$httpport			<- "8088"
-	defdexpa$emg$httpstartport		<- 8000
+	defdexpa$emg$httpstartport		<- 9000
 	defdexpa$emg$httpportoffset 	<- 0
 	
 	defdexpa$emg$rseed		 	<- 1
