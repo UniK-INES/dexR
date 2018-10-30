@@ -90,7 +90,7 @@ input_db_db2dump <- function(dexpa, dumpdir, remoteServer=FALSE, outputfile="") 
 				paste(dexpa$dirs$output$dbdumpsremote, dumpdir, sep="/"),
 				name = "dexr.input.db.dump")
 		
-		system2("ssh", args=paste(dexpa$db$sshname, if (dexpa$db$sshverbose) "-v", " 'pg_dump",  "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, 
+		system2("ssh", args=paste(dexpa$db$sshname, if (dexpa$db$sshverbose) "-v", " 'pg_dump",  "-h localhost", "-p", dexpa$db$port, "--username", dexpa$db$suname, 
 					"--no-password --format directory --blobs --file", paste(dexpa$dirs$output$dbdumpsremote, dumpdir, sep="/"), dexpa$db$dbname, "'"),
 				stdout=outputfile, stderr=outputfile)
 	} else {
