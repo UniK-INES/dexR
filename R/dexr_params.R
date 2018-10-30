@@ -74,6 +74,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 
 	defdexpa$db$sshname			<- "demo"
 	defdexpa$db$sshverbose		<- TRUE
+	defdexpa$db$sshoutput		<- NULL
 	
 	### XML attributes Names ###########################################################
 	defdexpa$xml <- list()
