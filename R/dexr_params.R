@@ -19,7 +19,11 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$sim$timefactor			<- 1.0
 	defdexpa$sim$extrasecs			<- 0
 	
+	### Basic ################################################################
+	defdexpa$remoteserver			<- FALSE
+	
 	### Directories ################################################################
+	
 	defdexpa$dirs <- list()
 	defdexpa$dirs$project			<- "./"
 	defdexpa$dirs$config			<- "./config"
