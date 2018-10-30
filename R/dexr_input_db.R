@@ -82,7 +82,7 @@ input_db_dump2db <- function(dexpa, dumpfile) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-input_db_db2dump <- function(dexpa, dumpdir) {
+input_db_db2dump <- function(dexpa, dumpdir, remoteServer=FALSE) {
 	futile.logger::flog.info("Dump database %s to dumpdir %s..." ,
 			dexpa$db$dbname,
 			paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"),
@@ -99,8 +99,13 @@ input_db_db2dump <- function(dexpa, dumpdir) {
 	# Superuser required as long as other user does not have rights for new database:
 	Sys.setenv("PGPASSWORD"=dexpa$db$supassword)
 	
-	system(paste("pg_dump",  "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, 
+	if (remoteServer) {
+		system(paste("ssh ", dexpa$db$remoteserveruser, " 'pg_dump",  "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, 
+					"--no-password --format directory --blobs --file", paste(dexpa$dirs$output$dbdumpsremote, dumpdir, sep="/"), dexpa$db$dbname, "'"))
+	} else {
+		system(paste("pg_dump",  "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, 
 					"--no-password --format directory --blobs --file",  paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"), dexpa$db$dbname))
+	}
 	
 	futile.logger::flog.info("Dumping database %s finished." ,
 			dexpa$db$dbname,

@@ -22,3 +22,35 @@ ms_to_date = function(ms, t0="1970-01-01", timezone="Europe/Berlin") {
 str_to_ms = function(timestring, format = "%Y-%m-%d %H:%M", timezone="Europe/Berlin") {
 	as.numeric(strptime(timestring,format = format, tz=timezone))*1000
 }
+#' Copies config and run files to user location for the user to edit.
+#'
+#' @param dexpa 
+#' @return -
+#' 
+#' @author Sascha Holzhauer
+#' @export
+setup_environment <- function(dexpa) {
+	shbasic::sh.ensurePath(outputfile, stripFilename = T)
+	
+	futile.logger::info("Copy DEX_Param_Configs.ods and DEX_Param_Configs.csv to %s...",
+			dexpa$dirs$config,
+			"dexr.setup"
+	)
+	
+	file.copy(from= system.file("config/main", package="dexR"), 
+			to=dexpa$dirs$config, 
+			overwrite = TRUE, recursive = TRUE, copy.mode = TRUE)
+
+	futile.logger::info("Copy DEX_Runs.csv to %s...",
+			dexpa$dirs$project,
+			"dexr.setup"
+	)
+	
+	file.copy(from= system.file("data/DEX_Runs.csv", package="dexR"), 
+			to=dexpa$dirs$project, 
+			overwrite = TRUE, recursive = TRUE, copy.mode = TRUE)
+	
+	futile.logger::info("Finished!",
+			"dexr.setup"
+	)
+}

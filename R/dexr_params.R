@@ -38,6 +38,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$dirs$outputdir			<- paste(defdexpa$dirs$project, "output/version/", sep="")	
 	defdexpa$dirs$output$rdata		<- paste(defdexpa$dirs$outputdir, "rData/", sep="")
 	defdexpa$dirs$output$dbdumps		<- paste(defdexpa$dirs$outputdir, "dbdumps/", sep="")
+	defdexpa$dirs$output$dbdumpsremote	<- "/var/dex/dbdumps/"
 	defdexpa$dirs$output$logs		<- paste(defdexpa$dirs$outputdir, "logs/", sep="")
 	defdexpa$dirs$output$figures		<- paste(defdexpa$dirs$outputdir, "figures/", sep="")
 	defdexpa$dirs$output$reports		<- paste(defdexpa$dirs$outputdir, "reports/", sep="")
@@ -50,8 +51,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	### Files ################################################################
 	defdexpa$files$paramconfigs		<- paste(defdexpa$dirs$config, "DEX_Param_Configs.csv", sep="/")
 	defdexpa$files$runinfos			<- paste(defdexpa$dirs$project, "DEX_Runs.csv", sep="/")
-	defdexpa$files$emgconfigtool	<-  paste(defdexpa$dirs$emgconfigtool, "emg-config-tool.jar", sep="/")
-	defdexpa$files$serverjar		<-  paste(dexpa$dirs$server, "enavi-market-backend-0.0.1-SNAPSHOT.jar", sep="/")
+	defdexpa$files$emgconfigtool	<- paste(defdexpa$dirs$emgconfigtool, "emg-config-tool.jar", sep="/")
+	defdexpa$files$serverjar		<- paste(dexpa$dirs$server, "enavi-market-backend-0.0.1-SNAPSHOT.jar", sep="/")
 	### DB Settings ##################################################################
 	defdexpa$db <- list()	
 	defdexpa$db$host			<- "localhost"
@@ -67,6 +68,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$db$tablenames$marketproducts	<- "market_product_pattern"
 	defdexpa$db$tablenames$mmarketproducts	<- "mmarket_product_pattern"
 
+	defdexpa$db$remoteserveruser		<- "demo"
+	
 	### XML attributes Names ###########################################################
 	defdexpa$xml <- list()
 	defdexpa$xml$staticfiles 		<- c("OutsideBuildingRoom.xml", "OutsideSolarSensor.xml", 
