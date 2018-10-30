@@ -211,7 +211,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 			dexpa$emg$rseed,
 			dexpa$dirs$emgrundir,
 			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit, sep=""),
-			paste(dexpa$emg$port),
+			dexpa$emg$port,
 			dexpa$emg$httpport),
 			stdout=outfileemg, stderr=outfileemg)
 
@@ -322,7 +322,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	hl_experiment_stopemg(dexpa)
 	
-	dexR::input_db_db2dump(dexpa, dumpdir = paste("dump_", dexpa$sim$id, sep=""), remoteServer=dexpa$remoteserver)
+	dexR::input_db_db2dump(dexpa, dumpdir = paste("dump_", dexpa$sim$id, sep=""), remoteServer=dexpa$remoteserver, outputfile=outputfile)
 
 	try(dexR::createFullReport(dexpa, outputfile = paste("StageA_FullReport_", dexpa$sim$id, ".pdf", sep="")))
 	

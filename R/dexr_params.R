@@ -72,7 +72,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$db$tablenames$marketproducts	<- "market_product_pattern"
 	defdexpa$db$tablenames$mmarketproducts	<- "mmarket_product_pattern"
 
-	defdexpa$db$remoteserveruser		<- "demo"
+	defdexpa$db$sshname			<- "demo"
+	defdexpa$db$sshverbose		<- TRUE
 	
 	### XML attributes Names ###########################################################
 	defdexpa$xml <- list()

@@ -82,29 +82,37 @@ input_db_dump2db <- function(dexpa, dumpfile) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-input_db_db2dump <- function(dexpa, dumpdir, remoteServer=FALSE) {
-	futile.logger::flog.info("Dump database %s to dumpdir %s..." ,
-			dexpa$db$dbname,
-			paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"),
-			name = "dexr.input.db.dump")
-	
-	if (file.exists(paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"))) {
-		unlink(paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"), recursive=TRUE)
-		futile.logger::flog.warn("Removed existing directory %s/%s." ,
-				dexpa$dirs$output$dbdumps,
-				dumpdir,
-				name = "dexr.input.db.dump")
-	}
-	
-	# Superuser required as long as other user does not have rights for new database:
-	Sys.setenv("PGPASSWORD"=dexpa$db$supassword)
-	
+input_db_db2dump <- function(dexpa, dumpdir, remoteServer=FALSE, outputfile="") {
+		
 	if (remoteServer) {
-		system(paste("ssh ", dexpa$db$remoteserveruser, " 'pg_dump",  "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, 
-					"--no-password --format directory --blobs --file", paste(dexpa$dirs$output$dbdumpsremote, dumpdir, sep="/"), dexpa$db$dbname, "'"))
+		futile.logger::flog.info("Dump database %s to dumpdir %s (remote)..." ,
+				dexpa$db$dbname,
+				paste(dexpa$dirs$output$dbdumpsremote, dumpdir, sep="/"),
+				name = "dexr.input.db.dump")
+		
+		system2("ssh", args=paste(dexpa$db$sshname, if (dexpa$db$sshverbose) "-v", " 'pg_dump",  "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, 
+					"--no-password --format directory --blobs --file", paste(dexpa$dirs$output$dbdumpsremote, dumpdir, sep="/"), dexpa$db$dbname, "'"),
+				stdout=outputfile, stderr=outputfile)
 	} else {
-		system(paste("pg_dump",  "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, 
-					"--no-password --format directory --blobs --file",  paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"), dexpa$db$dbname))
+		futile.logger::flog.info("Dump database %s to dumpdir %s..." ,
+				dexpa$db$dbname,
+				paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"),
+				name = "dexr.input.db.dump")
+		
+		if (file.exists(paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"))) {
+			unlink(paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"), recursive=TRUE)
+			futile.logger::flog.warn("Removed existing directory %s/%s." ,
+					dexpa$dirs$output$dbdumps,
+					dumpdir,
+					name = "dexr.input.db.dump")
+		}
+		
+		# Superuser required as long as other user does not have rights for new database:
+		Sys.setenv("PGPASSWORD"=dexpa$db$supassword)
+		
+		system2("pg_dump", args= paste("-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, 
+					"--no-password --format directory --blobs --file",  paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"), dexpa$db$dbname),
+			stdout=outputfile, stderr=outputfile)
 	}
 	
 	futile.logger::flog.info("Dumping database %s finished." ,
