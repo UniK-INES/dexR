@@ -142,7 +142,7 @@
             <path>enaviSimulatedDevices/${windplant.name}/ratedSpeed</path>
             <decorating>true</decorating>
             <active>true</active>
-            <value>${windplant.ratedSpeed}13.5</value>
+            <value>${windplant.ratedSpeed}</value>
             <unit>m/s</unit>
         </resource>
         <resource xsi:type="og:ResourceList">

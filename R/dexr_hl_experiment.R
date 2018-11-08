@@ -213,7 +213,8 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 			dexpa$dirs$emgrundir,
 			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit, sep=""),
 			dexpa$emg$port,
-			dexpa$emg$httpport),
+			dexpa$emg$httpport,
+			dexpa$emg$startoptions),
 			stdout=outfileemg, stderr=outfileemg)
 
 	# https://www.rdocumentation.org/packages/sys/versions/1.5/topics/exec
