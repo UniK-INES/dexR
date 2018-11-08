@@ -20,12 +20,7 @@ fontsize: 8pt
 ---
 
 ```{r, eval=TRUE, include = FALSE}
-setwd(paste(dp1$dirs$scripts, sep="/"))
-dp1$fig$init <- function(simp, outdir, filename) {}
-dp1$fig$close<- function() {}
-dp2$fig$init <- function(simp, outdir, filename) {}
-dp2$fig$close<- function() {}
-
+setwd(paste(dexpas[[1]]$dirs$scripts, sep="/"))
 dexpas <- lapply(dexpas, function(dp) {
 	dp$fig$init <- function(simp, outdir, filename) {}
 	dp$fig$close<- function() {}
@@ -86,14 +81,14 @@ invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ## Clearing: Number of considered requests
 ### Clearing: Number of considered requests
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
-dexR::hl_figure_clearing_comp_numConsideredRequests(dp1, dp2)
+dexR::hl_figure_clearing_comp_numConsideredRequests(dexpas)
 ```
 
 ## Clearing: Price Statistics
 ### Clearing: Price Statistics
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
-dp1$fig$height <- 750
-dexR::hl_figure_clearing_comp_clearingPriceByCTbyProduct(dp1, dp2)
+dexpas[[1]]$fig$height <- 750
+dexR::hl_figure_clearing_comp_clearingPriceByCTbyProduct(dexpas)
 ```
 
 # Time Series: Energy

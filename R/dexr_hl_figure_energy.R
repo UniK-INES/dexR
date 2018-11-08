@@ -104,17 +104,19 @@ hl_figure_energy_requested_comp_sumLoadGenByStartT <- function(dexpas) {
 					dp$db$dbname,
 					dp$id,
 					name = "dexr.hl.requests")
+		} else {
+			d$id <- input_db_runID(dp)	
+			
+			# filter requests (ACCEPTED, UNHANDLED, und DECLINED@last auction of each delivery interval)
+			
+			# DECLINED && submission_time > (start_time + closing_time - auction_interval)
+			# d = d[1:5,]
+			d[d$status %in% c(0,1,2) | (d$status==3 & d$submission_time > d$start_time - 
+					# lubridate obviously ignores negative durations
+					(lubridate::as.duration(paste(products[match(d$product_id,products$description), "closing_time"],"in",sep="")) + 
+					lubridate::as.duration(paste(products[match(d$product_id,products$description), "auction_interval"],"in",sep="")))),]
+			data <- rbind(data, d)
 		}
-		d$id <- input_db_runID(dp)
-		# filter requests (ACCEPTED, UNHANDLED, und DECLINED@last auction of each delivery interval)
-		
-		# DECLINED && submission_time > (start_time + closing_time - auction_interval)
-		# d = d[1:5,]
-		d[d$status %in% c(0,1,2) | (d$status==3 & d$submission_time > d$start_time - 
-				# lubridate obviously ignores negative durations
-				(lubridate::as.duration(paste(products[match(d$product_id,products$description), "closing_time"],"in",sep="")) + 
-				lubridate::as.duration(paste(products[match(d$product_id,products$description), "auction_interval"],"in",sep="")))),]
-		data <- rbind(data, d)
 	}
 	if (nrow(data) > 0) {
 		dexR::output_figure_energy_requested_comp_sumByLoadGenByStartT(dexpas[[1]], data)

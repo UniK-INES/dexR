@@ -183,7 +183,8 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 #' @export
 hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 	
-	hl_experiment_configemg(dexpa, outfilesys=outfilesys)
+	hl_experiment_configemg(dexpa, outfilesys= if (is.null(dexpa$emg$emgconfigoutput)) "" else 
+						paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$emg$emgconfigoutput, ".log", sep=""))
 
 	futile.logger::flog.info("Starting EMG...", name = "dexr.hl.experiment.emg")
 	
@@ -316,7 +317,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	hl_experiment_runemg(dexpa, outfileemg = outfileemg, outfilesys = outputfile)
 	
-	futile.logger::flog.info("Wait for simulation to complete (Duration: %d / factor: %d = %f", dexpa$sim$duration, 
+	futile.logger::flog.info("Wait for simulation to complete (Duration: %d / factor: %d = %f)", dexpa$sim$duration, 
 			dexpa$sim$timefactor, dexpa$sim$duration/dexpa$sim$timefactor, name = "dexr.hl.experiment")
 	Sys.sleep(dexpa$sim$duration/dexpa$sim$timefactor)
 	

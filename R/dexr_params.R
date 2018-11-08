@@ -57,6 +57,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$files$runinfos			<- paste(defdexpa$dirs$project, "DEX_Runs.csv", sep="/")
 	defdexpa$files$emgconfigtool	<- paste(defdexpa$dirs$emgconfigtool, "emg-config-tool.jar", sep="/")
 	defdexpa$files$serverjar		<- paste(dexpa$dirs$server, "enavi-market-backend-0.0.1-SNAPSHOT.jar", sep="/")
+		
 	### DB Settings ##################################################################
 	defdexpa$db <- list()	
 	defdexpa$db$host			<- "localhost"
@@ -133,20 +134,22 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$server$rseed		<- 0
 	
 	### EMG Settings ############################################################	
-	defdexpa$emg$url			<- "https://localhost"
+	defdexpa$emg$url		<- "https://localhost"
 	
-	defdexpa$emg$port			<- "8443"
+	defdexpa$emg$port		<- "8443"
 	defdexpa$emg$startport		<- 8400
 	defdexpa$emg$portoffset 	<- 0
 	
-	defdexpa$emg$httpport			<- "8088"
-	defdexpa$emg$httpstartport		<- 9000
+	defdexpa$emg$httpport		<- "8088"
+	defdexpa$emg$httpstartport	<- 9000
 	defdexpa$emg$httpportoffset 	<- 0
 	
-	defdexpa$emg$rseed		 	<- 1
+	defdexpa$emg$rseed	 	<- 1
 	
 	defdexpa$emg$copyrundir	 	<- FALSE
-	
+
+	defdexpa$emg$emgconfigoutput	<- "emgconfig"
+
 	defdexpa$emg$api$shutdown	<- "rest/admin?target=shutdown&user=rest&pw=rest"
 	defdexpa$emg$emgstartuptime	<- 20
 

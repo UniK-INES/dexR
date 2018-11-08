@@ -205,7 +205,16 @@ hr {
 
 <p>The package provides various functions to run experiments, load data from db and XML configuration files, convert, and finally visualise it. Therefore, in a chain of production these functions need to be combined. At the same time, there are a number
 of high level functions which integrate the more basic functions but leave less scope for customisation. These
-high level functions start with &#39;hl&#39;. </p>
+high level functions start with &#39;hl&#39;.</p>
+
+<h2>Setup</h2>
+
+<p><code>dexR</code> relies on a CSV configuration table which contains links to CSV tables used to derive the XML configuration for the EMG. The package contains template files which are copied to <code>dexpa$dirs$config</code> (default: <code>./config</code>) when running</p>
+
+<pre><code class="r">dexR::setup_environment(dexpa)
+</code></pre>
+
+<p>This routine also copes <code>DEX_Runs.csv</code> which is used to store run information.</p>
 
 <h2>Parameters</h2>
 
