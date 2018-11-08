@@ -153,6 +153,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$emg$api$shutdown	<- "rest/admin?target=shutdown&user=rest&pw=rest"
 	defdexpa$emg$emgstartuptime	<- 20
 
+	defdexpa$emg$startoptions	<- "-clean -uro"
+
 	### Debug Settings ############################################################
 	defdexpa$debug <- list()
 	# the higher, the more verbose
