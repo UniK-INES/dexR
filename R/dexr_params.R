@@ -97,6 +97,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$fig$alpha			<- 0.7
 	defdexpa$fig$linewidth		<- 1
 	defdexpa$fig$facetlabelsize	<- 12
+	defdexpa$fig$legend$ncols	<- 3
 	
 	### Colour Settings ###########################################################
 	defdexpa$colours <- list()
@@ -132,6 +133,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$server$startport	<- 8000
 	defdexpa$server$portoffset 	<- 0
 	defdexpa$server$rseed		<- 0
+	defdexpa$server$matchbasetime	<- "false"
 	
 	### EMG Settings ############################################################	
 	defdexpa$emg$url		<- "https://localhost"
