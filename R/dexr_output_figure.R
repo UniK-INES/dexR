@@ -49,7 +49,8 @@ output_figure_bars <- function(dexpa, data, y_column, title = NULL,
 				warning("Not enough colours in dexpa$fills[[", fill_column, "]] (", 
 						length(dexpa$fills[[fill_column]]), " - needed: " , length(unique(data[, fill_column])), ")")
 			}
-			scaleFillElem <- ggplot2::scale_fill_manual(name=fill_legendtitle, 
+			scaleFillElem <- ggplot2::scale_fill_manual(name=fill_legendtitle, guide = ggplot2::guide_legend(
+							ncol=dexpa$fig$legend$ncols),
 					values =  if(is.null(group_colors)) topo.colors(n = 
 										length(unique(data[, fill_column]))) else group_colors,
 					labels = if(!is.null(fill_legenditemnames)) fill_legenditemnames else ggplot2::waiver())
