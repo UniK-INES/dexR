@@ -117,8 +117,6 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 				name = "dexr.hl.experiment.runemg")
 	}
 
-	outfilesystmp = paste(dexpa$dirs$tmp, "outfilesys_tmp.txt", sep="/")
-
 	if (!is.na(idMatch)) {
 		# Read CSV sources from DEX_Param_Configs.csv:
 		system2(wait=TRUE, "java", args = paste(" -cp ",
@@ -138,7 +136,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 						" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"requestConfig"], sep=""), "'",
 						" -sc '",paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"ogemaConfig"], sep=""), "'",
 						" -po '",dexpa$server$port, "'",
-						sep=""), stdout=outfilesystmp, stderr=outfilesystmp)
+						sep=""), stdout=outfilesys, stderr=outfilesys)
 	} else {	
 		system2(wait=TRUE, "java", args = paste(" -cp ",
 						dexpa$files$emgconfigtool, " de.unik.ines.enavi.ctool.EmgConfigManager",
@@ -157,19 +155,9 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 						" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_RequestConfig_", dexpa$sim$id, ".csv", sep=""), "'",
 						" -sc '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_OgemaConfig_", dexpa$sim$id, ".csv", sep=""), "'",
 						" -po '",dexpa$server$port, "'",
-						sep=""), stdout=outfilesystmp, stderr=outfilesystmp)
+						sep=""), stdout=outfilesys, stderr=outfilesys)
 	}
-	
-	# append loggings to outfilesys:
-	sink(NULL)
-	sink(NULL, type="message")
-	file.append(outfilesys, outfilesystmp)
-	file.remove(outfilesystmp)
-
-	con <- file(outfilesys, open="a")
-	sink(con, append=TRUE)
-	sink(con, append=TRUE, type="message")
-	
+		
 	# copy static XML files:
 	for (f in dexpa$xml$staticfiles) {
 		file.copy(from = paste(dexpa$dirs$xmltemplatesstatic, f, sep="/"), to = paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""),
