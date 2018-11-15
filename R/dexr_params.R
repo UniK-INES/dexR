@@ -36,7 +36,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	# If empty, the a path relativ to dexpa$dirs$emgconfigtool is used!
 	defdexpa$dirs$emgrundir			<- NULL
 	defdexpa$dirs$emgnoderundir		<- "/local/ogema-run-dir"
-	
+	defdexpa$dirs$emglogdir			<- "data/logs"
 
 	defdexpa$dirs$output <- list()
 	defdexpa$dirs$outputdir			<- paste(defdexpa$dirs$project, "output/version/", sep="")	

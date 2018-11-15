@@ -242,6 +242,16 @@ hl_experiment_stopemg <- function(dexpa) {
 	futile.logger::flog.info("Emg stopped.", name = "dexr.hl.experiment")
 	
 	if (dexpa$emg$copyrundir) {
+		# copy log file to home dir:
+		futile.logger::flog.info("Copy log file (%s) to home dir (%s)...",
+				paste(dexpa$dirs$emgrundir,dexpa$dirs$emglogdir, sep="/"),
+				paste(dexpa$dirs$output$logs, "emg", sep="/"),
+				name = "dexr.hl.experiment")
+		shbasic::sh.ensurePath(paste(dexpa$dirs$output$logs, "emg", sep="/"))
+		file.copy(from=paste(dexpa$dirs$emgnoderundir, dexpa$dirs$emglogdir, sep="/"), 
+				to=paste(dexpa$dirs$output$logs, "/emg", dexpa$sim$id, sep=""), 
+				overwrite = TRUE, recursive = TRUE, copy.mode = TRUE)
+		
 		file.remove(paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"))
 		futile.logger::flog.info("Emg-Rundir deleted.", name = "dexr.hl.experiment")
 	}
