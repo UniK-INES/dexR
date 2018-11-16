@@ -28,7 +28,7 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 						"-Dde.unik.enavi.market.testing.load=FALSE ",
 						"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
 						"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
-						"-Dde.unik.enavi.market.time.matchbasetime=", dexpa$server$matchbasetime, " ", 
+						"-Dde.unik.enavi.market.time.matchbasetime=", dexpa$server$matchbasetime, " ",
 						"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
 				stdout=outfilesys, stderr=outfilesys)
 	} else {
@@ -39,6 +39,7 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 						"--de.unik.enavi.market.testing.load=FALSE ",
 						"--de.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
 						"--de.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
+						"--de.unik.enavi.market.time.matchbasetime=", dexpa$server$matchbasetime, " ",
 						"--de.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
 				stdout=outfilesys, stderr=outfilesys)
 	}
