@@ -245,7 +245,7 @@ hl_experiment_stopemg <- function(dexpa) {
 	if (dexpa$emg$copyrundir) {
 		# copy log file to home dir:
 		futile.logger::flog.info("Copy log file (%s) to home dir (%s)...",
-				paste(dexpa$dirs$emgrundir,dexpa$dirs$emglogdir, sep="/"),
+				paste(dexpa$dirs$emgnoderundir,dexpa$dirs$emglogdir, sep="/"),
 				paste(dexpa$dirs$output$logs, "emg", sep="/"),
 				name = "dexr.hl.experiment")
 		shbasic::sh.ensurePath(paste(dexpa$dirs$output$logs, "emg", sep="/"))
