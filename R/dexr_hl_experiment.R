@@ -3,12 +3,13 @@
 #' @param outfilesys log file
 #' @param basetime in ms, assigned to \code{de.unik.enavi.market.time.basetime}
 #' @param offset in ms, assigned to \code{de.unik.enavi.market.time.offset}
+#' @param startServer
 #' @return -
 #' 
 #' @author Sascha Holzhauer
 #' @export
 hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numeric(round(Sys.time(),"mins"))*1000,
-		offset = round(basetime - as.numeric(Sys.time())*1000)) {
+		offset = round(basetime - as.numeric(Sys.time())*1000, startServer=TRUE)) {
 	infoData <- list()
 	futile.logger::flog.info("Starting Market Backend server (output to %s) with offset=%s/factor=%d/basetime=%s and with profile %s...", 
 			outfilesys,
@@ -80,9 +81,12 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 			sourcefile = if(!is.na(idMatch)) paramConfigs[idMatch, "clients"] else 
 						paste("DEX_Param_EnaviClient_", dexpa$sim$id, ".csv", sep=""))
 	
-	# Start backend server:
-	message = server_start(dexpa)
-	futile.logger::flog.info(message, name = "dexr.hl.experiment")
+	if (startServer) {
+		# Start backend server:
+		message = server_start(dexpa)
+		futile.logger::flog.info(message, name = "dexr.hl.experiment")	
+	}
+
 	return(infoData)
 }
 #' Create configuration for EMGs to experiment
@@ -212,8 +216,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 	#					paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""), dexpa$dirs$emgrundir),
 	#			std_out=outfilesys, std_err=outfilesys)
 	
-	futile.logger::flog.info("Wait during EMG startup (%d sec)...", dexpa$emg$emgstartuptime, name = "dexr.hl.experiment")
-	Sys.sleep(dexpa$emg$emgstartuptime)
+	hl_experiment_awaitemgstartup(dexpa)
 	
 #	max_sleep = dexpa$emg$emgstartuptime
 #	num_iterations = as.integer(max_sleep / 5) + 1
@@ -230,6 +233,17 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 #		}	    
 #	}	
 }
+#' Sleep during EMG startup
+#' @param dexpa
+#' @param waittime (default: dexpa$emg$emgstartuptime)
+#' @return 
+#' 
+#' @author Sascha Holzhauer
+#' @export
+hl_experiment_awaitemgstartup <- function(dexpa, waittime = dexpa$emg$emgstartuptime) {
+	futile.logger::flog.info("Wait during EMG startup (%d sec)...", waittime, name = "dexr.hl.experiment")
+	Sys.sleep(waittime)	
+}
 #' Stop EMG clients. Disables SSL verification.
 #' @param dexpa 
 #' @return -
@@ -244,13 +258,13 @@ hl_experiment_stopemg <- function(dexpa) {
 	
 	if (dexpa$emg$copyrundir) {
 		# copy log file to home dir:
-		futile.logger::flog.info("Copy log file (%s) to home dir (%s)...",
+		futile.logger::flog.info("Copy log files (in %s) to home dir (%s)...",
 				paste(dexpa$dirs$emgnoderundir,dexpa$dirs$emglogdir, sep="/"),
-				paste(dexpa$dirs$output$logs, "emg", sep="/"),
+				paste(dexpa$dirs$output$logs, "/emg/", dexpa$sim$id, sep="/"),
 				name = "dexr.hl.experiment")
-		shbasic::sh.ensurePath(paste(dexpa$dirs$output$logs, "emg", sep="/"))
+		shbasic::sh.ensurePath(paste(dexpa$dirs$output$logs, "/emg/", dexpa$sim$id, sep="/"))
 		file.copy(from=paste(dexpa$dirs$emgnoderundir, dexpa$dirs$emglogdir, sep="/"), 
-				to=paste(dexpa$dirs$output$logs, "/emg", dexpa$sim$id, sep=""), 
+				to=paste(dexpa$dirs$output$logs, "/emg/", dexpa$sim$id, sep=""), 
 				overwrite = TRUE, recursive = TRUE, copy.mode = TRUE)
 		
 		file.remove(paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"))
@@ -314,9 +328,14 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 		sink(con, append=TRUE, type="message")
 	}
 	
-	infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset)
+	infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset, startServer=F)
 	
 	hl_experiment_runemg(dexpa, outfileemg = outfileemg, outfilesys = outputfile)
+	
+	message = server_start(dexpa)
+	futile.logger::flog.info(message, name = "dexr.hl.experiment")	
+	
+	hl_experiment_awaitemgstartup(dexpa, waittime = dexpa$emg$restarttime)
 	
 	futile.logger::flog.info("Wait for simulation to complete (Duration: %d / factor: %d = %f)", dexpa$sim$duration, 
 			dexpa$sim$timefactor, dexpa$sim$duration/dexpa$sim$timefactor, name = "dexr.hl.experiment")
