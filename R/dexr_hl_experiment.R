@@ -9,7 +9,7 @@
 #' @author Sascha Holzhauer
 #' @export
 hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numeric(round(Sys.time(),"mins"))*1000,
-		offset = round(basetime - as.numeric(Sys.time())*1000, startServer=TRUE)) {
+		offset = round(basetime - as.numeric(Sys.time())*1000), startServer=TRUE) {
 	infoData <- list()
 	futile.logger::flog.info("Starting Market Backend server (output to %s) with offset=%s/factor=%d/basetime=%s and with profile %s...", 
 			outfilesys,
