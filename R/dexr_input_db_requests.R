@@ -13,7 +13,7 @@ input_db_requests <- function(dexp) {
 	
 	con <- input_db_getconnection(dexp)
 	
-	df_requests <- DBI::dbGetQuery(con, "
+	df_requests <- DBI::dbGetQuery(con, paste("
 					SELECT
 						m.submission_time,
 						m.id,
@@ -38,7 +38,9 @@ input_db_requests <- function(dexp) {
 						m.request_uid = e.uid AND
 						e.product_id = p.product_id AND
 						p.product_id = mp.product_pattern_product_id AND
-						m.user_account_id = u.id;")
+						m.user_account_id = u.id AND
+						e.start_time >= ", dexpa$sim$starttime_min, " AND
+						e.start_time <= ", dexpa$sim$starttime_max, ";"), sep="")
 		
 	df_requests$submission_time <- ms_to_date(df_requests$submission_time, timezone="Europe/Berlin")
 	df_requests$start_time <- ms_to_date(df_requests$start_time, timezone="Europe/Berlin")
@@ -74,10 +76,12 @@ input_db_requests_clearing <- function(dexpa, starttime=NULL){
 					to_timestamp(er.start_time/1000) start_time,
 					to_timestamp(er.end_time/1000) end_time
 					from market_energy_request mer, energy_request er
-					where mer.request_uid=er.uid ",
+					where mer.request_uid=er.uid AND",
 			if (!is.null(starttime)) paste("and er.start_time=", starttime, " ", sep="") else "",
-			"order by start_time;"
-			,sep="");
+					"e.start_time >= ", dexpa$sim$starttime_min, " AND
+					e.start_time <= ", dexpa$sim$starttime_max,
+					"order by start_time;"
+					,sep="");
 	
 	rs<-dbSendQuery(con,stmt)
 	readTab<-fetch(rs,n=-1)

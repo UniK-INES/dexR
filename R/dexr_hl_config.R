@@ -32,7 +32,7 @@ hl_config_copycsvtemplates <- function(dexpa, targetdir=paste(dexpa$dirs$config,
 #' \itemize{
 #' 	\item \code{dexpa$dirs$config}
 #' 	\item \code{dexpa$sim$id}
-#'  \item \code{dexpa$sim$extrasecs}
+#'  \item \code{dexpa$sim$firstdeliverystart$delay}
 #'  \item \code{dexpa$db$tablenames$marketproducts}
 #'  \item \code{dexpa$db$tablenames$mmarketproducts}
 #' }
@@ -50,11 +50,16 @@ hl_config_marketProducts2db <- function(dexpa, sourcedir=paste(dexpa$dirs$config
 		firstDeliveryPeriodStart = Sys.time()) {
 	futile.logger::flog.info("Configure Market Backend products (%s/%s)...", sourcedir, sourcefile, 
 			name = "dexr.hl.config.backend")
+	
+	# derive dexpa$sim$firstdeliverystart$delay
+	dexpa$sim$firstdeliverystart$delay <- max(dexpa$sim$firstdeliverystart$delay,
+			dexpa$emg$restarttime * dexpa$sim$timefactor)
+	
 	products <- read.csv(file=paste(sourcedir, sourcefile,sep="/"), stringsAsFactors=F)
 	for (i in 1:nrow(products)) {
 		# lubridate does not deal with secs > 60 as expected (https://github.com/tidyverse/lubridate/issues/661)
 		products[i, "first_delivery_period_start"] <- as.numeric(lubridate::ceiling_date(firstDeliveryPeriodStart, 
-						paste(products[i,"delivery_period_duration"]/60000," mins", sep="")) + dexpa$sim$extrasecs)*1000	
+						paste(products[i,"delivery_period_duration"]/60000," mins", sep="")) + dexpa$sim$firstdeliverystart$delay)*1000	
 	}
 	products[,"first_delivery_period_start"] <- as.numeric(products[,"first_delivery_period_start"])
 	

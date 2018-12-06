@@ -14,20 +14,12 @@ vignette: >
 
 # Concept
 
-The package provides various functions to run experiments, load data from db and XML configuration files, convert, and finally visualise it. Therefore, in a chain of production these functions need to be combined. At the same time, there are a number
+The package provides various functions to configure and run experiments, load data from db and XML configuration files, convert, and finally visualise it. Therefore, in a chain of production these functions need to be combined. At the same time, there are a number
 of high level functions which integrate the more basic functions but leave less scope for customisation. These
 high level functions start with 'hl'.
 
-## Setup
 
-`dexR` relies on a CSV configuration table which contains links to CSV tables used to derive the XML configuration for the EMG. The package contains template files which are copied to `dexpa$dirs$config` (default: `./config`) when running
-
-```{r, eval=FALSE}
-dexR::setup_environment(dexpa)
-```
-This routine also copes `DEX_Runs.csv` which is used to store run information.
-
-## Parameters
+# Parameters
 
 There is a dexpa (DEX Parameters) list which contains all project-specific properties, directories, 
 and  parameters. The basic idea is to define a dexpa list for each project and machine and execute the dexpa defining 
@@ -104,7 +96,7 @@ The dexpa list consists of a number of sublists:
 
 * debug
     
-### Defining Colours
+## Defining Colours
 
 Colours for different purposes are defined in sublists of `dexpa$colours$products`, eg. `products` and `statuses`.
 
@@ -128,21 +120,21 @@ dexR::input_db_dump2db(dp1, dumpfile=paste("dump_", dp1$sim$id, sep=""))
 
 Each simulation run should have a unique ID which is to be assigned to `dexpa$sim$id`.
 
-## Simulation Course
+# Configuration and Simulation Course
 
 1. Copy CSV templates
-2. Edit CSV tables
+2. Edit CSV tables (manual!)
 3. Market-Backend Warm-up/initialisation
 4. Configure market products and clients in DB
-5. Start market backend
-6. Generate EMG XML configuration
-7. Start EMG client(s)
+5. Generate EMG XML configuration
+6. Start EMG client(s)
+7. Start market backend
 8. Start simulation timer
 9. Stop EMG
 10.Dump DB to file
 11.Stop market backend 
 
-## Comparing Runs/Scenarios
+# Comparing Runs/Scenarios
 
 The generic way of comparing data of several simulation runs, i.e. combining the data to visualise in one plot, is the following:
 

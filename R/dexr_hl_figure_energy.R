@@ -8,6 +8,7 @@
 hl_figure_energy_requested_byStatusByStartT <- function(dexpa) {
 	data <- input_db_requests(dexpa)
 	if (nrow(data) > 0) {
+		data <- dexpa$sim$filter$requests(dexpa, data)
 		output_figure_energy_requested_byStatusByStartT(dexpa, data)
 	} else {
 		futile.logger::flog.warn("No requests retrieved from PostgreSQL database %s!",
@@ -25,6 +26,7 @@ hl_figure_energy_requested_byStatusByStartT <- function(dexpa) {
 hl_figure_energy_requested_sumByStartT <- function(dexpa) {
 	data <- input_db_requests(dexpa)
 	if (nrow(data) > 0) {
+		data <- dexpa$sim$filter$requests(dexpa, data)
 		output_figure_energy_requested_sumByStartT(dexpa, data)
 	} else {
 		futile.logger::flog.warn("No requests retrieved from PostgreSQL database %s!",
@@ -57,6 +59,7 @@ hl_figure_energy_requested_comp_byStatusByStartT <- function(dexpas, skiplegend=
 		}
 	}
 	if (nrow(data) > 0) {
+		data <- dexpa$sim$filter$requests(dexpa, data)
 		output_figure_energy_requested_comp_byStatusByStartT(dexpas[[1]], data, type=type, skiplegend=skiplegend)
 	}
 }
@@ -83,6 +86,7 @@ hl_figure_energy_requested_comp_sumByStartT <- function(dexpas) {
 		}
 	}
 	if (nrow(data) > 0) {
+		data <- dexpa$sim$filter$requests(dexpa, data)
 		output_figure_energy_requested_comp_sumByStartT(dexpas[[1]], data)
 	}
 }
@@ -119,6 +123,7 @@ hl_figure_energy_requested_comp_sumLoadGenByStartT <- function(dexpas) {
 		}
 	}
 	if (nrow(data) > 0) {
+		data <- dexpa$sim$filter$requests(dexpa, data)
 		dexR::output_figure_energy_requested_comp_sumByLoadGenByStartT(dexpas[[1]], data)
 	}
 }

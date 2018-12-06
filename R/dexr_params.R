@@ -17,8 +17,20 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$sim$id				<- c("NN")
 	defdexpa$sim$duration			<- 30*60             # in sec
 	defdexpa$sim$timefactor			<- 1.0
-	defdexpa$sim$extrasecs			<- 0
-	
+
+	defdexpa$sim$firstdeliverystart		<- list()
+	defdexpa$sim$firstdeliverystart$delay	<- 0
+
+	defdexpa$sim$starttime_min		<- as.numeric(strptime("01/01/1970 00:00", "%d/%m/%Y %H:%M"))*1000
+	defdexpa$sim$starttime_max		<- as.numeric(strptime("31/12/2099 24:00", "%d/%m/%Y %H:%M"))*1000
+
+	defdexpa$sim$filter$requests		<- function(dexpa, data) {
+							dplyr::filter(data, TRUE)
+						   }
+
+	defdexpa$sim$filter$clearings		<- function(dexpa, data) {
+							dplyr::filter(data, TRUE)
+						   }
 	### Basic ################################################################
 	defdexpa$remoteserver			<- FALSE
 	
@@ -153,8 +165,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$emg$emgconfigoutput	<- "emgconfig"
 
 	defdexpa$emg$api$shutdown	<- "rest/admin?target=shutdown&user=rest&pw=rest"
-	defdexpa$emg$emgstartuptime	<- 20
-	defdexpa$emg$restarttime	<- 60
+	defdexpa$emg$emgstartuptime	<- 90
+	defdexpa$emg$restarttime	<- 40
 
 	defdexpa$emg$startoptions	<- "-clean -uro"
 
