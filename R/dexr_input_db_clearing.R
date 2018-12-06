@@ -13,7 +13,7 @@ input_db_clearings <- function(dexpa) {
 	
 	con <- input_db_getconnection(dexpa)
 	
-	df_cinfos <- DBI::dbGetQuery(con, "
+	df_cinfos <- DBI::dbGetQuery(con, paste("
 					SELECT
 						id,
 						clearing_time,
@@ -26,7 +26,9 @@ input_db_clearings <- function(dexpa) {
 						clearing_info,
 						mmarket_product_pattern
 					WHERE
-						clearing_info.product_pattern_product_id = mmarket_product_pattern.product_pattern_product_id")
+						clearing_info.product_pattern_product_id = mmarket_product_pattern.product_pattern_product_id AND
+						clearing_info.delivery_period_start >= ", dexpa$sim$starttime_min, " AND
+						clearing_info.delivery_period_start <= ", dexpa$sim$starttime_max, ";", sep=""))
 	DBI::dbDisconnect(con)
 	
 	df_cinfos$delivery_period_start <- ms_to_date(df_cinfos$delivery_period_start, timezone="Europe/Berlin")

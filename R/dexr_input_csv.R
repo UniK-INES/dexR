@@ -14,7 +14,7 @@ input_csv_clientdata <- function(dexpa) {
 	idMatch <- match(dexpa$sim$id, paramConfigs$ID)
 	if(is.na(idMatch)) {
 		futile.logger::flog.warn("ID %s not present in config table (%s)!", dexpa$sim$id, dexpa$files$paramconfigs, 
-				name = "dexr.hl.experiment")
+				name = "dexr.input.csv.clientdata")
 	}
 	
 	clients <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
@@ -78,6 +78,8 @@ input_csv_runinfos <- function(dexpa) {
 	rinfos <- runinfos[runinfos$ID == dexpa$sim$id,]
 	if (nrow(rinfos)==0) {
 		runinfos <- runinfos[nrow(runinfos),]
+		futile.logger::flog.warn("ID %s not present in runinfos table (%s)!", dexpa$sim$id, dexpa$files$runinfos, 
+				name = "dexr.input.csv.runinfos")
 	} else {
 		runinfos <- rinfos
 	}
