@@ -339,8 +339,8 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	futile.logger::flog.info("Wait for simulation to complete (Duration: %d / factor: %d = %f)", 
 			(dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay), 
-			dexpa$sim$timefactor, dexpa$sim$duration/dexpa$sim$timefactor, name = "dexr.hl.experiment")
-	Sys.sleep(dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay/dexpa$sim$timefactor)
+			dexpa$sim$timefactor, (dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay), name = "dexr.hl.experiment")
+	Sys.sleep((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor)
 	
 	hl_experiment_stopemg(dexpa)
 	
