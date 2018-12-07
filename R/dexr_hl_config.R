@@ -58,8 +58,9 @@ hl_config_marketProducts2db <- function(dexpa, sourcedir=paste(dexpa$dirs$config
 	products <- read.csv(file=paste(sourcedir, sourcefile,sep="/"), stringsAsFactors=F)
 	for (i in 1:nrow(products)) {
 		# lubridate does not deal with secs > 60 as expected (https://github.com/tidyverse/lubridate/issues/661)
-		products[i, "first_delivery_period_start"] <- as.numeric(lubridate::ceiling_date(firstDeliveryPeriodStart, 
-						paste(products[i,"delivery_period_duration"]/60000," mins", sep="")) + dexpa$sim$firstdeliverystart$delay)*1000	
+		products[i, "first_delivery_period_start"] <- as.numeric(lubridate::ceiling_date(firstDeliveryPeriodStart + 
+								dexpa$sim$firstdeliverystart$delay, 
+						paste(products[i,"delivery_period_duration"]/60000," mins", sep="")))*1000	
 	}
 	products[,"first_delivery_period_start"] <- as.numeric(products[,"first_delivery_period_start"])
 	

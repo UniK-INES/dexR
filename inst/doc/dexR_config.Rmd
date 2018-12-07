@@ -1,5 +1,5 @@
 ---
-title: "Configure and run experiments with dexR"
+title: "Configure experiments with dexR"
 author: "Sascha Holzhauer"
 date: "`r Sys.Date()`"
 output: 
@@ -14,7 +14,7 @@ vignette: >
 
 # Steps to configure
 
-* Creation of Config CSV tables
+* Creation of EMG Config CSV tables
   + Clients
   + Loads
   + Buildings
@@ -28,3 +28,10 @@ vignette: >
 # Configuring EMG
 
 ![](png/dexR_config_emg.png)
+
+EMG configuration relies on a CSV configuration table which contains links to CSV tables used to derive the XML configuration for the EMGs. The package contains template files which are copied to `dexpa$dirs$config` (default: `./config`) when running
+
+```{r, eval=FALSE}
+dexR::setup_environment(dexpa)
+```
+This routine also copies `DEX_Runs.csv` which is used to store run information.

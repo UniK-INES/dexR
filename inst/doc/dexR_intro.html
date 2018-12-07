@@ -203,20 +203,11 @@ hr {
 <body>
 <h1>Concept</h1>
 
-<p>The package provides various functions to run experiments, load data from db and XML configuration files, convert, and finally visualise it. Therefore, in a chain of production these functions need to be combined. At the same time, there are a number
+<p>The package provides various functions to configure and run experiments, load data from db and XML configuration files, convert, and finally visualise it. Therefore, in a chain of production these functions need to be combined. At the same time, there are a number
 of high level functions which integrate the more basic functions but leave less scope for customisation. These
 high level functions start with &#39;hl&#39;.</p>
 
-<h2>Setup</h2>
-
-<p><code>dexR</code> relies on a CSV configuration table which contains links to CSV tables used to derive the XML configuration for the EMG. The package contains template files which are copied to <code>dexpa$dirs$config</code> (default: <code>./config</code>) when running</p>
-
-<pre><code class="r">dexR::setup_environment(dexpa)
-</code></pre>
-
-<p>This routine also copes <code>DEX_Runs.csv</code> which is used to store run information.</p>
-
-<h2>Parameters</h2>
+<h1>Parameters</h1>
 
 <p>There is a dexpa (DEX Parameters) list which contains all project-specific properties, directories, 
 and  parameters. The basic idea is to define a dexpa list for each project and machine and execute the dexpa defining 
@@ -288,7 +279,7 @@ source(&quot;../dexpa.R&quot;)
 <li><p>debug</p></li>
 </ul>
 
-<h3>Defining Colours</h3>
+<h2>Defining Colours</h2>
 
 <p>Colours for different purposes are defined in sublists of <code>dexpa$colours$products</code>, eg. <code>products</code> and <code>statuses</code>.</p>
 
@@ -310,23 +301,23 @@ dexR::input_db_dump2db(dp1, dumpfile=paste(&quot;dump_&quot;, dp1$sim$id, sep=&q
 
 <p>Each simulation run should have a unique ID which is to be assigned to <code>dexpa$sim$id</code>.</p>
 
-<h2>Simulation Course</h2>
+<h1>Configuration and Simulation Course</h1>
 
 <ol>
 <li>Copy CSV templates</li>
-<li>Edit CSV tables</li>
+<li>Edit CSV tables (manual!)</li>
 <li>Market-Backend Warm-up/initialisation</li>
 <li>Configure market products and clients in DB</li>
-<li>Start market backend</li>
 <li>Generate EMG XML configuration</li>
 <li>Start EMG client(s)</li>
+<li>Start market backend</li>
 <li>Start simulation timer</li>
 <li>Stop EMG
 10.Dump DB to file
 11.Stop market backend </li>
 </ol>
 
-<h2>Comparing Runs/Scenarios</h2>
+<h1>Comparing Runs/Scenarios</h1>
 
 <p>The generic way of comparing data of several simulation runs, i.e. combining the data to visualise in one plot, is the following:</p>
 
