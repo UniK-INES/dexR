@@ -24,6 +24,8 @@ vignette: >
 * Creation of Param_Configs-table
   + definition of config ID
   + links to CSV files
+* Configuration of dexR
+  + Adjust dexpa settings
 
 # Configuring EMG
 
@@ -35,3 +37,7 @@ EMG configuration relies on a CSV configuration table which contains links to CS
 dexR::setup_environment(dexpa)
 ```
 This routine also copies `DEX_Runs.csv` which is used to store run information.
+
+# Configuration of dexR
+
+![](png/dexR_times.png)
