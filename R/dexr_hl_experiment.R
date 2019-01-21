@@ -178,7 +178,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 	
 	hl_experiment_configemg(dexpa, outfilesys= if (is.null(dexpa$emg$emgconfigoutput)) "" else 
-						paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$emg$emgconfigoutput, ".log", sep=""))
+						paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$emgconfigoutput, ".log", sep=""))
 
 	futile.logger::flog.info("Starting EMG...", name = "dexr.hl.experiment.emg")
 	
@@ -346,7 +346,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	dexR::input_db_db2dump(dexpa, dumpdir = paste("dump_", dexpa$sim$id, sep=""), remoteServer=dexpa$remoteserver, 
 			outputfile= if (is.null(dexpa$db$sshoutput)) "" else 
-						paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$db$sshoutput, ".log", sep=""))
+						paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$db$sshoutput, ".log", sep=""))
 
 	try(dexR::createFullReport(dexpa, outputfile = paste("StageA_FullReport_", dexpa$sim$id, ".pdf", sep="")))
 	
@@ -377,9 +377,9 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 #' @export
 hl_experiment_cluster <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))*1000,
 		offset = round(basetime - as.numeric(Sys.time())*1000), 
-		outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$emg$rseed, ".log", sep=""), 
-		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep=""),
-		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep="")) {
+		outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, ".log", sep=""), 
+		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep=""),
+		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep="")) {
 	
 	shbasic::sh.ensurePath(paste(dexpa$dirs$config, dexpa$sim$id,sep="/"))
 	
