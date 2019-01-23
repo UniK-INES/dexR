@@ -55,6 +55,12 @@ hl_config_marketProducts2db <- function(dexpa, sourcedir=paste(dexpa$dirs$config
 	dexpa$sim$firstdeliverystart$delay <- max(dexpa$sim$firstdeliverystart$delay,
 			dexpa$emg$restarttime * dexpa$sim$timefactor)
 	
+	futile.logger::flog.debug("First delivery start delay is %d sec. (restart time: %d)", 
+			dexpa$sim$firstdeliverystart$delay,
+			dexpa$emg$restarttime,
+			name = "dexr.hl.config.backend")
+	
+	
 	products <- read.csv(file=paste(sourcedir, sourcefile,sep="/"), stringsAsFactors=F)
 	for (i in 1:nrow(products)) {
 		# lubridate does not deal with secs > 60 as expected (https://github.com/tidyverse/lubridate/issues/661)
