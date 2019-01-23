@@ -1,4 +1,7 @@
 #' Run backend server to experiment
+#' 
+#' Default for first delivery period start is the basetime.
+#' 
 #' @param dexpa parameter object
 #' @param outfilesys log file
 #' @param basetime in ms, assigned to \code{de.unik.enavi.market.time.basetime}
