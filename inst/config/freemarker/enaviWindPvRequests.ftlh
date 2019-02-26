@@ -3,7 +3,7 @@
     <type>org.ogema.core.model.ResourceList</type>
     <path>enaviWindPvRequests</path>
     <decorating>false</decorating>
-    <active>false</active>
+    <active>true</active>
     <#list generations as generation>
     <resource>
         <name>${generation.name}</name>
@@ -61,14 +61,6 @@
                 <value>${generation.averagePriceOffer}</value>
             </resource>
         </resource>
-        <resource xsi:type="og:ResourceList">
-            <name>requests</name>
-            <type>org.ogema.core.model.ResourceList</type>
-            <path>enaviWindPvRequests/${generation.name}/requests</path>
-            <decorating>true</decorating>
-            <active>false</active>           
-            <elementType>org.ogema.model.smartgriddata.ElectricEnergyRequest</elementType>
-        </resource>
         <resource>
             <name>priceOfferFluctuation</name>
             <type>org.ogema.model.smartgriddata.Price</type>
@@ -83,20 +75,6 @@
                 <active>true</active>
                 <value>${generation.priceOfferFluctuation}</value>
             </resource>
-        </resource>
-
-        <resourcelink>
-            <link>enaviClients/${generation.client}</link>
-            <type>de.iwes.enavi.util.EnaviClient</type>
-            <name>client</name>
-        </resourcelink>
-        <resource xsi:type="og:ResourceList">
-            <name>requests</name>
-            <type>org.ogema.core.model.ResourceList</type>
-            <path>enaviWindPvRequests/${generation.name}/requests</path>
-            <decorating>true</decorating>
-            <active>false</active>
-            <elementType>org.ogema.model.smartgriddata.ElectricEnergyRequest</elementType>
         </resource>
         <resourcelink>
             <link>enaviSimulatedDevices/${generation.device}</link>

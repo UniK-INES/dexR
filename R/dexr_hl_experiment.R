@@ -22,6 +22,15 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 			dexpa$server$profile,
 			name = "dexr.hl.experiment.runbackend")
 	
+	firstDelivery <- basetime + (max(dexpa$sim$firstdeliverystart$delay,
+			dexpa$emg$restarttime * dexpa$sim$timefactor)) * 1000
+	
+	initialbasetime = basetime + (firstDelivery - (basetime + dexpa$sim$timefactor * dexpa$emg$emgstartuptime))/2
+	
+	futile.logger::flog.debug("Initial base time is %s.",
+			format(as.POSIXct(initialbasetime/1000, tz="GTM", origin = "1970-01-01"), "%d/%m/%y %H:%M:%S"),
+			name = "dexr.hl.experiment")
+	
 	# Instatiate server:
 	# It's important that the -D parameters are before the <application>.jar otherwise they are not recognized.
 	if (dexpa$server$usemvn) {
@@ -31,7 +40,8 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 						"-Dserver.port=", dexpa$server$port, " ",
 						"-Dde.unik.enavi.market.testing.load=FALSE ",
 						"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
-						"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
+						"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ",
+						"-Dde.unik.enavi.market.time.basetime.initial=", format(initialbasetime, scientific = FALSE), " ", 
 						"-Dde.unik.enavi.market.time.matchbasetime=", dexpa$server$matchbasetime, " ",
 						"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
 				stdout=outfilesys, stderr=outfilesys)
@@ -104,6 +114,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 	if (outfilesys == "") {
 		outfilesystxt = "CONSOLE"
 	} else {
+		shbasic::sh.ensurePath(outfilesys, stripFilename = T)
 		outfilesystxt = outfilesys
 	}
 	
@@ -298,7 +309,7 @@ hl_write_runinfos <- function(dexpa, basetime, offset, infoData) {
 	runinfo$Basetime	<- format(as.POSIXlt(basetime/1000, origin = "1970-01-01"), tz="UTC")
 	# %j gives 1 for the first day - not correct for duration
 	runinfo$OffsetHR	<- paste(if (offset<0) "-" else "", format(as.POSIXct(abs(offset)/1000, origin = "1969-12-31", tz="UTC"), 
-					"%jd %HH %MM %SS"), sep="")
+					"initial  %HH %MM %SS"), sep="")
 	runinfo$Offset		<- offset
 	runinfo$Duration	<- dexpa$sim$duration/(60*60)
 	runinfo$NumClients	<- infoData$numClients
@@ -321,7 +332,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
 			name="dexr.hl.experiment")
-	futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + round(dp1$sim$duration/dp1$sim$timefactor), tz="CEST"),
+	futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + round(dexpa$sim$duration/dexpa$sim$timefactor), tz="CEST"),
 			name="dexr.hl.experiment.duration")
 
 	if (outputfile != "") {
