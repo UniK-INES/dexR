@@ -152,7 +152,7 @@
             <decorating>false</decorating>
             <active>true</active>
             <resourcelink>
-                <link>outsideWind</link>
+                <link>kassel2012Sensors/windSensor</link>
                 <type>org.ogema.model.devices.sensoractordevices.WindSensor</type>
                 <name>${windplant.outsideWind}</name>
             </resourcelink>
@@ -219,9 +219,9 @@
             <decorating>false</decorating>
             <active>true</active>
             <resourcelink>
-                <link>OutsideSolarSensor</link>
+                <link>kassel2012Sensors/solarIrradiationSensor</link>
                 <type>org.ogema.model.sensors.SolarIrradiationSensor</type>
-                <name>sensor_0</name>
+                <name>${pvplant.outsideIrradiation}</name>
             </resourcelink>
             <elementType>org.ogema.model.sensors.SolarIrradiationSensor</elementType>
         </resource>

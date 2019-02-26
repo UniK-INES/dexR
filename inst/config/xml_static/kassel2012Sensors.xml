@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><og:resource xmlns:og="http://www.ogema-source.net/REST" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <name>kassel2012Sensors</name>
+    <type>org.ogema.model.devices.sensoractordevices.SensorDevice</type>
+    <path>kassel2012Sensors</path>
+    <decorating>false</decorating>
+    <active>true</active>
+    <resource>
+        <name>windSensor</name>
+        <type>org.ogema.model.devices.sensoractordevices.WindSensor</type>
+        <path>kassel2012Sensors/windSensor</path>
+        <decorating>true</decorating>
+        <active>true</active>
+        <resource>
+            <name>speed</name>
+            <type>org.ogema.model.sensors.VelocitySensor</type>
+            <path>kassel2012Sensors/windSensor/speed</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resource xsi:type="og:FloatResource">
+                <name>reading</name>
+                <type>org.ogema.core.model.units.VelocityResource</type>
+                <path>kassel2012Sensors/windSensor/speed/reading</path>
+                <decorating>false</decorating>
+                <active>true</active>
+                <resourcelink>
+                    <link>kassel2012Sensors/windSensor/speed/reading/forecast</link>
+                    <type>org.ogema.core.model.schedule.AbsoluteSchedule</type>
+                    <name>forecast</name>
+                </resourcelink>
+                <value>2.8620358</value>
+                <unit>m/s</unit>
+            </resource>
+        </resource>
+    </resource>
+     <resource>
+        <name>solarIrradiationSensor</name>
+        <type>org.ogema.model.sensors.SolarIrradiationSensor</type>
+        <path>kassel2012Sensors/solarIrradiationSensor</path>
+        <decorating>true</decorating>
+        <active>true</active>
+        <resource xsi:type="og:FloatResource">
+            <name>reading</name>
+            <type>org.ogema.core.model.units.EnergyPerAreaResource</type>
+            <path>kassel2012Sensors/solarIrradiationSensor/reading</path>
+            <decorating>false</decorating>
+            <active>true</active>
+            <resourcelink>
+                <link>kassel2012Sensors/solarIrradiationSensor/reading/forecast</link>
+                <type>org.ogema.core.model.schedule.AbsoluteSchedule</type>
+                <name>forecast</name>
+            </resourcelink>
+            <value>0.0</value>
+            <unit>W/m²</unit>
+        </resource>
+    </resource>
+</og:resource>

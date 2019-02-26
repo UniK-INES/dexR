@@ -51,6 +51,10 @@ hl_config_marketProducts2db <- function(dexpa, sourcedir=paste(dexpa$dirs$config
 	futile.logger::flog.info("Configure Market Backend products (%s/%s)...", sourcedir, sourcefile, 
 			name = "dexr.hl.config.backend")
 	
+	futile.logger::flog.debug("First delivery start is %s", 
+			format(as.POSIXct(firstDeliveryPeriodStart, tz="GTM", origin = "1970-01-01"), "%d/%m/%y %H:%M:%S"),
+			name = "dexr.hl.config.backend")
+	
 	# derive dexpa$sim$firstdeliverystart$delay
 	dexpa$sim$firstdeliverystart$delay <- max(dexpa$sim$firstdeliverystart$delay,
 			dexpa$emg$restarttime * dexpa$sim$timefactor)

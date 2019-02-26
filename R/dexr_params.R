@@ -91,8 +91,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	
 	### XML attributes Names ###########################################################
 	defdexpa$xml <- list()
-	defdexpa$xml$staticfiles 		<- c("OutsideBuildingRoom.xml", "OutsideSolarSensor.xml", 
-							"outsideTemperature.xml", "outsideWind_location.xml", "PropertyLocation.xml")
+	defdexpa$xml$staticfiles 		<- c("OutsideBuildingRoom.xml", "kassel2012Sensors.xml", 
+							"outsideTemperature.xml", "PropertyLocation.xml")
 	
 	### Figure Settings ###########################################################
 	defdexpa$fig <- list()

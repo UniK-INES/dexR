@@ -175,8 +175,8 @@ output_figure_energy_requested_comp_sumByLoadGenByStartT <- function(dexpa, data
 			value.name = "energy")
 	
 	output_figure_lines(dexpa, data, y_column = "energy", title = "Requested energy of requests by generation/load and delivery start time",
-			colour_column = "Type",
-			linetype_column = "id", linetype_legendtitle = "Run ID",
+			colour_column = "id", colour_legendtitle = "Run ID",
+			linetype_column = "Type", linetype_legendtitle = "Type",
 			facet_ncol = 1, filename = "dex_energy_requested_comp_sumGenLoadByCTlines",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
@@ -184,6 +184,6 @@ output_figure_energy_requested_comp_sumByLoadGenByStartT <- function(dexpa, data
 					ggplot2::scale_x_datetime(),
 					ggplot2::theme(
 							legend.position = "bottom"
-					), ggplot2::guides(linetype = ggplot2::guide_legend(ncol=1))
+					), ggplot2::guides(colour = ggplot2::guide_legend(ncol=1), linetype = ggplot2::guide_legend(ncol=1))
 			),  x_column = "start_time", returnplot = FALSE)
 }
