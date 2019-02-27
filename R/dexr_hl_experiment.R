@@ -309,7 +309,7 @@ hl_write_runinfos <- function(dexpa, basetime, offset, infoData) {
 	runinfo$Basetime	<- format(as.POSIXlt(basetime/1000, origin = "1970-01-01"), tz="UTC")
 	# %j gives 1 for the first day - not correct for duration
 	runinfo$OffsetHR	<- paste(if (offset<0) "-" else "", format(as.POSIXct(abs(offset)/1000, origin = "1969-12-31", tz="UTC"), 
-					"initial  %HH %MM %SS"), sep="")
+					"%jd %HH %MM %SS"), sep="")
 	runinfo$Offset		<- offset
 	runinfo$Duration	<- dexpa$sim$duration/(60*60)
 	runinfo$NumClients	<- infoData$numClients
@@ -328,8 +328,6 @@ hl_write_runinfos <- function(dexpa, basetime, offset, infoData) {
 hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round(Sys.time(),"mins"))*1000,
 		offset = round(basetime - as.numeric(Sys.time())*1000), outputfile = "", outfilemarket = "", outfileemg = "", outfile) {
 	
-	futile.logger::flog.info("Basetime: %f", basetime)
-	
 	futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
 			name="dexr.hl.experiment")
 	futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + round(dexpa$sim$duration/dexpa$sim$timefactor), tz="CEST"),
@@ -340,6 +338,11 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 		con <- file(outputfile)
 		sink(con, append=TRUE)
 		sink(con, append=TRUE, type="message")
+		
+		futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
+				name="dexr.hl.experiment")
+		futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + round(dexpa$sim$duration/dexpa$sim$timefactor), tz="CEST"),
+				name="dexr.hl.experiment.duration")
 	}
 	
 	infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset, startServer=F)
@@ -353,7 +356,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	futile.logger::flog.info("Wait for simulation to complete (Duration: %d / factor: %d = %f)", 
 			(dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay), 
-			dexpa$sim$timefactor, (dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay), name = "dexr.hl.experiment")
+			dexpa$sim$timefactor, (dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay) / dexpa$sim$timefactor, name = "dexr.hl.experiment")
 	Sys.sleep((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor)
 	
 	hl_experiment_stopemg(dexpa)
