@@ -1,4 +1,0 @@
-name,client,device,buyingThreshold,sellingThreshold
-DummyStorageRequestConfigs_01,EnaviClients_02,EnaviSimulatedStorageDevices_01,0.1,0.25
-DummyStorageRequestConfigs_02,EnaviClients_03,EnaviSimulatedStorageDevices_02,0.1,0.25
-DummyStorageRequestConfigs_03,EnaviClients_04,EnaviSimulatedStorageDevices_03,0.1,0.25

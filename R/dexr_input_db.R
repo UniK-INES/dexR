@@ -99,6 +99,8 @@ input_db_db2dump <- function(dexpa, dumpdir, remoteServer=FALSE, outputfile="") 
 				paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"),
 				name = "dexr.input.db.dump")
 		
+		shbasic::sh.ensurePath(dexpa$dirs$output$dbdumps)
+
 		if (file.exists(paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"))) {
 			unlink(paste(dexpa$dirs$output$dbdumps,dumpdir,sep="/"), recursive=TRUE)
 			futile.logger::flog.warn("Removed existing directory %s/%s." ,
@@ -137,6 +139,17 @@ input_db_dropdb <- function(dexpa) {
 	futile.logger::flog.info("Database %s dropped." ,
 			dexpa$db$dbname,
 			name = "dexr.input.db.drop")
+}
+#' Drop databases which are defined in a list of dexpas
+#' @param dexpas list of parameter lists
+#' @return -
+#' 
+#' @author Sascha Holzhauer
+#' @export
+input_db_dropdbs <- function(dexpas) {
+	for (dp in dexpas) {
+		dexR::input_db_dropdb(dp)
+	}	
 }
 #' Genrate run ID string of the given database configuration.
 #' @param dexpa 

@@ -1,6 +1,6 @@
 #' Retrieve clearing data from PostgreSQL database.
 #' 
-#' @param dexpa
+#' @param dexpa parameter list
 #' @return data.frame of clearing infos 
 #' 
 #' @author Sascha Holzhauer

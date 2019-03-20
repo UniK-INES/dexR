@@ -1,5 +1,7 @@
 ---
 title: "DEX Comparison Report"
+header-includes:
+  - \widowpenalties 1 150
 author: Sascha Holzhauer
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
@@ -44,7 +46,7 @@ invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 * Date: `r format(Sys.time(), "%a %b %d %H:%M:%S %Y")`
 
 ## Product Information
-### Product Information
+### Product Information {.allowframebreaks}
 ```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 for (dp in dexpas) {
@@ -56,7 +58,7 @@ invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
 
 ## Market Information
-### Market Information
+### Market Information {.allowframebreaks}
 ```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 for (dp in dexpas) {
@@ -126,6 +128,11 @@ dexR::hl_figure_energy_requested_comp_sumByStartT(dexpas)
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 750
 dexR::hl_figure_energy_requested_comp_sumLoadGenByStartT(dexpas)
+```
+
+## Aggregated Energy Figures
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+dexR::hl_statistics_comp_energy(dexpas)
 ```
 
 # Time Series: Requests

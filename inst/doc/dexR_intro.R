@@ -1,24 +1,29 @@
 ## ---- eval=FALSE---------------------------------------------------------
 #  ## DexpaProject.R
-#  #### COMMON PACKAGES ###########################################################
+#  #### Load common packages ######################################################
+#  library(kfigr)
 #  library(shbasic)
+#  library(RPostgreSQL)
 #  
-#  #### FUNCTIONS #################################################################
-#  #eg. for simp$dirs$param$getparamdir
-#  
-#  ### Simulation Data ############################################################
+#  ### Load default parameters ####################################################
 #  if (!exists("dexpa")) dexpa <-  dexR::param_getDefaultDexpa()
 #  
-#  ### DB Settings ##################################################################
+#  ### Simulation Data ############################################################
+#  dexpa$sim$project		<- "Projectname"
+#  
+#  ### Logger settings ############################################################
+#  futile.logger::flog.threshold(futile.logger::INFO, name='dexr')
+#  
+#  ### DB Settings ################################################################
 #  if(!is.list(dexpa$db)) dexpa$db <- list()
 #  dexpa$db$host			<- "localhost"
 #  dexpa$db$port			<- "5432"
-#  dexpa$db$dbname			<- "enavi"
-#  dexpa$db$username		<- "enavi"
-#  dexpa$db$password		<- "<password>"
+#  dexpa$db$dbname			<- "dexr"
+#  dexpa$db$username		<- "user"
+#  dexpa$db$password		<- "password"
 #  
 #  dexpa$db$suname			<- "postgres"
-#  dexpa$db$supassword		<- "<supassword>"
+#  dexpa$db$supassword		<- "supassword"
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  # Only contained when the particular script is only executed on a specific machine!
@@ -27,8 +32,8 @@
 #  
 #  # dexpa$dirs$scripts is set by machine-specific file:
 #  setwd(paste(dexpa$dirs$scripts, sep="/"))
-#  # usually, the setting/scenario specific dexpa.R is a level above:
-#  source("../dexpa.R")
+#  # usually, the project version specific `dexpa` file is a level above:
+#  source("../dexpa-pversion_pversion.R")
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  dexR::input_db_db2dump(dexpa, dumpdir = paste("dump_", dexpa$sim$id, sep=""))

@@ -12,14 +12,18 @@ hl_config_exportMarketProducts <- function(dexpa, dexpa_template, targetdir=past
 	write.csv(products, row.names=FALSE, file=paste(targetdir, "/DEX_Param_MarketProducts_", dexpa$sim$id, ".csv", sep=""))
 }
 #' Copy CSV template to new configuration folder
-#' @param dexpa
-#' @targetdir only used to check existence of target directory
+#' @param dexpa parameter list
+#' @param targetdir only used to check existence of target directory
 #' @return CSV files
 #' 
 #' @author Sascha Holzhauer
 #' @export
 hl_config_copycsvtemplates <- function(dexpa, targetdir=paste(dexpa$dirs$config, dexpa$sim$id,sep="/")) {
 	shbasic::sh.ensurePath(targetdir)
+	
+	futile.logger::flog.info("Copy CSV template to %s...", targetdir, 
+			name = "dexr.hl.config.backend")
+	
 	for (f in list.files(path = dexpa$dirs$csvtemplates, full.names=T)) {
 		file.copy(from = f, to = paste(dexpa$dirs$config, dexpa$sim$id, gsub("TMPL", dexpa$sim$id,
 						basename(f)), sep="/"), overwrite = T)
@@ -100,7 +104,7 @@ hl_config_marketProducts2db <- function(dexpa, sourcedir=paste(dexpa$dirs$config
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_config_clients2db <- function(dexpa,sourcedir = paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
+hl_config_clients2db <- function(dexpa,sourcedir = paste(dexpa$dirs$config, dexpa$sim$id, sep="/"), 
 		sourcefile=paste("DEX_Param_EnaviClient_", dexpa$sim$id, ".csv", sep="")) {
 	
 	

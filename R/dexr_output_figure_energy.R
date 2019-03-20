@@ -129,6 +129,7 @@ output_figure_energy_requested_comp_sumByStartT <- function(dexpa, data) {
 #' @param dexpa 
 #' @param data 
 #' @return figure file
+#' @seealso \code{\link{output_figure_lines}}
 #' 
 #' @author Sascha Holzhauer
 #' @export

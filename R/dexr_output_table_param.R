@@ -37,7 +37,8 @@ output_table_param_marketinfo <- function(dexpa, format="markdown", caption="Mar
 	
 	#timing$Basetime <- paste(substring(timing$Basetime, 1,2), substring(timing$Basetime, 4), sep="")
 	#timing$Basetime <- format(strptime(gsub("CEST ","",as.character(timing$Basetime)), tz="CEST", format = "%a %b %e %H:%M:%S %Y"), format = "%Y-%m-%d %H:%M:%S")
-	timing$Basetime <- format(strptime(timing$Basetime, tz="CEST", format = "%F %T"), format = "%y-%m-%d %H:%M:%S")
+	timing$Basetime <- format(strptime(timing$Basetime, tz="CEST", format = "%F %T"), format = "%y-%m-%d %H:%M")
+	timing$Offset <- format(as.POSIXct(as.numeric(timing$Offset)/1000, origin="1970-01-01"), format="%jd %H:%Mh")
 	knitr::kable(timing, format=format,  row.names=F, caption=caption, 
 			col.names = c(	"UID",
 							"TF",
@@ -62,6 +63,8 @@ output_table_param_clients <- function(dexpa, format="markdown", caption="Client
 	
 	for (i in seq(1,nrow(data), linespertable)) {
 		# i=19
+		optionKnitKableNa = getOption("knitr.kable.NA")
+		options(knitr.kable.NA = '')
 		tab <- knitr::kable(data[i:min(nrow(data),(i+linespertable-1)),], format=format, 
 				caption=caption, row.names=F, digits = 3,
 				col.names = c(	"Name", 
@@ -71,7 +74,8 @@ output_table_param_clients <- function(dexpa, format="markdown", caption="Client
 						"Prof",
 						"RotorArea",
 						"PanelArea"))
-	
+		options(knitr.kable.NA = optionKnitKableNa)
+		
 		if (!is.null(file)) {
 			if (prefix != "") write(prefix, file = paste(file, "_", i, ".", filextension,sep=""))
 			write(tab, file = paste(file, "_", i, ".", filextension,sep=""), append=prefix!="")	

@@ -3,7 +3,8 @@
 #' 
 #' @param dexpa parameter object
 #' @param data data.frame or list that is rbinded to a data.frame
-#' @param y_column
+#' @param y_column column name for y data
+#' @param x_column column name for x data
 #' @param title figure title
 #' @param fill_column column used to define colours
 #' @param fill_legendtitle title for colour legend
@@ -11,9 +12,8 @@
 #' @param facet_column column used to define facets
 #' @param facet_ncol number of columns of facet wrap
 #' @param filename without extension
-#' @param alpha
+#' @param alpha transparency
 #' @param ggplotaddons vector of ggplot objects to add
-#' @param x_column
 #' @param position passed to geom_bar
 #' @param returnplot if true the ggplot object is returned
 #' @return ggplot2 line visualisation

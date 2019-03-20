@@ -1,6 +1,10 @@
 #' Gnerates a figure of clearing at starttime
-#' @param dexpa 
-#' @param starttime
+#' 
+#' @param dexpa parameter list 
+#' @param starttime start time to consider
+#' @param title figure title
+#' @param filename output filename
+#' @param dexpa_comp parameter list of run to compare with
 #' @return figure in file
 #' 
 #' @author Sascha Holzhauer
@@ -48,8 +52,10 @@ hl_clearingsingle <- function(dexpa, starttime=NULL, title = NULL, filename = "G
 	dexpa$fig$width  = 800
 	dexpa$fig$height = 600
 	
-	dexpa$fig$init(dexpa, outdir=paste(dexpa$dirs$output$figures, "lines", sep="/"), 
-			filename = filename)
+	if (!is.null(filename)) {
+		dexpa$fig$init(dexpa, outdir=paste(dexpa$dirs$output$figures, "lines", sep="/"), 
+				filename = filename)
+	}
 	
 	dexR::output_figure_singleclearing_twisted(dexpa, title=title, offers_df=offers_df, bids_df=bids_df,
 			offers_comp=offers_comp, bids_comp=bids_comp)

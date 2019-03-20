@@ -5,10 +5,11 @@
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_clearing_numConsideredRequests_byCTbyProduct <- function(dexpa, data) {
+output_figure_clearing_numConsideredRequests_byCTbyProduct <- function(dexpa, data, 
+		filename = "dex_clearing_numConsRequestsByCTbyProduct") {
 	output_figure_bars(dexpa, data, y_column = "num_considered_requests", title = "Number of considered requests by clearing time and product",
 			fill_column = NULL, fill_legendtitle = NULL, fill_legenditemnames = NULL,
-			facet_column = "product_id", facet_ncol = 1, filename = "dex_clearing_numConsRequestsByCTbyProduct",
+			facet_column = "product_id", facet_ncol = 1, filename = filename,
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Clearing time"),
 					ggplot2::ylab("Number of considered requests")
@@ -21,10 +22,11 @@ output_figure_clearing_numConsideredRequests_byCTbyProduct <- function(dexpa, da
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_clearing_comp_numConsideredRequests_byCTbyProduct <- function(dexpa, data) {
+output_figure_clearing_comp_numConsideredRequests_byCTbyProduct <- function(dexpa, data,
+		filename = "dex_clearing_comp_numConsRequestsByCTbyProduct") {
 	output_figure_bars(dexpa, data, y_column = "num_considered_requests", title = "Number of considered requests by clearing time and product",
 			fill_column = "id", fill_legendtitle = "Run", fill_legenditemnames = NULL,
-			facet_column = "product_id", facet_ncol = 1, filename = "dex_clearing_comp_numConsRequestsByCTbyProduct",
+			facet_column = "product_id", facet_ncol = 1, filename = filename,
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Clearing time"),
 					ggplot2::ylab("Number of considered requests"),
@@ -40,11 +42,11 @@ output_figure_clearing_comp_numConsideredRequests_byCTbyProduct <- function(dexp
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_clearing_prices_byCTbyProduct <- function(dexpa, data) {
+output_figure_clearing_prices_byCTbyProduct <- function(dexpa, data, filename = "dex_clearing_clearedPriceByCTbyProduct") {
 	
 	output_figure_bars(dexpa, data, y_column = "price_cleared", title = "Cleared price by clearing time and product",
 			fill_column = "product_id", fill_legendtitle = "Market product", fill_legenditemnames = NULL,
-			facet_column = NULL, facet_ncol = 1, filename = "dex_clearing_clearedPriceByCTbyProduct",
+			facet_column = NULL, facet_ncol = 1, filename = filename,
 			alpha = 1.0, ggplotaddons = list(
 					ggplot2::xlab("Clearing time"),
 					ggplot2::ylab("Price cleared")
@@ -57,7 +59,8 @@ output_figure_clearing_prices_byCTbyProduct <- function(dexpa, data) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_clearing_comp_prices_byCTbyProduct <- function(dexpa, data) {
+output_figure_clearing_comp_prices_byCTbyProduct <- function(dexpa, data,
+		filename = "dex_clearing_clearedPriceByCTbyProduct") {
 	data <- plyr::ddply(data, c("id", "clearing_time", "product_id"), function(df) {
 				d <- data.frame(
 						price_cleared = sum(df$price_cleared * df$energy_cleared, na.rm=T) / 
@@ -67,7 +70,7 @@ output_figure_clearing_comp_prices_byCTbyProduct <- function(dexpa, data) {
 	
 	output_figure_bars(dexpa, data, y_column = "price_cleared", title = "Cleared price by clearing time and product",
 			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
-			facet_column = "product_id", facet_ncol = 1, filename = "dex_clearing_clearedPriceByCTbyProduct",
+			facet_column = "product_id", facet_ncol = 1, filename = filename,
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Clearing time"),
 					ggplot2::ylab("Price cleared"),

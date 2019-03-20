@@ -5,7 +5,8 @@
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_requests_numRequests_byStatusByStartT <- function(dexpa, data) {
+output_figure_requests_numRequests_byStatusByStartT <- function(dexpa, data,
+		filename = "dex_requests_numRequests_byStatusByCT") {
 	# count requests
 	data <- plyr::ddply(data, c("status", "start_time"), function(d) {
 				d$num_requests = nrow(d)
@@ -14,7 +15,7 @@ output_figure_requests_numRequests_byStatusByStartT <- function(dexpa, data) {
 	
 	output_figure_bars(dexpa, data, y_column = "num_requests", title = "Number of requests by status and delivery start time",
 			fill_column = NULL, fill_legendtitle = NULL, fill_legenditemnames = NULL,
-			facet_column = "product_id", facet_ncol = 1, filename = "dex_requests_numRequests_byStatusByCT",
+			facet_column = "product_id", facet_ncol = 1, filename = filename,
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
 					ggplot2::ylab("Number of Requests")
@@ -29,7 +30,8 @@ output_figure_requests_numRequests_byStatusByStartT <- function(dexpa, data) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_requests_numRequests_byStatusBySubmT <- function(dexpa, data, subtimerounding = "1 minute") {
+output_figure_requests_numRequests_byStatusBySubmT <- function(dexpa, data, subtimerounding = "1 minute",
+		filename = "dex_requests_numRequests_byStatusBySubmT") {
 	# count requests
 	# aggregate submission time (as it is too diverse to show, otherwise)
 	data$submission_time <- lubridate::round_date(data$submission_time, subtimerounding)
@@ -41,7 +43,7 @@ output_figure_requests_numRequests_byStatusBySubmT <- function(dexpa, data, subt
 	
 	output_figure_bars(dexpa, data, y_column = "num_requests", title = "Number of requests by status and submission time",
 			fill_column = NULL, fill_legendtitle = NULL, fill_legenditemnames = NULL,
-			facet_column = "product_id", facet_ncol = 1, filename = "dex_requests_numRequests_byStatusBySubmT",
+			facet_column = "product_id", facet_ncol = 1, filename = filename,
 			alpha=1.0, ggplotaddons = list(
 						ggplot2::xlab("Submission time"),
 						ggplot2::ylab("Number of Requests")
@@ -57,7 +59,8 @@ output_figure_requests_numRequests_byStatusBySubmT <- function(dexpa, data, subt
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpa, data) {
+output_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpa, data,
+		filename = "dex_requests_numRequests_byStatusByCT") {
 	# count requests
 	data <- plyr::ddply(data, c("id", "status", "start_time"), function(d) {
 				d$num_requests = nrow(d)
@@ -66,7 +69,7 @@ output_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpa, data
 	data$status <- dexpa$naming$statuses[match(data$status, names(dexpa$naming$statuses))]
 	output_figure_bars(dexpa, data, y_column = "num_requests", title = "Number of requests by status and delivery start time",
 			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
-			facet_column = "status", facet_ncol = 1, filename = "dex_requests_numRequests_byStatusByCT",
+			facet_column = "status", facet_ncol = 1, filename = filename,
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
 					ggplot2::ylab("Number of Requests"),
@@ -83,7 +86,8 @@ output_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpa, data
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_requests_numRequests_comp_byStatusBySubmT <- function(dexpa, data) {
+output_figure_requests_numRequests_comp_byStatusBySubmT <- function(dexpa, data,
+		filename = "dex_requests_numRequests_byStatusBySubmT") {
 	# count requests
 	attr(data$submission_time, "tzone") <- "Europe/Berlin"
 	data$submission_time <- as.POSIXct(round(data$submission_time,"mins"))
@@ -94,7 +98,7 @@ output_figure_requests_numRequests_comp_byStatusBySubmT <- function(dexpa, data)
 	data$status <- dexpa$naming$statuses[match(data$status, names(dexpa$naming$statuses))]
 	output_figure_bars(dexpa, data, y_column = "num_requests", title = "Number of requests by status and submission time",
 			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
-			facet_column = "status", facet_ncol = 1, filename = "dex_requests_numRequests_byStatusBySubmT",
+			facet_column = "status", facet_ncol = 1, filename = filename,
 			alpha=1.0, 
 			ggplotaddons = list(
 					ggplot2::xlab("Submission time"),
@@ -114,7 +118,8 @@ output_figure_requests_numRequests_comp_byStatusBySubmT <- function(dexpa, data)
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_requests_numRequests_comp_byProductByStartT <- function(dexpa, data) {
+output_figure_requests_numRequests_comp_byProductByStartT <- function(dexpa, data,
+		filename = "dex_requests_numRequests_byProductByCT") {
 	# count requests
 	data <- plyr::ddply(data, c("id", "product_id", "start_time"), function(d) {
 				d$num_requests = nrow(d)
@@ -123,7 +128,7 @@ output_figure_requests_numRequests_comp_byProductByStartT <- function(dexpa, dat
 	
 	output_figure_bars(dexpa, data, y_column = "num_requests", title = "Number of requests by product and delivery start time",
 			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
-			facet_column = "product_id", facet_ncol = 1, filename = "dex_requests_numRequests_byProductByCT",
+			facet_column = "product_id", facet_ncol = 1, filename = filename,
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
 					ggplot2::ylab("Number of Requests"),
@@ -140,7 +145,8 @@ output_figure_requests_numRequests_comp_byProductByStartT <- function(dexpa, dat
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_requests_numRequests_comp_byProductBySubmT <- function(dexpa, data) {
+output_figure_requests_numRequests_comp_byProductBySubmT <- function(dexpa, data,
+		filename = "dex_requests_numRequests_byProductBySubmT") {
 	# count requests
 	attr(data$submission_time, "tzone") <- "Europe/Berlin"
 	data$submission_time <- as.POSIXct(round(data$submission_time,"mins"))
@@ -151,7 +157,7 @@ output_figure_requests_numRequests_comp_byProductBySubmT <- function(dexpa, data
 
 	output_figure_bars(dexpa, data, y_column = "num_requests", title = "Number of requests by product and submission time",
 			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
-			facet_column = "product_id", facet_ncol = 1, filename = "dex_requests_numRequests_byProductBySubmT",
+			facet_column = "product_id", facet_ncol = 1, filename = filename,
 			alpha=1.0, 
 			ggplotaddons = list(
 					ggplot2::xlab("Submission time"),

@@ -6,7 +6,7 @@
 #' @param outfilesys log file
 #' @param basetime in ms, assigned to \code{de.unik.enavi.market.time.basetime}
 #' @param offset in ms, assigned to \code{de.unik.enavi.market.time.offset}
-#' @param startServer
+#' @param startServer TRUE if the server should also be started
 #' @return -
 #' 
 #' @author Sascha Holzhauer
@@ -34,7 +34,7 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 	# Instatiate server:
 	# It's important that the -D parameters are before the <application>.jar otherwise they are not recognized.
 	if (dexpa$server$usemvn) {
-		system2(wait=FALSE, "mvn", args=paste("-f ", dexpa$dirs$backend, " spring-boot:run ",
+		system2(wait=FALSE, "mvn", args=paste("-f ", dexpa$files$backendPOM, " spring-boot:run ",
 						"-Dspring.profiles.active=", dexpa$server$profile, " ",
 						"-Dspring.datasource.url=jdbc:postgresql://", dexpa$db$host,":", dexpa$db$port, "/", dexpa$db$dbname, " ",
 						"-Dserver.port=", dexpa$server$port, " ",
@@ -72,8 +72,10 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 	
 	# Import market products;
 	if (tools::file_ext(dexpa$files$paramconfigs)=="ods") {
+		futile.logger::flog.info("Reading config ODS file %s", dexpa$files$paramconfigs, name = "dexr.hl.experiment")
 		paramConfigs <- readODS::read_ods(dexpa$files$paramconfigs, sheet = 1)
 	} else {
+		futile.logger::flog.info("Reading config CSV file %s", dexpa$files$paramconfigs, name = "dexr.hl.experiment")
 		paramConfigs <- read.csv(dexpa$files$paramconfigs, header = TRUE, sep = ",", quote = "\"",
 				dec = ".", fill = TRUE, comment.char = "")
 	}
@@ -115,6 +117,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 		outfilesystxt = "CONSOLE"
 	} else {
 		shbasic::sh.ensurePath(outfilesys, stripFilename = T)
+		futile.logger::flog.info("outfilesys: %s (in hl_experiment_configemg)", outfilesys, name = "dexr.hl.experiment")
 		outfilesystxt = outfilesys
 	}
 	
@@ -248,9 +251,9 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 #	}	
 }
 #' Sleep during EMG startup
-#' @param dexpa
+#' @param dexpa parameter list
 #' @param waittime (default: dexpa$emg$emgstartuptime)
-#' @return 
+#' @return -
 #' 
 #' @author Sascha Holzhauer
 #' @export
@@ -326,11 +329,16 @@ hl_write_runinfos <- function(dexpa, basetime, offset, infoData) {
 #' @author Sascha Holzhauer
 #' @export
 hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round(Sys.time(),"mins"))*1000,
-		offset = round(basetime - as.numeric(Sys.time())*1000), outputfile = "", outfilemarket = "", outfileemg = "", outfile) {
+		offset = round(basetime - as.numeric(Sys.time())*1000),
+		outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, ".log", sep=""),
+		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep=""),
+		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep=""),
+		outfile) {
 	
 	futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
 			name="dexr.hl.experiment")
-	futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + round(dexpa$sim$duration/dexpa$sim$timefactor), tz="CEST"),
+	futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + 
+							round((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor), tz="CEST"),
 			name="dexr.hl.experiment.duration")
 
 	if (outputfile != "") {
@@ -341,7 +349,8 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 		
 		futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
 				name="dexr.hl.experiment")
-		futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + round(dexpa$sim$duration/dexpa$sim$timefactor), tz="CEST"),
+		futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + 
+								round((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor), tz="CEST"),
 				name="dexr.hl.experiment.duration")
 	}
 	

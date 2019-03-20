@@ -4,7 +4,7 @@
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_figure_clearing_numConsideredRequests <- function(dexpa) {
+hl_figure_clearing_numConsideredRequests <- function(dexpa, ...) {
 	data <- input_db_clearings(dexpa)
 	if (nrow(data)==0) {
 		R.oo::throw.default("DB contains no clearing information (table clearing_info) for DB ", dp$db$dbname, " for start time
@@ -12,7 +12,7 @@ hl_figure_clearing_numConsideredRequests <- function(dexpa) {
 				format(as.POSIXct(dexpa$sim$starttime_max, tz="GTM", origin = "1970-01-01"), "%H:%M:%S"),"!", )
 	}
 	data <- dexpa$sim$filter$clearings(dexpa, data)
-	output_figure_clearing_numConsideredRequests_byCTbyProduct(dexpa, data)
+	output_figure_clearing_numConsideredRequests_byCTbyProduct(dexpa, data, ...)
 }
 #' Retrieve data and store figure about the clearing price per clearing by clearing time and by product
 #' @param dexpa 
@@ -20,10 +20,10 @@ hl_figure_clearing_numConsideredRequests <- function(dexpa) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_figure_clearing_clearingPriceByCTbyProduct <- function(dexpa) {
+hl_figure_clearing_clearingPriceByCTbyProduct <- function(dexpa, ...) {
 	data <- input_db_clearings(dexpa)
 	data <- dexpa$sim$filter$clearings(dexpa, data)
-	output_figure_clearing_prices_byCTbyProduct(dexpa, data)
+	output_figure_clearing_prices_byCTbyProduct(dexpa, data, ...)
 }
 #' Retrieve data and store figure about the number of considered requests per clearing by clearing time
 #' @param dexpa 
@@ -31,7 +31,7 @@ hl_figure_clearing_clearingPriceByCTbyProduct <- function(dexpa) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_figure_clearing_comp_numConsideredRequests <- function(dexpas) {
+hl_figure_clearing_comp_numConsideredRequests <- function(dexpas, ...) {
 	data = data.frame()
 	for (dp in dexpas) {	
 		d <- input_db_clearings(dp)
@@ -47,7 +47,7 @@ hl_figure_clearing_comp_numConsideredRequests <- function(dexpas) {
 	}
 	if (nrow(data)>0) {
 		data <- dexpas[[1]]$sim$filter$clearings(dexpa, data)
-		output_figure_clearing_comp_numConsideredRequests_byCTbyProduct(dexpas[[1]], data = data)
+		output_figure_clearing_comp_numConsideredRequests_byCTbyProduct(dexpas[[1]], data = data, ...)
 	} else {
 		futile.logger::flog.warn("No clearing information (table clearing_info) retrieved from PostgreSQL databases %s for IDs %s!",
 			paste(lapply(dexpas, function(dp) dp$db$dbname), collapse="/"),
@@ -61,7 +61,7 @@ hl_figure_clearing_comp_numConsideredRequests <- function(dexpas) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_figure_clearing_comp_clearingPriceByCTbyProduct <- function(dexpas) {
+hl_figure_clearing_comp_clearingPriceByCTbyProduct <- function(dexpas, ...) {
 	data = data.frame()
 	for (dp in dexpas) {	
 		d <- input_db_clearings(dp)
@@ -76,7 +76,7 @@ hl_figure_clearing_comp_clearingPriceByCTbyProduct <- function(dexpas) {
 		}
 	}
 	if (nrow(data)>0) {
-		output_figure_clearing_comp_prices_byCTbyProduct(dexpas[[1]], data = data)
+		output_figure_clearing_comp_prices_byCTbyProduct(dexpas[[1]], data = data, ...)
 	} else {
 		futile.logger::flog.warn("No clearing information (table clearing_info) retrieved from PostgreSQL databases %s for IDs %s!",
 			paste(lapply(dexpas, function(dp) dp$db$dbname), collapse="/"),
