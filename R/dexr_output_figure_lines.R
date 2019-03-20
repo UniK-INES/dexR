@@ -4,8 +4,8 @@
 #' 
 #' @param dexpa parameter object
 #' @param data data.frame or list that is rbinded to a data.frame
-#' @param x_column
-#' @param y_column
+#' @param x_column column name for x data
+#' @param y_column column name for y data
 #' @param title figure title
 #' @param colour_column column used to define colours
 #' @param colour_legendtitle title for colour legend
@@ -16,12 +16,12 @@
 #' @param facet_column column used to define facets
 #' @param facet_ncol number of columns of facet wrap
 #' @param filename without extension
-#' @param alpha
+#' @param alpha transparency
 #' @param ggplotaddons vector of ggplot objects to add
 #' @param returnplot if true the ggplot object is returned
 #' @param showsd if \code{TRUE} line shows mean and ribbons standard deviation (requires multiple data points per group)
 #' @return ggplot2 line visualisation
-#' @example demo/example_visualise_lines_csv_allocation.R
+#' @seealso \code{\link{output_figure_energy_requested_comp_sumByLoadGenByStartT}}
 #'
 #' @author Sascha Holzhauer
 #' @export

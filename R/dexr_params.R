@@ -15,8 +15,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 
 	defdexpa$sim$version			<- "version"
 	defdexpa$sim$id				<- c("NN")
-	defdexpa$sim$duration			<- 30*60             # in sec
-	defdexpa$sim$timefactor			<- 1.0
+	defdexpa$sim$duration			<- 2*60*60             # in sec
+	defdexpa$sim$timefactor			<- 60.0
 
 	defdexpa$sim$firstdeliverystart		<- list()
 	defdexpa$sim$firstdeliverystart$delay	<- 0
@@ -43,7 +43,6 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$dirs$freemarkertemplate	<- system.file("config/freemarker", package="dexR")
 	defdexpa$dirs$csvtemplates		<- system.file("config/csv", package="dexR")
 	defdexpa$dirs$xmltemplatesstatic	<- system.file("config/xml_static", package="dexR")
-	defdexpa$dirs$backend			<- "./market-backend"
 	
 	# If empty, the a path relativ to dexpa$dirs$emgconfigtool is used!
 	defdexpa$dirs$emgrundir			<- NULL
@@ -65,11 +64,13 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	#defdexpa$classpath$emg			<- "set dexpa$classpath$emg"
 
 	### Files ################################################################
+	defdexpa$files <- list()
 	defdexpa$files$paramconfigs		<- paste(defdexpa$dirs$config, "DEX_Param_Configs.csv", sep="/")
 	defdexpa$files$runinfos			<- paste(defdexpa$dirs$project, "DEX_Runs.csv", sep="/")
-	defdexpa$files$emgconfigtool	<- paste(defdexpa$dirs$emgconfigtool, "emg-config-tool.jar", sep="/")
+	defdexpa$files$emgconfigtool		<- paste(defdexpa$dirs$emgconfigtool, "emg-config-tool.jar", sep="/")
 	defdexpa$files$serverjar		<- paste(dexpa$dirs$server, "enavi-market-backend-0.0.1-SNAPSHOT.jar", sep="/")
-		
+	defdexpa$files$backendPOM		<- "./market-backend/pom.xml"
+	
 	### DB Settings ##################################################################
 	defdexpa$db <- list()	
 	defdexpa$db$host			<- "localhost"

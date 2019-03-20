@@ -41,7 +41,7 @@ hl_figure_requests_numRequests_byStatusBySubmT <- function(dexpa) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpas) {
+hl_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpas, ...) {
 	data = data.frame()
 	for (dp in dexpas) {	
 		d <- input_db_requests(dp)
@@ -58,7 +58,7 @@ hl_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpas) {
 	}
 	if (nrow(data) > 0) {
 		data <- dexpa$sim$filter$requests(dexpa, data)
-		output_figure_requests_numRequests_comp_byStatusByStartT(dexpas[[1]], data)
+		output_figure_requests_numRequests_comp_byStatusByStartT(dexpas[[1]], data, ...)
 	} else {
 		futile.logger::flog.warn("No requests retrieved from PostgreSQL databases %s for IDs %s!",
 			paste(lapply(dexpas, function(dp) dp$db$dbname), collapse="/"),

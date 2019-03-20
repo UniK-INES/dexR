@@ -74,7 +74,7 @@ input_csv_clientdata <- function(dexpa) {
 #' @author Sascha Holzhauer
 #' @export
 input_csv_runinfos <- function(dexpa) {
-	runinfos <- read.csv(file = dexpa$files$runinfos)
+	runinfos <- read.csv(file = dexpa$files$runinfos, stringsAsFactors = F)
 	rinfos <- runinfos[runinfos$ID == dexpa$sim$id,]
 	if (nrow(rinfos)==0) {
 		runinfos <- runinfos[nrow(runinfos),]
