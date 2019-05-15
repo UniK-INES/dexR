@@ -14,12 +14,13 @@
 hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numeric(round(Sys.time(),"mins"))*1000,
 		offset = round(basetime - as.numeric(Sys.time())*1000), startServer=TRUE) {
 	infoData <- list()
-	futile.logger::flog.info("Starting Market Backend server (output to %s) with offset=%s/factor=%d/basetime=%s and with profile %s...", 
+	futile.logger::flog.info("Starting Market Backend server (output to %s) with offset=%s/factor=%d/basetime=%s and with profile %s and %s...", 
 			outfilesys,
 			format(as.POSIXct(offset/1000, tz="GTM", origin = "1970-01-01"), "%H:%M:%S"),
 			dexpa$sim$timefactor,
 			as.POSIXlt(basetime/1000, origin = "1970-01-01"),
 			dexpa$server$profile,
+			paste("-Dlogback.configuration.file=", dexpa$server$logconfigfile),
 			name = "dexr.hl.experiment.runbackend")
 	
 	firstDelivery <- basetime + (max(dexpa$sim$firstdeliverystart$delay,
