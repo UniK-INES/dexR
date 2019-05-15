@@ -20,7 +20,7 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 			dexpa$sim$timefactor,
 			as.POSIXlt(basetime/1000, origin = "1970-01-01"),
 			dexpa$server$profile,
-			paste("-Dlogback.configuration.file=", dexpa$server$logconfigfile),
+			paste("-Dlogback.configuration.file=", dexpa$server$logconfigfile, sep=""),
 			name = "dexr.hl.experiment.runbackend")
 	
 	firstDelivery <- basetime + (max(dexpa$sim$firstdeliverystart$delay,
@@ -48,7 +48,8 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 						"-Dlogback.configuration.file=", dexpa$server$logconfigfile,  sep=""),
 				stdout=outfilesys, stderr=outfilesys)
 	} else {
-		system2(wait=FALSE, "java", args=paste("-jar ", dexpa$files$serverjar, " ",
+		system2(wait=FALSE, "java", args=paste("-Dlogback.configuration.file=", dexpa$server$logconfigfile, 
+						" -jar ", dexpa$files$serverjar, " ",
 						"--spring.profiles.active=", dexpa$server$profile, " ",
 						"--spring.datasource.url=jdbc:postgresql://", dexpa$db$host,":", dexpa$db$port, "/", dexpa$db$dbname, " ",
 						"--server.port=", dexpa$server$port, " ",
@@ -56,8 +57,7 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 						"--de.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
 						"--de.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
 						"--de.unik.enavi.market.time.matchbasetime=", dexpa$server$matchbasetime, " ",
-						"--de.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), " ",
-						"--logback.configuration.file=", dexpa$server$logconfigfile, sep=""),
+						"--de.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
 				stdout=outfilesys, stderr=outfilesys)
 	}
 	control = 0
