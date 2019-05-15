@@ -188,3 +188,82 @@ output_figure_energy_requested_comp_sumByLoadGenByStartT <- function(dexpa, data
 					), ggplot2::guides(colour = ggplot2::guide_legend(ncol=1), linetype = ggplot2::guide_legend(ncol=1))
 			),  x_column = "start_time", returnplot = FALSE)
 }
+#' Output figure: Requested generation energy per generation type and submission time and status.
+#' 
+#' Requirement: Delivery periods of all products must be a multiple of the shortest delivery period (with start and end
+#' times matching those of the shortest delivery period product)!
+#' 
+#' @param dexpa 
+#' @param data 
+#' @return figure file
+#' @seealso \code{\link{output_figure_lines}}
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_figure_energy_requested_comp_sumGenByGenTypeStartT <- function(dexpa, data) {
+	# count requests
+	# data$id = "Test"
+	
+	data <- plyr::ddply(data, c("id"), function(df) {
+		# df <- data[data$id == data[1,"id"],]
+		# identify shortest delivery period:
+		shortestDelivery <- min(df$end_time - df$start_time)
+		minStartTime 	 <- min(df$start_time)
+		maxEndTime		 <- max(df$end_time)
+		
+		# create interval vector of shortest delivery period:
+		intervals <- seq(minStartTime, maxEndTime, by = shortestDelivery)
+		intervals <- lubridate::interval(intervals[1:(length(intervals)-1)], intervals[(1+1):length(intervals)])
+		result <- data.frame(start_time = intervals, 
+				PV = rep(0, length(intervals)),
+				Wind  = rep(0, length(intervals)),
+				Storage  = rep(0, length(intervals)))
+		
+		# aggregate energy:
+		for (r in 1:nrow(df)) {
+			# r = 1
+			# assign the according energy to all intervals that are within the delivery period:
+			# if (grepl("Pv", df[r, "cid"])) {
+			# 	result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			# 		"PV"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			# 				"PV"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
+			# } else if (grepl("Wind", df[r, "cid"])) {
+			# 	result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			# 		"Wind"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			# 				"Wind"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
+				
+			if (grepl("EnaviSimulatedDevices", df[r, "cid"]) & as.numeric(strsplit(df[r, "cid"], "_")[[1]][3]) <= 10) {
+			  result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			         "PV"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			                        "PV"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
+			} else if (grepl("EnaviSimulatedDevices", df[r, "cid"]) & as.numeric(strsplit(df[r, "cid"], "_")[[1]][3]) > 10) {
+			  result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			         "Wind"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			                          "Wind"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
+			} else if (grepl("Storage", df[r, "cid"])) {
+				result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+					"Storage"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+							"Storage"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
+			} 
+		  
+		}
+		result$start_time <- lubridate::int_start(result$start_time)
+		result
+	})
+	
+	data <- reshape2::melt(data, id.vars=c("id", "start_time"), variable.name = "Type",
+			value.name = "energy")
+	
+	output_figure_lines(dexpa, data, y_column = "energy", title = "Requested generation energy per generation type and delivery start time",
+			colour_column = "id", colour_legendtitle = "Run ID",
+			linetype_column = "Type", linetype_legendtitle = "Type",
+			facet_ncol = 1, filename = "dex_energy_requested_comp_sumGenByGenTypeCTlines",
+			alpha=1.0, ggplotaddons = list(
+					ggplot2::xlab("Start time"),
+					ggplot2::ylab("Requested energy"),
+					ggplot2::scale_x_datetime(),
+					ggplot2::theme(
+							legend.position = "bottom"
+					), ggplot2::guides(colour = ggplot2::guide_legend(ncol=1), linetype = ggplot2::guide_legend(ncol=1))
+			),  x_column = "start_time", returnplot = FALSE)
+}

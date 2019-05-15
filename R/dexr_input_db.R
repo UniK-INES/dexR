@@ -74,7 +74,17 @@ input_db_dump2db <- function(dexpa, dumpfile) {
 	futile.logger::flog.info("Importing dump completed" ,
 			name = "dexr.input.db.dump")
 }
-
+#' Import dumpfiles which are defined in a list of dexpas
+#' @param dexpas list of parameter lists
+#' @return -
+#' 
+#' @author Sascha Holzhauer
+#' @export
+input_db_dumps2db <- function(dexpas) {
+	for (dp in dexpas) {
+		dexR::input_db_dump2db(dp, dumpfile = paste("dump_", dp$sim$id, sep=""))
+	}	
+}
 #' Exports the database configured in the given parameter object to the given dumpfile
 #' @param dexpa parameter object
 #' @param dumpdir directory to export to (\code{dexpa$dirs$output$dbdumps} is prefixed)
@@ -179,6 +189,10 @@ input_db_runID <- function(dexpa) {
 	
 	DBI::dbDisconnect(con)
 	
-	return(paste(dexpa$sim$id, "_", num_clients$num_clients, "C", nrow(products), "P", minfo$fine_per_untraded_kwh, "F", "_",
+	if (!is.null(dexpa$fig$labelsubs)) {
+		return(dexpa$fig$labelsubs[dexpa$sim$id])	
+	} else {
+		return(paste(dexpa$sim$id, "_", num_clients$num_clients, "C", nrow(products), "P", minfo$fine_per_untraded_kwh, "F", "_",
 			paste(products$delivery_period_duration/(1000*60), "d", products$auction_interval, "a", products$clearingID, sep="", collapse="_"), sep=""))
+	}
 }

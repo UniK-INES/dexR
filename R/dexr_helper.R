@@ -10,6 +10,22 @@ ms_to_date = function(ms, t0="1970-01-01", timezone="Europe/Berlin") {
 	sec = ms / 1000
 	as.POSIXct(sec, origin=t0, tz=timezone)
 }
+#' Create a list of <code>dexpa</code> objects from vector of ids
+#' @param ids vector of ids
+#' @return list of dexpas
+#' 
+#' @author Sascha Holzhauer
+#' @export
+create_dexpas <- function(ids) {
+	dexpas <- list()
+	for (id in ids) {
+		dp <- dexpa
+		dp$sim$id <- id
+		dp$db$dbname <- id
+		dexpas=c(dexpas, setNames(list(dp), id))
+	}
+	return(dexpas)
+}
 #' Convert time string to milliseconds
 #' 
 #' @param timestring 

@@ -131,8 +131,11 @@ dexR::hl_figure_energy_requested_comp_sumLoadGenByStartT(dexpas)
 ```
 
 ## Aggregated Energy Figures
-```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+### Aggregated Energy Figures
+```{r, eval=TRUE, results="asis", echo=FALSE, messages=FALSE, warning=FALSE}
+invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 dexR::hl_statistics_comp_energy(dexpas)
+invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
 
 # Time Series: Requests

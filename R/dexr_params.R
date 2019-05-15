@@ -111,6 +111,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$fig$linewidth		<- 1
 	defdexpa$fig$facetlabelsize	<- 12
 	defdexpa$fig$legend$ncols	<- 3
+	defdexpa$fig$labelsubs <- NULL
 	
 	### Colour Settings ###########################################################
 	defdexpa$colours <- list()
@@ -147,6 +148,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$server$portoffset 	<- 0
 	defdexpa$server$rseed		<- 0
 	defdexpa$server$matchbasetime	<- "false"
+	defdexpa$server$logconfigfile <- "logback_t460.properties"
 	
 	### EMG Settings ############################################################	
 	defdexpa$emg$url		<- "https://localhost"

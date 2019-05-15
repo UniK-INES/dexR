@@ -43,7 +43,8 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 						"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ",
 						"-Dde.unik.enavi.market.time.basetime.initial=", format(initialbasetime, scientific = FALSE), " ", 
 						"-Dde.unik.enavi.market.time.matchbasetime=", dexpa$server$matchbasetime, " ",
-						"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
+						"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), " ",
+						"-Dlogback.configuration.file=", dexpa$server$logconfigfile,  sep=""),
 				stdout=outfilesys, stderr=outfilesys)
 	} else {
 		system2(wait=FALSE, "java", args=paste("-jar ", dexpa$files$serverjar, " ",
@@ -54,7 +55,8 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 						"--de.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
 						"--de.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ", 
 						"--de.unik.enavi.market.time.matchbasetime=", dexpa$server$matchbasetime, " ",
-						"--de.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), sep=""),
+						"--de.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), " ",
+						"--logback.configuration.file=", dexpa$server$logconfigfile, sep=""),
 				stdout=outfilesys, stderr=outfilesys)
 	}
 	control = 0
