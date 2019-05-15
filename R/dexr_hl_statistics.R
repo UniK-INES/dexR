@@ -12,25 +12,25 @@ hl_statistics_comp_energy <- function(dexpas) {
 
 	for (dp in dexpas) {
 		cinfo <- dexR::input_db_clearings(dp)
-		if (nrow(cinfos) == 0) {
+		if (nrow(cinfo) == 0) {
 			futile.logger::flog.warn("No clearing information retrieved from PostgreSQL database %s for ID %s!",
 				dp$db$dbname,
-				dp$id,
+				dp$sim$id,
 				name = "dexr.hl.statistics")
 		} else {
-			cinfo$id <- dexR::input_db_runID(dp)
-				cinfos <- rbind(cinfos,cinfo)
+			cinfo$id <- dp$sim$id
+			cinfos <- rbind(cinfos,cinfo)
 		}
 		
 		requestdatum <- input_db_requests(dp)
 		if (nrow(requestdatum) == 0) {
 			futile.logger::flog.warn("No request information retrieved from PostgreSQL database %s for ID %s!",
 				dp$db$dbname,
-				dp$id,
+				dp$sim$id,
 				name = "dexr.hl.statistics")
 		} else {
-			requestdatum$id <- dexR::input_db_runID(dp)
-			requestdatum <- rbind(requestdata, requestdatum)
+			requestdatum$id <- dp$sim$id
+			requestdata <- rbind(requestdata, requestdatum)
 		}
 
 	}

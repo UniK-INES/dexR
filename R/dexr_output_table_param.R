@@ -59,6 +59,7 @@ output_table_param_clients <- function(dexpa, format="markdown", caption="Client
 	data <- input_csv_clientdata(dexpa)
 	
 	data$annualConsumption = data$annualConsumption / 10^9
+	data$ratedEnergy_upperLimit = data$ratedEnergy_upperLimit / 10^6
 	data$profileType = substr(data$profileType,1,2)
 	
 	for (i in seq(1,nrow(data), linespertable)) {
@@ -72,8 +73,9 @@ output_table_param_clients <- function(dexpa, format="markdown", caption="Client
 						"P avg",
 						"Cons (GJ)",
 						"Prof",
-						"RotorArea",
-						"PanelArea"))
+						"RotorA",
+						"PanelA",
+						"Storage"))
 		options(knitr.kable.NA = optionKnitKableNa)
 		
 		if (!is.null(file)) {

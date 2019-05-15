@@ -18,6 +18,30 @@ vignette: >
   %\usepackage[utf8]{inputenc}
 ---
 
+# Comparing Runs/Scenarios
+
+The generic way of comparing data of several simulation runs, i.e. combining the data to visualise in one plot, is the following:
+
+1. For each data set to compare
+	+ Store dumpfile into database
+	+ Generate a `dexpa`-list for each run and store them in a list `dexpas`.
+2. Pass the list `dexpas` to a comparison function
+
+However, there a few high level functions that take a list of `dexpa` configurations and do not require the storage of combined data:
+
+* hl_comp_aggregate_aftcompositions
+* hl_comp_cell_aftcomposition# Comparing Runs/Scenarios
+
+# Output configuration
+
+## Filter
+It is possible to filter data according to start and end data:
+
+```{r, eval=FALSE, results="hide", echo=TRUE, messages=FALSE, warning=FALSE}
+dexpa$sim$starttime_min		<- as.numeric(strptime("30/11/19 12:00", "%d/%m/%y %H:%M"))*1000
+dexpa$sim$starttime_max		<- as.numeric(strptime("03/12/19 12:00", "%d/%m/%y %H:%M"))*1000
+```
+
 # Figures
 
 ## Prerequesists
@@ -34,6 +58,11 @@ dexpa$db$suname			<- "postgres"
 dexpa$db$supassword		<- "WiScAn07"
 ```
 
+## Getting data into a figure
+
+```{r, eval=FALSE, results="hide", echo=TRUE, messages=FALSE, warning=FALSE}
+dexR::input_db_dumps2db(dexR::create_dexpas(c("id1", "id2"))
+```
 
 ## Comparisons: Clearing
 
@@ -63,16 +92,14 @@ dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(dexpas, filename=NULL
 dexR::input_db_dropdbs(dexpas)
 ```
 
-# Comparing Runs/Scenarios
+# Reports
 
-The generic way of comparing data of several simulation runs, i.e. combining the data to visualise in one plot, is the following:
+There are a few templates for the generation of PDF-slides as reports containing specific tables and figure.
 
-1. For each data set to compare
-	+ Store dumpfile into database
-	+ Generate a `dexpa`-list for each run and store them in a list `dexpas`.
-2. Pass the list `dexpas` to a comparison function
+## Complete Comparison
 
-However, there a few high level functions that take a list of `dexpa` configurations and do not require the storage of combined data:
+```{r, eval=FALSE, results="hide", echo=TRUE, messages=FALSE, warning=FALSE}
+source("/home/USER/dexr/scripts/dexpa-machine_machine.R")
+hl_reports_comp(dexpa, c("enavi_08-01", "enavi_08-02"))
+```
 
-* hl_comp_aggregate_aftcompositions
-* hl_comp_cell_aftcomposition# Comparing Runs/Scenarios

@@ -7,7 +7,6 @@ output:
     number_sections: true
     toc: true
     toc_depth: 3
-    css: css/vignettes.css
 vignette: >
   %\VignetteIndexEntry{Configure and run experiments with dexR}
   %\VignetteEngine{knitr::rmarkdown}

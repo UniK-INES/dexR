@@ -34,13 +34,22 @@ input_csv_clientdata <- function(dexpa) {
 	windplants <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
 					paramConfigs[idMatch,"windplants"], sep="/"))
 	
+	storages <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
+					paramConfigs[idMatch,"devicesStorage"], sep="/"))
+	
+	# connect storages with clients via RequestConfig:
+	requestConfigs <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
+					paramConfigs[idMatch,"requestConfig"], sep="/"))
+	
 	data <- merge(clients, loads, by.x="name_emg", by.y="client", all=T)
+	colnames(data)[colnames(data)=="name.y"] <- "nameLoad"
 	data <- merge(data, loadProfiles, by.x="building", by.y="powerSensor", all=T)
 	
 	colnames(generations)[match( 
 						c("name", "averagePrice", "priceFluctuation", "averagePriceOffer", "priceOfferFluctuation"), 
 						colnames(generations))] <- c("nameGen", "averagePriceGen","priceFluctuationGen",
 						"averagePriceOfferGen", "priceOfferFluctuationGen")
+	# TODO storage
 	
 	data <- merge(data, generations, by.x="name_emg", by.y="client", all=T)
 	data <- merge(data, pvplants, by.x="device", by.y="name", all=T)
@@ -59,8 +68,15 @@ input_csv_clientdata <- function(dexpa) {
 	colnames(data)[colnames(data)=="reading"] <- "readingWind"
 	colnames(data)[colnames(data)=="simulationForecastUpdateFrequency"] <- "simulationForecastUpdateFrequencyWind"
 	
+	data <- merge(data, requestConfigs, by.x="name_emg", by.y="client", all=T)
+	colnames(data)[colnames(data)=="name"] <- "requestConfig"
+	
+	data <- merge(data, storages, by.x="storage", by.y="name", all=T)
+	colnames(data)[colnames(data)=="name"] <- "nameStorage"
+	colnames(data)[colnames(data)=="reading"] <- "readingStorage"
+	
 	data <- data[, c("name_emg", "price_fluctuation", "price_average", "annualConsumption", 
-					"profileType", "rotorArea", "panelArea")]
+					"profileType", "rotorArea", "panelArea", "ratedEnergy_upperLimit")]
 	data
 }
 
