@@ -217,33 +217,38 @@ output_figure_energy_requested_comp_sumGenByGenTypeStartT <- function(dexpa, dat
 		result <- data.frame(start_time = intervals, 
 				PV = rep(0, length(intervals)),
 				Wind  = rep(0, length(intervals)),
-				Storage  = rep(0, length(intervals)))
+				StorageOut  = rep(0, length(intervals)),
+				StorageIn  = rep(0, length(intervals)))
 		
 		# aggregate energy:
 		for (r in 1:nrow(df)) {
 			# r = 1
 			# assign the according energy to all intervals that are within the delivery period:
-			# if (grepl("Pv", df[r, "cid"])) {
-			# 	result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-			# 		"PV"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-			# 				"PV"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
-			# } else if (grepl("Wind", df[r, "cid"])) {
-			# 	result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-			# 		"Wind"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-			# 				"Wind"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
-				
-			if (grepl("EnaviSimulatedDevices", df[r, "cid"]) & as.numeric(strsplit(df[r, "cid"], "_")[[1]][3]) <= 10) {
-			  result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-			         "PV"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-			                        "PV"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
-			} else if (grepl("EnaviSimulatedDevices", df[r, "cid"]) & as.numeric(strsplit(df[r, "cid"], "_")[[1]][3]) > 10) {
-			  result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-			         "Wind"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-			                          "Wind"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
-			} else if (grepl("Storage", df[r, "cid"])) {
+			if (grepl("Pv", df[r, "cid"])) {
 				result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-					"Storage"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-							"Storage"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
+					"PV"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+							"PV"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
+			} else if (grepl("Wind", df[r, "cid"])) {
+				result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+					"Wind"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+							"Wind"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
+				
+			# if (grepl("PV", df[r, "cid"]) & as.numeric(strsplit(df[r, "cid"], "_")[[1]][3]) <= 10) {
+			#   result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			#          "PV"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			#                         "PV"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
+			# } else if (grepl("EnaviSimulatedDevices", df[r, "cid"]) & as.numeric(strsplit(df[r, "cid"], "_")[[1]][3]) > 10) {
+			#   result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			#          "Wind"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			#                           "Wind"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
+			} else if (grepl("Storage", df[r, "cid"]) & (df[r, "energy_requested"] < 0)) {
+				result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+					"StorageOut"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+							"StorageOut"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
+			} else if (grepl("Storage", df[r, "cid"]) & (df[r, "energy_requested"] > 0)) {
+			  result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			         "StorageIn"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+			                             "StorageIn"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
 			} 
 		  
 		}
