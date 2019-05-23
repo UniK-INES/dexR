@@ -10,7 +10,7 @@
 #' @export
 hl_reports_comp <- function(dexpa, ids, reporttmpl="DEX_report_compare_slides.Rmd",
 		outfileprefix = paste(dexpa$sim$project, "_ComparisonReport", sep="_")) {
-	dexpas <- dexR::create_dexpas(ids)
+	dexpas <- dexR::create_dexpas(ids, dexpa=dexpa)
 
 	dexR::input_db_dumps2db(dexpas)
 

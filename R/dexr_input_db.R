@@ -50,7 +50,7 @@ input_db_createdb <- function(dexpa) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-input_db_dump2db <- function(dexpa, dumpfile) {
+input_db_dump2db <- function(dexpa, dumpfile =  paste("dump_", dexpa$sim$id, sep="")) {
 	futile.logger::flog.info("Import dump %s to database %s..." ,
 			dumpfile,
 			dexpa$db$dbname,

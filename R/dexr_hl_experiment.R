@@ -278,13 +278,16 @@ hl_experiment_stopemg <- function(dexpa) {
 	
 	if (dexpa$emg$copyrundir) {
 		# copy log file to home dir:
-		futile.logger::flog.info("Copy log files (in %s) to home dir (%s)...",
+		futile.logger::flog.info("Copy log files %s (in %s) to home dir (%s)...",
+		    paste(list.files(paste(dexpa$dirs$emgnoderundir, dexpa$dirs$emglogdir, sep="/")), collapse="|"),
 				paste(dexpa$dirs$emgnoderundir,dexpa$dirs$emglogdir, sep="/"),
-				paste(dexpa$dirs$output$logs, "/emg/", dexpa$sim$id, sep="/"),
+				paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/emg/", sep="/"),
 				name = "dexr.hl.experiment")
-		shbasic::sh.ensurePath(paste(dexpa$dirs$output$logs, "/emg/", dexpa$sim$id, sep="/"))
+	  
+	   
+		shbasic::sh.ensurePath(paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/emg/", sep="/"))
 		file.copy(from=paste(dexpa$dirs$emgnoderundir, dexpa$dirs$emglogdir, sep="/"), 
-				to=paste(dexpa$dirs$output$logs, "/emg/", dexpa$sim$id, sep=""), 
+				to=paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/emg/", sep=""), 
 				overwrite = TRUE, recursive = TRUE, copy.mode = TRUE)
 		
 		file.remove(paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"))
@@ -345,6 +348,8 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 			name="dexr.hl.experiment.duration")
 
 	if (outputfile != "") {
+	  futile.logger::flog.info("Ensure path for %s...", outputfile,
+	                           name="dexr.hl.experiment")
 		shbasic::sh.ensurePath(outputfile, stripFilename = T)
 		con <- file(outputfile)
 		sink(con, append=TRUE)

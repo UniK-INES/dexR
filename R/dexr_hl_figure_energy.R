@@ -138,7 +138,8 @@ hl_figure_energy_requested_comp_sumLoadGenByStartT <- function(dexpas) {
 hl_figure_energy_requested_comp_sumGenByTypeStartT <- function(dexpas) {
 	data = data.frame()
 	products <- input_db_param_products(dexpas[[1]])
-	for (dp in dexpas) {	
+	for (dp in dexpas) {
+		# dp <- dexpas[[1]]
 		d <- input_db_requests(dp)
 		if (nrow(d) == 0) {
 			# R.oo::throw.default("No requests in DB for ID ", dp$id, "!")
@@ -153,7 +154,7 @@ hl_figure_energy_requested_comp_sumGenByTypeStartT <- function(dexpas) {
 			
 			# DECLINED && submission_time > (start_time + closing_time - auction_interval)
 			# d = d[1:5,]
-			d[d$status %in% c(0,1,2) | (d$status==3 & d$submission_time > d$start_time - 
+			d = d[d$status %in% c(0,1,2) | (d$status==3 & d$submission_time > d$start_time - 
 					# lubridate obviously ignores negative durations
 					(lubridate::as.duration(paste(products[match(d$product_id,products$description), "closing_time"],"in",sep="")) + 
 					lubridate::as.duration(paste(products[match(d$product_id,products$description), "auction_interval"],"in",sep="")))),]

@@ -10,13 +10,26 @@ ms_to_date = function(ms, t0="1970-01-01", timezone="Europe/Berlin") {
 	sec = ms / 1000
 	as.POSIXct(sec, origin=t0, tz=timezone)
 }
+#' The given/default dexpa object is dublicated, and sim$id and dp$dbname are subsituted by the given ID.
+#' @param id id
+#' @return dexpa
+#' 
+#' @author Sascha Holzhauer
+#' @export
+create_dexpa <- function(id, dexpa = dexR::param_getDefaultDexpa()) {
+	dexpa$sim$id <- id
+	dexpa$db$dbname <- id
+	return(dexpa)
+}
 #' Create a list of <code>dexpa</code> objects from vector of ids
+#' 
+#' The given/default dexpa object is dublicated, and sim$id and dp$dbname are subsituted by one of the given IDs.
 #' @param ids vector of ids
 #' @return list of dexpas
 #' 
 #' @author Sascha Holzhauer
 #' @export
-create_dexpas <- function(ids) {
+create_dexpas <- function(ids, dexpa = dexR::param_getDefaultDexpa()) {
 	dexpas <- list()
 	for (id in ids) {
 		dp <- dexpa
