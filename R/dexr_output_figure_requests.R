@@ -79,6 +79,29 @@ output_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpa, data
 			),  x_column = "start_time", group_column = "id", 
 			position = "dodge", returnplot = FALSE)
 }
+#' Output figure: Number of submitted requests per submission time and request type.
+#' @param dexpa 
+#' @param data 
+#' @return figure file
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_figure_requests_numRequests_comp_byTypeByStartT <- function(dexpa, data,
+		filename = "dex_requests_numRequests_byTypeByCT") {
+	# count requests
+	data <- requests_num_identify_type(dexpa, data)
+	output_figure_bars(dexpa, data, y_column = "Number", title = "Number of requests by status and delivery start time",
+			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
+			facet_column = "Type", facet_ncol = 1, filename = filename,
+			alpha=1.0, ggplotaddons = list(
+					ggplot2::xlab("Start time"),
+					ggplot2::ylab("Number of Requests"),
+					ggplot2::theme(
+							legend.position = "bottom"
+					)
+			),  x_column = "start_time", group_column = "id", 
+			position = "dodge", returnplot = FALSE)
+}
 #' Output figure: Number of considered requests by submission time and status.
 #' @param dexpa 
 #' @param data 

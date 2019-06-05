@@ -17,7 +17,7 @@
             <path>enaviMarkets/enavi_market/marketURL</path>
             <decorating>false</decorating>
             <active>true</active>
-            <value>http://localhost:${market.port}</value>
+            <value>${market.url}:${market.port}</value>
         </resource>
     </resource>
     </#list>

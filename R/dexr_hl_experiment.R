@@ -23,8 +23,55 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 			paste("-Dlogback.configuration.file=", dexpa$server$logconfigfile, sep=""),
 			name = "dexr.hl.experiment.runbackend")
 	
+	hl_experiment_bootbackend(dexpa = dexpa, basetime = basetime, offset = offset, outfilesys = outfilesys);
+	
+	if (control >= dexpa$server$controls) {
+		R.oo::throw.default("Starting market backend server NOT successful!")
+	}
+	
+	# Import market products;
+	if (tools::file_ext(dexpa$files$paramconfigs)=="ods") {
+		futile.logger::flog.info("Reading config ODS file %s", dexpa$files$paramconfigs, name = "dexr.hl.experiment")
+		paramConfigs <- readODS::read_ods(dexpa$files$paramconfigs, sheet = 1)
+	} else {
+		futile.logger::flog.info("Reading config CSV file %s", dexpa$files$paramconfigs, name = "dexr.hl.experiment")
+		paramConfigs <- read.csv(dexpa$files$paramconfigs, header = TRUE, sep = ",", quote = "\"",
+				dec = ".", fill = TRUE, comment.char = "")
+	}
+
+	# Check Runs.csv for requested ID:
+	idMatch <- match(dexpa$sim$id, paramConfigs$ID)
+	if(is.na(idMatch)) {
+		futile.logger::flog.warn("ID %s not present in config table (%s)!", dexpa$sim$id, dexpa$files$paramconfigs, 
+				name = "dexr.hl.experiment")
+	}
+	hl_config_marketProducts2db(dexpa, 
+			firstDeliveryPeriodStart = as.POSIXlt(basetime/1000, origin = "1970-01-01"),
+			sourcefile = if(!is.na(idMatch)) paramConfigs[idMatch, "products"] else 
+						paste("DEX_Param_MarketProducts_", dexpa$sim$id, ".csv", sep=""))
+	
+	# Insert client data:
+	infoData$numClients <- hl_config_clients2db(dexpa,
+			sourcefile = if(!is.na(idMatch)) paramConfigs[idMatch, "clients"] else 
+						paste("DEX_Param_EnaviClient_", dexpa$sim$id, ".csv", sep=""))
+	
+	if (startServer) {
+		# Start backend server:
+		message = server_start(dexpa)
+		futile.logger::flog.info(message, name = "dexr.hl.experiment")	
+	}
+
+	return(infoData)
+}
+#' Boots backend server (no configuration, no starting)
+#' 
+#' @param dexpa 
+#' 
+#' @author Sascha Holzhauer
+#' @export
+hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 	firstDelivery <- basetime + (max(dexpa$sim$firstdeliverystart$delay,
-			dexpa$emg$restarttime * dexpa$sim$timefactor)) * 1000
+						dexpa$emg$restarttime * dexpa$sim$timefactor)) * 1000
 	
 	initialbasetime = basetime + (firstDelivery - (basetime + dexpa$sim$timefactor * dexpa$emg$emgstartuptime))/2
 	
@@ -68,44 +115,6 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 		Sys.sleep(dexpa$server$controlinterval)
 		control = control + 1
 	}
-	
-	if (control >= dexpa$server$controls) {
-		R.oo::throw.default("Starting market backend server NOT successful!")
-	}
-	
-	# Import market products;
-	if (tools::file_ext(dexpa$files$paramconfigs)=="ods") {
-		futile.logger::flog.info("Reading config ODS file %s", dexpa$files$paramconfigs, name = "dexr.hl.experiment")
-		paramConfigs <- readODS::read_ods(dexpa$files$paramconfigs, sheet = 1)
-	} else {
-		futile.logger::flog.info("Reading config CSV file %s", dexpa$files$paramconfigs, name = "dexr.hl.experiment")
-		paramConfigs <- read.csv(dexpa$files$paramconfigs, header = TRUE, sep = ",", quote = "\"",
-				dec = ".", fill = TRUE, comment.char = "")
-	}
-
-	# Check Runs.csv for requested ID:
-	idMatch <- match(dexpa$sim$id, paramConfigs$ID)
-	if(is.na(idMatch)) {
-		futile.logger::flog.warn("ID %s not present in config table (%s)!", dexpa$sim$id, dexpa$files$paramconfigs, 
-				name = "dexr.hl.experiment")
-	}
-	hl_config_marketProducts2db(dexpa, 
-			firstDeliveryPeriodStart = as.POSIXlt(basetime/1000, origin = "1970-01-01"),
-			sourcefile = if(!is.na(idMatch)) paramConfigs[idMatch, "products"] else 
-						paste("DEX_Param_MarketProducts_", dexpa$sim$id, ".csv", sep=""))
-	
-	# Insert client data:
-	infoData$numClients <- hl_config_clients2db(dexpa,
-			sourcefile = if(!is.na(idMatch)) paramConfigs[idMatch, "clients"] else 
-						paste("DEX_Param_EnaviClient_", dexpa$sim$id, ".csv", sep=""))
-	
-	if (startServer) {
-		# Start backend server:
-		message = server_start(dexpa)
-		futile.logger::flog.info(message, name = "dexr.hl.experiment")	
-	}
-
-	return(infoData)
 }
 #' Create configuration for EMGs to experiment
 #' @param dexpa 
@@ -160,6 +169,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 						" -dd '",paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"devicesStorage"], sep=""), "'",
 						" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"requestConfig"], sep=""), "'",
 						" -sc '",paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", paramConfigs[idMatch,"ogemaConfig"], sep=""), "'",
+						" -u '", dexpa$server$url, "'",
 						" -po '",dexpa$server$port, "'",
 						sep=""), stdout=outfilesys, stderr=outfilesys)
 	} else {	
@@ -179,6 +189,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 						" -dd '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_DevicesStorage_", dexpa$sim$id, ".csv", sep=""), "'",
 						" -r '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_RequestConfig_", dexpa$sim$id, ".csv", sep=""), "'",
 						" -sc '", paste(dexpa$dirs$config, "/", dexpa$sim$id, "/DEX_Param_OgemaConfig_", dexpa$sim$id, ".csv", sep=""), "'",
+						" -u '", dexpa$server$url, "'",
 						" -po '",dexpa$server$port, "'",
 						sep=""), stdout=outfilesys, stderr=outfilesys)
 	}
@@ -294,6 +305,30 @@ hl_experiment_stopemg <- function(dexpa) {
 		futile.logger::flog.info("Emg-Rundir deleted.", name = "dexr.hl.experiment")
 	}
 }
+#' Ensures file exists an redirects output.
+#' 
+#' @param dexpa 
+#' @param outputfile  
+#' @return 
+#' 
+#' @author Sascha Holzhauer
+#' @export
+hl_experiment_ensureFileLogging <- function(dexpa, outputfile) {
+	if (outputfile != "") {
+		futile.logger::flog.info("Ensure path for %s...", outputfile,
+				name="dexr.hl.experiment")
+		shbasic::sh.ensurePath(outputfile, stripFilename = T)
+		con <- file(outputfile)
+		sink(con, append=TRUE)
+		sink(con, append=TRUE, type="message")
+		
+		futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
+				name="dexr.hl.experiment")
+		futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + 
+								round((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor), tz="CEST"),
+				name="dexr.hl.experiment.duration")
+	}
+}
 #' Append current run information to runInfos file.
 #' @param dexpa 
 #' @param basetime 
@@ -347,20 +382,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 							round((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor), tz="CEST"),
 			name="dexr.hl.experiment.duration")
 
-	if (outputfile != "") {
-	  futile.logger::flog.info("Ensure path for %s...", outputfile,
-	                           name="dexr.hl.experiment")
-		shbasic::sh.ensurePath(outputfile, stripFilename = T)
-		con <- file(outputfile)
-		sink(con, append=TRUE)
-		sink(con, append=TRUE, type="message")
-		
-		futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
-				name="dexr.hl.experiment")
-		futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + 
-								round((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor), tz="CEST"),
-				name="dexr.hl.experiment.duration")
-	}
+	dexR::hl_experiment_ensureFileLogging(dexpa, outputfile)
 	
 	infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset, startServer=F)
 	
