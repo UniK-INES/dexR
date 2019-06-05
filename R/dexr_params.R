@@ -39,6 +39,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$dirs <- list()
 	defdexpa$dirs$project			<- "./"
 	defdexpa$dirs$config			<- "./config"
+	defdexpa$dirs$scripts     <- "./scripts"
 	
 	defdexpa$dirs$freemarkertemplate	<- system.file("config/freemarker", package="dexR")
 	defdexpa$dirs$csvtemplates		<- system.file("config/csv", package="dexR")

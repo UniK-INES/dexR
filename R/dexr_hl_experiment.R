@@ -23,7 +23,7 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 			paste("-Dlogback.configuration.file=", dexpa$server$logconfigfile, sep=""),
 			name = "dexr.hl.experiment.runbackend")
 	
-	hl_experiment_bootbackend(dexpa = dexpa, basetime = basetime, offset = offset, outfilesys = outfilesys);
+	control <- hl_experiment_bootbackend(dexpa = dexpa, basetime = basetime, offset = offset, outfilesys = outfilesys);
 	
 	if (control >= dexpa$server$controls) {
 		R.oo::throw.default("Starting market backend server NOT successful!")
@@ -115,6 +115,7 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 		Sys.sleep(dexpa$server$controlinterval)
 		control = control + 1
 	}
+	return(control)
 }
 #' Create configuration for EMGs to experiment
 #' @param dexpa 
