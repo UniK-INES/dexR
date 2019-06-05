@@ -1,0 +1,170 @@
+---
+title: "Introduction to dexR"
+author: "Sascha Holzhauer"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    number_sections: true
+    toc: true
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{Introduction to dexR2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+dexr supports the direct energy exchange (DEX) demonstration environment. The DEX environment includes OGEMA clients dealing on a market server that enables the configuration of various market products and parameters. Clients can be configured to control PV modules, wind turbines, storage and consuming devices.
+
+![](png/dexR_dex-environment_en.png)
+
+# Concept
+
+The package provides various functions to configure and run experiments, load data from db and XML configuration files, convert, and finally visualise it. Therefore, in a chain of production these functions need to be combined. At the same time, there are a number
+of high level functions which integrate the more basic functions but leave less scope for customisation. These
+high level functions start with 'hl'.
+
+# Configuration and Simulation Course
+
+This gives an overview whereas the configuration is described in [Config](dexR_config.html), running simulations in [Run](/dexR_run.html), any analysing results in [Analyse](dexR_analyse.html).
+
+1. Copy CSV templates
+2. Edit CSV tables (manual!)
+3. Market-Backend Warm-up/initialisation
+4. Configure market products and clients in DB
+5. Generate EMG XML configuration
+6. Start EMG client(s)
+7. Start market backend
+8. Start simulation timer
+9. Stop EMG
+10. Dump DB to file
+11. Stop market backend 
+
+
+# Parameters
+
+There is a `dexpa` (DEX Parameters) list which contains all project-specific properties, directories, 
+and parameters. The ```dexp```a list consists of a number of sublists:
+
+* sim
+
+* dirs
+
+* xml
+
+* fig
+
+* db
+
+* colours
+
+* debug
+
+The basic idea is to define a dexpa list for each project and machine and execute the dexpa defining 
+R code every time you start a script with the according project:
+
+1. Before or within the script, the machine-specific `dexpa` configuration (`dexpa-maschine_XY.R`) is loaded.
+
+2. The machine-specific `dexpa` file includes the project-specific file (dexpaProject.R.) which also loads the default parameter list. Therefore, the machine-specific file may overwrite certain defaults of project-wide parameters.
+
+```{r, eval=FALSE}
+## DexpaProject.R
+#### Load common packages ######################################################
+library(kfigr)
+library(shbasic)
+library(RPostgreSQL)
+
+### Load default parameters ####################################################
+if (!exists("dexpa")) dexpa <-  dexR::param_getDefaultDexpa()
+
+### Simulation Data ############################################################
+dexpa$sim$project		<- "Projectname"
+
+### Logger settings ############################################################
+futile.logger::flog.threshold(futile.logger::INFO, name='dexr')
+
+### DB Settings ################################################################
+if(!is.list(dexpa$db)) dexpa$db <- list()
+dexpa$db$host			<- "localhost"
+dexpa$db$port			<- "5432"
+dexpa$db$dbname			<- "dexr"
+dexpa$db$username		<- "user"
+dexpa$db$password		<- "password"
+
+dexpa$db$suname			<- "postgres"
+dexpa$db$supassword		<- "supassword"
+```
+
+3. The script then includes a project-version-specific file `dexpa-pversion.R` (e.g. image resolutions)
+
+4. The script itself may then override particular parameter values with experiment-specific properties 
+(e.g. runID).
+
+Consequently, one can define parameters on four different levels: project > machine > project version > simulation.
+
+Using the parameter set during an initial execution of the machine-dependent scripts at startup, each 
+script using dexR should load the ```dexpa``` code anew. During that process, the entire ```dexpa``` list 
+including all possible changes are removed from memory and loaded anew. Following above suggestions,
+a script first loading the setting/scenario specific ```dexpa.R``` would look like this:
+
+```{r, eval=FALSE}
+# Only contained when the particular script is only executed on a specific machine!
+# Otherwise. the machine-specific file needs to be executed before.
+source("/PATH-TO/dexpa-machine_XY.R")
+
+# dexpa$dirs$scripts is set by machine-specific file:
+setwd(paste(dexpa$dirs$scripts, sep="/"))
+# usually, the project version specific `dexpa` file is a level above:
+source("../dexpa-pversion_pversion.R")
+```
+    
+## Defining Colours
+
+Colours for different purposes are defined in sublists of `dexpa$colours$products`, eg. `products` and `statuses`.
+
+ 
+# Handling Data
+
+## Simulation Run IDs
+
+Each simulation run should have a unique ID which is to be assigned to `dexpa$sim$id`.
+
+## Database Management
+
+Since DEX stores data to a PostGreSQL database, data of different runs should be stored in different databases. To this end, the main database DEX is writing to needs to be either dumped to a file or duplicated to another database:
+
+### Dump DB and restore to different DB
+
+```{r, eval=FALSE}
+dexR::input_db_db2dump(dexpa, dumpdir = paste("dump_", dexpa$sim$id, sep=""))
+dp1 			<- dexpa
+dp1$db$dbname 	<- "enavi_01-01"
+dexR::input_db_dump2db(dp1, dumpfile=paste("dump_", dp1$sim$id, sep=""))
+```
+
+# Debugging/Logging
+
+dexR uses the package ```futile.logger```. Initially, it sets up a console outputter 
+to log everything on ```INFO``` level. However, the logger can be configured in a detailed way.
+
+```{r, eval=FALSE}
+futile.logger::flog.threshold(futile.logger::DEBUG, name='dexr')
+futile.logger::flog.threshold(futile.logger::TRACE, name='dexr.input')
+```
+It is also possible to add handlers for further sinks.  
+
+```{r, eval=FALSE}
+futile.logger::flog.appender(appender.file(filename), name='dexr.output')
+```
+
+Compare the documentation for package ```futile.logger``` for more detailed information.
+A tutorial is also [available](http://www.r-bloggers.com/better-logging-in-r-aka-futile-logger-1-3-0-released/).
+
+
+# Troubleshooting
+
+## Error Messages
+### dexR terminates saying 'RS-DBI driver: (could not Retrieve the result : ERROR:  duplicate key value violates unique constraint "user_account_pkey"'
+Usually, a previous instance of the market server is still running.
+
