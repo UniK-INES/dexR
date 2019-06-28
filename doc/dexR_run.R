@@ -16,7 +16,7 @@
 #  		offset = round(basetime - as.numeric(Sys.time())*1000))
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  source("/home/sascha/git/enavi/market/enavi-r/config/dexpa-machine_T460s.R")
+#  source("<path to git repository>/enavi/market/enavi-r/config/dexpa-machine_T460s.R")
 #  dexpa$sim$version 	<- "testversion"	
 #  dexpa$sim$id 		<- "Testrun01"
 #  

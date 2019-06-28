@@ -52,7 +52,7 @@ str_to_ms = function(timestring, format = "%Y-%m-%d %H:%M", timezone="Europe/Ber
 	as.numeric(strptime(timestring,format = format, tz=timezone))*1000
 }
 #' Copies machine-specific and project-specific config file <code>dexpa-machine_machine.R</code> to location 
-#' <code>dexpa$dirs$config</code> for the user to edit.
+#' <code>dexpa$dirs$config</code> for the user to edit. Creates folder if not existing.
 #'
 #' @param dexpa 
 #' @return -

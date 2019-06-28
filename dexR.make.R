@@ -25,7 +25,8 @@ if (full) {
 }
 
 
-install(pkgsName)
+install(pkgsName, upgrade="always", build_vignettes=T)
+
 if (full) {
 	browseVignettes("dexR")
 }

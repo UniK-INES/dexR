@@ -8,7 +8,7 @@ output:
     toc: true
     toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Introduction to dexR2}
+  %\VignetteIndexEntry{Introduction to dexR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -167,4 +167,3 @@ A tutorial is also [available](http://www.r-bloggers.com/better-logging-in-r-aka
 ## Error Messages
 ### dexR terminates saying 'RS-DBI driver: (could not Retrieve the result : ERROR:  duplicate key value violates unique constraint "user_account_pkey"'
 Usually, a previous instance of the market server is still running.
-
