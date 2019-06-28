@@ -8,20 +8,36 @@ output:
     toc: true
     toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Configure and run experiments with dexR}
+  %\VignetteIndexEntry{Configure experiments with dexR}
   %\VignetteEngine{knitr::rmarkdown}
   %\usepackage[utf8]{inputenc}
 ---
 
 # Setup and run sample project
 
+First, in case you checked out the enavi project from the git repository, you should have the system environment variable ```GIT_DIR``` point to your local git repository which contains enavi, if it doesn't do already:
+
+```{r, eval=F}
+Sys.getenv("GIT_DIR")
+Sys.setenv("GIT_DIR"="<path to git repositry including enavi projeckt, eg. ~/git>")
+```
 To create a sample project, execute:
 
 ```{r, eval=FALSE}
 demo(config, package="dexR", echo=F)
 ```
 
-To run the smaple project, call:
+Follow the instruction printed on the command line (after NOTE:)! Furthermore, running the sample projekt assumes the following parameters are correct as follows:
+
+```{r, eval=FALSE}
+dexpa$db$host			<- "localhost"
+dexpa$db$port			<- "5432"
+dexpa$db$dbname			<- "enavi"
+dexpa$db$username		<- "enavi"
+dexpa$db$password		<- "enavi!"
+```
+
+If one if these is not correct, set the corresponding parameter by yourself (on R command line before running the sample project). To run the sample project, call:
 
 ```{r, eval=FALSE}
 demo(run, package="dexR", echo=F)
@@ -34,15 +50,16 @@ NOTE: The demo files reside in the R session's temporary folder and will be remo
 
 ## Setup environment
 
-As explained in [Intro](dexR_intro.html#Parameters), configuration of dexR is done on four levels (project > machine > project version > simulation). Files for the first two levels need to be copied to project-specifc location once for a project:
+As explained in [Intro](dexR_intro.html#Parameters), configuration of dexR is done on four levels (project > machine > project version > simulation). Files for the first two levels need to be copied to a project-specifc location once for a project:
 
 ```{r, eval=FALSE}
 dexpa <- dexR::param_getDefaultDexpa()
-dexpa$dirs$project <- "/home/USER/dexr/project"
-dexpa$dirs$config <- "/home/USER/dexr/project/config"
+dexpa$dirs$project <- "<substitute by path to project>/project"
+dexpa$dirs$config  <- "<substitute by path to project>/project/config"
 dexR::setup_environment(dexpa)
 ```
-No it's time to adapt `dexpa-project.R` and `dexpa-machine_machine.R` to your needs.
+After execution of ```dexR::setup_environment(dexpa)``` the config folder should contain two config files (machine-specific and project-specific). It creates the folder as possible if not existing.
+Now it's time to adapt `dexpa-project.R` and `dexpa-machine_machine.R` to your needs.
 
 ## Setup a new project version
 
@@ -51,9 +68,9 @@ For a given project version, dexR reads pointers to specific CSV config files fr
 ```{r, eval=FALSE}
 source("/home/USER/dexr/scripts/dexpa-machine_machine.R")
 dexpa$sim$version <- "TestA
-dexR::setup_project_version(dexpa)
+dexpa <- dexR::setup_project_version(dexpa)
 ```
-You can now adapt ```<project>/scripts/<version>/dexpa-pversion_<version>.R```
+After execution of ```dexR::setup_project_version(dexpa)``` the config folder should contain a version-specific config file, ```DEX_Param_Configs.ods``` and ```DEX_Param_Configs.csv``` in folder ```dexpa$dirs$config```. ```dexpa$files$runinfos```  contains the file ```DEX_Runinfos.csv``` (folders are created if non-existing). You can now adapt ```<your project name>/scripts/<your version>/dexpa-pversion_<<our version>.R```
 
 
 #Configuration

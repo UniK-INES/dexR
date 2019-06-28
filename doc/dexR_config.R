@@ -1,19 +1,30 @@
+## ---- eval=F-------------------------------------------------------------
+#  Sys.getenv("GIT_DIR")
+#  Sys.setenv("GIT_DIR"="<path to git repositry including enavi projeckt, eg. ~/git>")
+
 ## ---- eval=FALSE---------------------------------------------------------
 #  demo(config, package="dexR", echo=F)
+
+## ---- eval=FALSE---------------------------------------------------------
+#  dexpa$db$host			<- "localhost"
+#  dexpa$db$port			<- "5432"
+#  dexpa$db$dbname			<- "enavi"
+#  dexpa$db$username		<- "enavi"
+#  dexpa$db$password		<- "enavi!"
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  demo(run, package="dexR", echo=F)
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  dexpa <- dexR::param_getDefaultDexpa()
-#  dexpa$dirs$project <- "/home/USER/dexr/project"
-#  dexpa$dirs$config <- "/home/USER/dexr/project/config"
+#  dexpa$dirs$project <- "<substitute by path to project>/project"
+#  dexpa$dirs$config  <- "<substitute by path to project>/project/config"
 #  dexR::setup_environment(dexpa)
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  source("/home/USER/dexr/scripts/dexpa-machine_machine.R")
 #  dexpa$sim$version <- "TestA
-#  dexR::setup_project_version(dexpa)
+#  dexpa <- dexR::setup_project_version(dexpa)
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  source("/home/USER/dexr/scripts/dexpa-machine_machine.R")

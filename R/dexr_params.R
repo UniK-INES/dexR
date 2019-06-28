@@ -150,6 +150,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$server$rseed		<- 0
 	defdexpa$server$matchbasetime	<- "false"
 	defdexpa$server$logconfigfile <- "logback_t460.properties"
+	defdexpa$server$sslcert <- "dex.p12"
 	
 	### EMG Settings ############################################################	
 	defdexpa$emg$url		<- "https://localhost"
@@ -192,5 +193,9 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 #' @author Sascha Holzhauer
 #' @export
 param_getDefaultDexpa <- function() {
-	param_mergeDefaultDexpa()
+  dexpa <- param_mergeDefaultDexpa()
+  # enable HTTP requests to DEX server
+  httr::set_config(httr::config(cainfo=system.file("config/certificates", dexpa$server$sslcert,package="dexR")))
+  httr::set_config(httr::config(ssl_verifypeer = 0L))
+	return(dexpa)
 }

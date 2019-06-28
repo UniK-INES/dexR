@@ -22,11 +22,12 @@ futile.logger::flog.threshold(futile.logger::INFO, name='dexr')
 
 ### DB Settings ################################################################
 if(!is.list(dexpa$db)) dexpa$db <- list()
+
 dexpa$db$host			<- "localhost"
 dexpa$db$port			<- "5432"
-dexpa$db$dbname			<- "dexr"
-dexpa$db$username		<- "user"
-dexpa$db$password		<- "password"
+dexpa$db$dbname			<- "enavi"
+dexpa$db$username		<- "enavi"
+dexpa$db$password		<- "enavi!"
 
 dexpa$db$suname			<- "postgres"
 dexpa$db$supassword		<- "supassword"

@@ -81,18 +81,25 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 	
 	# Instatiate server:
 	# It's important that the -D parameters are before the <application>.jar otherwise they are not recognized.
+	
 	if (dexpa$server$usemvn) {
-		system2(wait=FALSE, "mvn", args=paste("-f ", dexpa$files$backendPOM, " spring-boot:run ",
-						"-Dspring.profiles.active=", dexpa$server$profile, " ",
-						"-Dspring.datasource.url=jdbc:postgresql://", dexpa$db$host,":", dexpa$db$port, "/", dexpa$db$dbname, " ",
-						"-Dserver.port=", dexpa$server$port, " ",
-						"-Dde.unik.enavi.market.testing.load=FALSE ",
-						"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
-						"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ",
-						"-Dde.unik.enavi.market.time.basetime.initial=", format(initialbasetime, scientific = FALSE), " ", 
-						"-Dde.unik.enavi.market.time.matchbasetime=", dexpa$server$matchbasetime, " ",
-						"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), " ",
-						"-Dlogback.configuration.file=", dexpa$server$logconfigfile,  sep=""),
+		arguments = paste("-f ", dexpa$files$backendPOM, " spring-boot:run ",
+				"-Dspring.profiles.active=", dexpa$server$profile, " ",
+				"-Dspring.datasource.url=jdbc:postgresql://", dexpa$db$host,":", dexpa$db$port, "/", dexpa$db$dbname, " ",
+				"-Dserver.port=", dexpa$server$port, " ",
+				"-Dde.unik.enavi.market.testing.load=FALSE ",
+				"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
+				"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ",
+				"-Dde.unik.enavi.market.time.basetime.initial=", format(initialbasetime, scientific = FALSE), " ", 
+				"-Dde.unik.enavi.market.time.matchbasetime=", dexpa$server$matchbasetime, " ",
+				"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), " ",
+				"-Dlogback.configuration.file=", dexpa$server$logconfigfile,  sep="")
+		
+		futile.logger::flog.debug("System2 command is %s.",
+				paste("mvn", arguments),
+				name = "dexr.hl.experiment")
+		
+		system2(wait=FALSE, "mvn", args=arguments,
 				stdout=outfilesys, stderr=outfilesys)
 	} else {
 		system2(wait=FALSE, "java", args=paste("-Dlogback.configuration.file=", dexpa$server$logconfigfile, 
@@ -375,7 +382,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 		outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, ".log", sep=""),
 		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep=""),
 		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep=""),
-		outfile) {
+		outfile, shutdown = T) {
 	
 	futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
 			name="dexr.hl.experiment")
@@ -407,7 +414,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 
 	try(dexR::createFullReport(dexpa, outputfile = paste("StageA_FullReport_", dexpa$sim$id, ".pdf", sep="")))
 	
-	server_shutdown(dexpa)
+	if (shutdown) server_shutdown(dexpa)
 	
 	if (outputfile != "") {
 		sink()

@@ -71,5 +71,5 @@ dexpa$dexpaDefinition <- paste(dexpa$dirs$project, "config/dexpa-machine_maschin
 
 futile.logger::flog.info("Current working directory: %s",
 		getwd(),
-		name = "enavi.dexa")
+		name = "enavi.dexpa")
 

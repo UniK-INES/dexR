@@ -102,4 +102,3 @@ There are a few templates for the generation of PDF-slides as reports containing
 source("/home/USER/dexr/scripts/dexpa-machine_machine.R")
 hl_reports_comp(dexpa, c("enavi_08-01", "enavi_08-02"))
 ```
-
