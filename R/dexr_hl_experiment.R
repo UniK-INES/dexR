@@ -155,7 +155,10 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 	# Check Runs.csv for requested ID:
 	idMatch <- match(dexpa$sim$id, paramConfigs$ID)
 	if(is.na(idMatch)) {
-		futile.logger::flog.warn("ID %s not present in config table (%s)!", dexpa$sim$id, dexpa$files$paramconfigs, 
+		futile.logger::flog.warn("ID %s not present in config table (%s)! Applying defaults in %s...", 
+				dexpa$sim$id, 
+				dexpa$files$paramconfigs,
+				paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""),
 				name = "dexr.hl.experiment.runemg")
 	}
 

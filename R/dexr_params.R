@@ -68,7 +68,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$files <- list()
 	defdexpa$files$paramconfigs		<- paste(defdexpa$dirs$config, "DEX_Param_Configs.csv", sep="/")
 	defdexpa$files$runinfos			<- paste(defdexpa$dirs$project, "DEX_Runs.csv", sep="/")
-	defdexpa$files$emgconfigtool		<- paste(defdexpa$dirs$emgconfigtool, "emg-config-tool.jar", sep="/")
+	defdexpa$files$emgconfigtool		<- paste(defdexpa$dirs$emgconfigtool, "emg-config-tool-jar-with-dependencies.jar", sep="/")
 	defdexpa$files$serverjar		<- paste(dexpa$dirs$server, "enavi-market-backend-0.0.1-SNAPSHOT.jar", sep="/")
 	defdexpa$files$backendPOM		<- "./market-backend/pom.xml"
 	
