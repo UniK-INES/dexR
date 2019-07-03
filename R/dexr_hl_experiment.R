@@ -83,7 +83,7 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 	# It's important that the -D parameters are before the <application>.jar otherwise they are not recognized.
 	
 	if (dexpa$server$usemvn) {
-		arguments = paste("-f ", dexpa$files$backendPOM, " spring-boot:run ",
+		arguments = paste("-f '", dexpa$files$backendPOM, "' spring-boot:run ",
 				"-Dspring.profiles.active=", dexpa$server$profile, " ",
 				"-Dspring.datasource.url=jdbc:postgresql://", dexpa$db$host,":", dexpa$db$port, "/", dexpa$db$dbname, " ",
 				"-Dserver.port=", dexpa$server$port, " ",
