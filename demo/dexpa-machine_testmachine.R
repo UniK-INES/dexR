@@ -21,7 +21,7 @@ if (!exists("preserve")) {
 }
 
 #### Load project-specfic dexpa ################################################
-source(system.file("demo/dexpa-project.R", package="dexR"))
+source(paste(projectRoot, "scripts", "dexpa-project.R", sep="/"))
 
 ### Directories ################################################################
 if(!is.list(dexpa$dirs)) dexpa$dirs <- list()
