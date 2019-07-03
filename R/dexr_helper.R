@@ -136,15 +136,15 @@ setup_project_version <- function(dexpa) {
 			to=dexpa$dirs$config, 
 			overwrite = TRUE, recursive = TRUE, copy.mode = TRUE)
 	
-	shbasic::sh.ensurePath(dexpa$files$runinfos, stripFilename = F)
+	shbasic::sh.ensurePath(dexpa$files$runinfos, stripFilename = T)
 	
 	futile.logger::flog.info("Copy DEX_Runs.csv to %s...",
-			dexpa$files$runinfos,
+			dirname(dexpa$files$runinfos),
 			"dexr.setup"
 	)
 	
 	file.copy(from= system.file("data/DEX_Runs.csv", package="dexR"), 
-			to=dexpa$files$runinfos, 
+			to=dirname(dexpa$files$runinfos), 
 			overwrite = TRUE, recursive = TRUE, copy.mode = TRUE)
 	
 	
