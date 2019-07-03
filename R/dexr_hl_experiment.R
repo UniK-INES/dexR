@@ -83,7 +83,7 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 	# It's important that the -D parameters are before the <application>.jar otherwise they are not recognized.
 	
 	if (dexpa$server$usemvn) {
-		arguments = paste("-f '", dexpa$files$backendPOM, "' spring-boot:run ",
+		arguments = paste('-f "', dexpa$files$backendPOM, '" spring-boot:run ',
 				"-Dspring.profiles.active=", dexpa$server$profile, " ",
 				"-Dspring.datasource.url=jdbc:postgresql://", dexpa$db$host,":", dexpa$db$port, "/", dexpa$db$dbname, " ",
 				"-Dserver.port=", dexpa$server$port, " ",
@@ -93,7 +93,7 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 				"-Dde.unik.enavi.market.time.basetime.initial=", format(initialbasetime, scientific = FALSE), " ", 
 				"-Dde.unik.enavi.market.time.matchbasetime=", dexpa$server$matchbasetime, " ",
 				"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), " ",
-				"-Dlogback.configuration.file=", dexpa$server$logconfigfile,  sep="")
+				'-Dlogback.configuration.file="', dexpa$server$logconfigfile, '"',  sep="")
 		
 		futile.logger::flog.debug("System2 command is %s.",
 				paste("mvn", arguments),
