@@ -40,7 +40,7 @@ dexpa$db$suname			<- "postgres"
 dexpa$db$supassword		<- "supassword"
 ```
 
-If one if these is not correct, set the corresponding parameter by yourself (on R command line before running the sample project). To run the sample project, call:
+If one if these is not correct, set the corresponding parameter in ```./Testproject/scripts/dexpa-project.R```. To run the sample project, call:
 
 ```{r, eval=FALSE}
 demo(run, package="dexR", echo=F)

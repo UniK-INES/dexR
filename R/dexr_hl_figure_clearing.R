@@ -7,7 +7,7 @@
 hl_figure_clearing_numConsideredRequests <- function(dexpa, ...) {
 	data <- input_db_clearings(dexpa)
 	if (nrow(data)==0) {
-		R.oo::throw.default("DB contains no clearing information (table clearing_info) for DB ", dp$db$dbname, " for start time
+		R.oo::throw.default("DB contains no clearing information (table clearing_info) for DB ", dexpa$db$dbname, " for start time
 			between", format(as.POSIXct(dexpa$sim$starttime_min, tz="GTM", origin = "1970-01-01"), "%H:%M:%S"), " and ",
 				format(as.POSIXct(dexpa$sim$starttime_max, tz="GTM", origin = "1970-01-01"), "%H:%M:%S"),"!", )
 	}

@@ -239,11 +239,11 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
 	#system2(wait=FALSE, "bash", args = paste(
 	#	"./start.sh -clean --properties config/sh_ogema.properties", sep=""))	
 
-	system2(wait=FALSE, "java", args = paste(" -cp ",
-					dexpa$files$emgconfigtool, "de.unik.ines.enavi.ctool.RunEmg", 
-			paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""),
+	system2(wait=FALSE, "java", args = paste(' -cp ',
+			paste('"', dexpa$files$emgconfigtool, '"', sep=""), "de.unik.ines.enavi.ctool.RunEmg", 
+			paste('"', dexpa$dirs$config, "/", dexpa$sim$id, '"', sep=""),
 			dexpa$emg$rseed,
-			dexpa$dirs$emgrundir,
+			paste('"', dexpa$dirs$emgrundir, '"', sep=""),
 			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit, sep=""),
 			dexpa$emg$port,
 			dexpa$emg$httpport,

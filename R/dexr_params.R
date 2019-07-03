@@ -132,7 +132,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 							"6" = "INVALID")
 
 	### Market Server Settings ############################################################	
-	defdexpa$server$url			<- "http://localhost"
+	defdexpa$server$url			<- "https://localhost"
 	defdexpa$server$api$products	<- "config-products"
 	defdexpa$server$api$start	<- "admin/start"
 	defdexpa$server$api$shutdown	<- "admin/shutdown"
