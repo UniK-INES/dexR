@@ -21,7 +21,11 @@ if (!exists("preserve")) {
 }
 
 #### Load project-specfic dexpa ################################################
-source(paste(projectRoot, "scripts", "dexpa-project.R", sep="/"))
+if (file.exists(paste(projectRoot, "scripts", "dexpa-project.R", sep="/"))) {
+  source(paste(projectRoot, "scripts", "dexpa-project.R", sep="/"))
+} else {
+  source(system.file("demo/dexpa-project.R", package="dexR"))
+}
 
 ### Directories ################################################################
 if(!is.list(dexpa$dirs)) dexpa$dirs <- list()
@@ -58,7 +62,7 @@ if(!is.list(dexpa$files)) dexpa$files <- list()
 dexpa$files$paramconfigs	<- paste(dexpa$dirs$config, "DEX_Param_Configs.ods", sep="/")
 dexpa$files$runinfos		<- paste(dexpa$dirs$outputdir, "DEX_Runs.csv", sep="/")
 
-dexpa$files$emgconfigtool	<-  paste(dexpa$dirs$emgconfigtool, "emg-config-tool.jar", sep="/")
+dexpa$files$emgconfigtool	<-  paste(dexpa$dirs$emgconfigtool, "emg-config-tool-jar-with-dependencies.jar", sep="/")
 dexpa$files$serverjar		<-  paste(dexpa$dirs$server, "enavi-market-backend-0.0.1-SNAPSHOT.jar", sep="/")
 dexpa$files$backendPOM		<-  paste(Sys.getenv("GIT_DIR"), "enavi/market/market-backend/pom.xml", sep="/")
 
