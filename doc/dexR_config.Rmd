@@ -35,6 +35,9 @@ dexpa$db$port			<- "5432"
 dexpa$db$dbname			<- "enavi"
 dexpa$db$username		<- "enavi"
 dexpa$db$password		<- "enavi!"
+
+dexpa$db$suname			<- "postgres"
+dexpa$db$supassword		<- "supassword"
 ```
 
 If one if these is not correct, set the corresponding parameter by yourself (on R command line before running the sample project). To run the sample project, call:

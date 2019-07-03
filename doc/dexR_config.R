@@ -11,6 +11,9 @@
 #  dexpa$db$dbname			<- "enavi"
 #  dexpa$db$username		<- "enavi"
 #  dexpa$db$password		<- "enavi!"
+#  
+#  dexpa$db$suname			<- "postgres"
+#  dexpa$db$supassword		<- "supassword"
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  demo(run, package="dexR", echo=F)
