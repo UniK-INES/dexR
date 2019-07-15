@@ -174,7 +174,15 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$emg$restarttime	<- 40
 
 	defdexpa$emg$startoptions	<- "-clean -uro"
-
+	
+	### OpSim Settings ############################################################
+	defdexpa$opsim = list()
+	defdexpa$opsim$control = list()
+    defdexpa$opsim$control$rundir = "set opsim rundir"
+	defdexpa$opsim$control$jre = ""
+	defdexpa$opsim$control$jar = "iwes-opsim-mcp-gui-2.0.33-jar-with-dependencies.jar"
+	defdexpa$opsim$control$logfile = "opsim.log"
+	
 	### Debug Settings ############################################################
 	defdexpa$debug <- list()
 	# the higher, the more verbose

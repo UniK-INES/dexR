@@ -9,6 +9,11 @@ file.copy(from= system.file("demo/dexpa-machine_testmachine.R", package="dexR"),
 dexpa$sim$version <- "testversion"
 dexpa <- dexR::setup_project_version(dexpa)
 
+# overwrite dexpa-project with demo-specific parameters:
+file.copy(from= system.file("demo/dexpa-project.R", package="dexR"), 
+		to=dexpa$dirs$scripts, 
+		overwrite = TRUE, copy.mode = TRUE)
+
 dexpa$sim$id 	  <- "Testrun01"
 dexR::hl_config_copycsvtemplates(dexpa)
 
