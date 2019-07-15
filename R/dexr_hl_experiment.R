@@ -326,7 +326,7 @@ hl_experiment_stopemg <- function(dexpa) {
 #' @export
 hl_experiment_ensureFileLogging <- function(dexpa, outputfile) {
 	if (outputfile != "") {
-		futile.logger::flog.info("Ensure path for %s...", outputfile,
+		futile.logger::flog.info("Ensures path for %s...", outputfile,
 				name="dexr.hl.experiment")
 		shbasic::sh.ensurePath(outputfile, stripFilename = T)
 		con <- file(outputfile)
