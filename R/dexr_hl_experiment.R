@@ -164,8 +164,8 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 
 	if (!is.na(idMatch)) {
 		# Read CSV sources from DEX_Param_Configs.csv:
-		system2(wait=TRUE, "java", args = paste(" -cp ",
-						dexpa$files$emgconfigtool, " de.unik.ines.enavi.ctool.EmgConfigManager",
+		system2(wait=TRUE, "java", args = paste(' -cp "',
+						dexpa$files$emgconfigtool, '" de.unik.ines.enavi.ctool.EmgConfigManager',
 						" -i ", dexpa$sim$id,
 						" -o '", dexpa$dirs$config, "'",
 						" -t '", dexpa$dirs$freemarkertemplate, "'",
@@ -184,8 +184,8 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 						" -po '",dexpa$server$port, "'",
 						sep=""), stdout=outfilesys, stderr=outfilesys)
 	} else {	
-		system2(wait=TRUE, "java", args = paste(" -cp ",
-						dexpa$files$emgconfigtool, " de.unik.ines.enavi.ctool.EmgConfigManager",
+		system2(wait=TRUE, "java", args = paste(' -cp "',
+						dexpa$files$emgconfigtool, '" de.unik.ines.enavi.ctool.EmgConfigManager',
 						" -i ", dexpa$sim$id,
 						" -o '", dexpa$dirs$config, "'",
 						" -t '", dexpa$dirs$freemarkertemplate, "'",
@@ -385,7 +385,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 		outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, ".log", sep=""),
 		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep=""),
 		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep=""),
-		outfile, shutdown = T) {
+		outfile, shutdown = T, createdb = F) {
 	
 	futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
 			name="dexr.hl.experiment")
@@ -393,6 +393,10 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 							round((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor), tz="CEST"),
 			name="dexr.hl.experiment.duration")
 
+	if (createdb) {
+		dexR::input_db_createdb(dexpa)
+	}
+	
 	dexR::hl_experiment_ensureFileLogging(dexpa, outputfile)
 	
 	infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset, startServer=F)

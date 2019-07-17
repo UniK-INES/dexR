@@ -179,9 +179,25 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$opsim = list()
 	defdexpa$opsim$control = list()
     defdexpa$opsim$control$rundir = "set opsim rundir"
-	defdexpa$opsim$control$jre = ""
+	defdexpa$opsim$control$jre = NA
+	defdexpa$opsim$sservice$args = "--module-path /usr/share/openjfx/lib --add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
 	defdexpa$opsim$control$jar = "iwes-opsim-mcp-gui-2.0.33-jar-with-dependencies.jar"
 	defdexpa$opsim$control$logfile = "opsim.log"
+	
+	### Schedule Service Settings ############################################################
+	defdexpa$opsim$sservice = list()
+	defdexpa$opsim$sservice$rundir = "set schedule service rundir"
+	defdexpa$opsim$sservice$jre = NA
+	defdexpa$opsim$sservice$jar = "set jar for schedule service"
+	defdexpa$opsim$sservice$logfile = "sservice.log"
+
+	### Panda power net simulation Settings ############################################################
+	defdexpa$opsim$netsim = list()
+	defdexpa$opsim$netsim$rundir = "set schedule service rundir"
+	defdexpa$opsim$netsim$python = NA
+	defdexpa$opsim$netsim$module = "Start_Grid_Proxy_Sched.py"
+	defdexpa$opsim$netsim$pythonpath = NA
+	defdexpa$opsim$netsim$logfile = "netsim.log"
 	
 	### Debug Settings ############################################################
 	defdexpa$debug <- list()

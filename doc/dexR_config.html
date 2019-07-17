@@ -13,7 +13,7 @@
 
 <meta name="author" content="Sascha Holzhauer" />
 
-<meta name="date" content="2019-07-15" />
+<meta name="date" content="2019-07-17" />
 
 <title>Configure experiments with dexR</title>
 
@@ -96,7 +96,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Configure experiments with dexR</h1>
 <h4 class="author">Sascha Holzhauer</h4>
-<h4 class="date">2019-07-15</h4>
+<h4 class="date">2019-07-17</h4>
 
 
 <div id="TOC">
@@ -125,7 +125,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="kw">Sys.setenv</span>(<span class="st">&quot;GIT_DIR&quot;</span>=<span class="st">&quot;&lt;path to git repositry including enavi projeckt, eg. ~/git&gt;&quot;</span>)</code></pre></div>
 <p>To create a sample project, execute:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">demo</span>(config, <span class="dt">package=</span><span class="st">&quot;dexR&quot;</span>, <span class="dt">echo=</span>F)</code></pre></div>
-<p>Follow the instruction printed on the command line (after NOTE:)! Furthermore, running the sample projekt assumes the following parameters are correct as follows:</p>
+<p>Follow the instruction printed on the command line (after NOTE:)! Furthermore, running the sample project assumes the following parameters are correct:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dexpa<span class="op">$</span>db<span class="op">$</span>host           &lt;-<span class="st"> &quot;localhost&quot;</span>
 dexpa<span class="op">$</span>db<span class="op">$</span>port           &lt;-<span class="st"> &quot;5432&quot;</span>
 dexpa<span class="op">$</span>db<span class="op">$</span>dbname         &lt;-<span class="st"> &quot;enavi&quot;</span>
@@ -134,7 +134,7 @@ dexpa<span class="op">$</span>db<span class="op">$</span>password       &lt;-<sp
 
 dexpa<span class="op">$</span>db<span class="op">$</span>suname         &lt;-<span class="st"> &quot;postgres&quot;</span>
 dexpa<span class="op">$</span>db<span class="op">$</span>supassword     &lt;-<span class="st"> &quot;supassword&quot;</span></code></pre></div>
-<p>If one if these is not correct, set the corresponding parameter in <code>./Testproject/scripts/dexpa-project.R</code>. To run the sample project, call:</p>
+<p>If one if these is not correct, set the corresponding parameter in <code>./Testproject/scripts/dexpa-project.R</code> (setting via command line does not help as this is overridden by importing the dexpa parameter files afterwards). To run the sample project, call:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">demo</span>(run, <span class="dt">package=</span><span class="st">&quot;dexR&quot;</span>, <span class="dt">echo=</span>F)</code></pre></div>
 <p>NOTE: The demo files reside in the R session’s temporary folder and will be removed after closing R.</p>
 </div>
