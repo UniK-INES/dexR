@@ -248,7 +248,7 @@
             <decorating>false</decorating>
             <active>true</active>
             <value>${pvplant.panelArea}</value>
-            <unit>m²</unit>
+            <unit>m2</unit>
         </resource>
     </resource>
     </#list>
