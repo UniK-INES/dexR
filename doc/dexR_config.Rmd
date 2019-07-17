@@ -27,7 +27,7 @@ To create a sample project, execute:
 demo(config, package="dexR", echo=F)
 ```
 
-Follow the instruction printed on the command line (after NOTE:)! Furthermore, running the sample projekt assumes the following parameters are correct as follows:
+Follow the instruction printed on the command line (after NOTE:)! Furthermore, running the sample project assumes the following parameters are correct:
 
 ```{r, eval=FALSE}
 dexpa$db$host			<- "localhost"
@@ -40,7 +40,7 @@ dexpa$db$suname			<- "postgres"
 dexpa$db$supassword		<- "supassword"
 ```
 
-If one if these is not correct, set the corresponding parameter in ```./Testproject/scripts/dexpa-project.R```. To run the sample project, call:
+If one if these is not correct, set the corresponding parameter in ```./Testproject/scripts/dexpa-project.R``` (setting via command line does not help as this is overridden by importing the dexpa parameter files afterwards). To run the sample project, call:
 
 ```{r, eval=FALSE}
 demo(run, package="dexR", echo=F)
