@@ -113,6 +113,10 @@ hl_config_clients2db <- function(dexpa,sourcedir = paste(dexpa$dirs$config, dexp
 	clients <- read.csv(file=paste(sourcedir, sourcefile, sep="/"))
 	clients$id <- clients$user_id
 	
+	if(!("location" %in% colnames(clients))) {
+		clients$location = "Tranformer01"
+	}
+	
 	con <- input_db_getconnection(dexpa)
 	
 	colnames_clients = DBI::dbGetQuery(con, paste(

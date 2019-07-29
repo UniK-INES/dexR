@@ -125,7 +125,7 @@
             <decorating>false</decorating>
             <active>true</active>
             <value>${windplant.rotorArea}</value>
-            <unit>m²</unit>
+            <unit>m2</unit>
         </resource>
         <resource xsi:type="og:FloatResource">
             <name>cutOutSpeed</name>
