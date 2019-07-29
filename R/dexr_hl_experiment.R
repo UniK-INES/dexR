@@ -217,11 +217,20 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "") {
+hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pauseafterxmlcreation = F) {
 	
 	hl_experiment_configemg(dexpa, outfilesys= if (is.null(dexpa$emg$emgconfigoutput)) "" else 
 						paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$emgconfigoutput, ".log", sep=""))
 
+	if (pauseafterxmlcreation) {
+		decision <- svDialogs::dlg_message(paste("Press 'OK' when ready to run!", sep= ""), "okcancel")$res
+		if (decision == "cancel") {
+			futile.logger::flog.warn("Program canceled.", 
+					name = "dexr.hl.opsim")
+			stop("Program canceled.")
+		}
+	}
+	
 	futile.logger::flog.info("Starting EMG...", name = "dexr.hl.experiment.emg")
 	
 	
@@ -374,6 +383,34 @@ hl_write_runinfos <- function(dexpa, basetime, offset, infoData) {
 	#write_ods(runinfos, dexpa$files$runinfos)
 	write.csv(runinfos, dexpa$files$runinfos, row.names = F)
 }
+#' Stop EMGs, dump database, create full report, shutdown server, and redirect output.
+#' 
+#' @param dexpa 
+#' @return 
+#' 
+#' @author Sascha Holzhauer
+#' @export
+hl_closeexperiment <- function(dexpa) {
+
+	hl_experiment_stopemg(dexpa)
+	
+	dexR::input_db_db2dump(dexpa, dumpdir = paste("dump_", dexpa$sim$id, sep=""), remoteServer=dexpa$remoteserver, 
+			outputfile= if (is.null(dexpa$db$sshoutput)) "" else 
+						paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$db$sshoutput, ".log", sep=""))
+	
+	try(dexR::createFullReport(dexpa, outputfile = paste("StageA_FullReport_", dexpa$sim$id, ".pdf", sep="")))
+	
+	server_shutdown(dexpa)
+	
+	if (outputfile != "") {
+		sink()
+		sink()
+		sink()
+		sink(type="message")
+	}
+	
+	hl_write_runinfos(dexpa, basetime, offset, infoData)
+}
 #' Concuct experiment from starting backend server to creation of full report
 #' @param dexpa 
 #' @return report, database
@@ -385,7 +422,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 		outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, ".log", sep=""),
 		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep=""),
 		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep=""),
-		outfile, shutdown = T, createdb = F) {
+		outfile, shutdown = T, createdb = F, pauseafterxmlcreation = F) {
 	
 	futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
 			name="dexr.hl.experiment")
@@ -401,7 +438,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset, startServer=F)
 	
-	hl_experiment_runemg(dexpa, outfileemg = outfileemg, outfilesys = outputfile)
+	hl_experiment_runemg(dexpa, outfileemg = outfileemg, outfilesys = outputfile, pauseafterxmlcreation = pauseafterxmlcreation)
 	
 	message = server_start(dexpa)
 	futile.logger::flog.info(message, name = "dexr.hl.experiment")	
@@ -411,26 +448,11 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	futile.logger::flog.info("Wait for simulation to complete (Duration: %d / factor: %d = %f)", 
 			(dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay), 
 			dexpa$sim$timefactor, (dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay) / dexpa$sim$timefactor, name = "dexr.hl.experiment")
-	Sys.sleep((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor)
 	
-	hl_experiment_stopemg(dexpa)
-	
-	dexR::input_db_db2dump(dexpa, dumpdir = paste("dump_", dexpa$sim$id, sep=""), remoteServer=dexpa$remoteserver, 
-			outputfile= if (is.null(dexpa$db$sshoutput)) "" else 
-						paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$db$sshoutput, ".log", sep=""))
-
-	try(dexR::createFullReport(dexpa, outputfile = paste("StageA_FullReport_", dexpa$sim$id, ".pdf", sep="")))
-	
-	if (shutdown) server_shutdown(dexpa)
-	
-	if (outputfile != "") {
-		sink()
-		sink()
-		sink()
-		sink(type="message")
+	if (shutdown) {
+		Sys.sleep((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor)
+		dexR::hl_closeexperiment(dexpa)
 	}
-	
-	hl_write_runinfos(dexpa, basetime, offset, infoData)
 }
 #' Runs experiments and create the required config folder (for cluster execution)
 #' 

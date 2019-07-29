@@ -1,6 +1,6 @@
-name_emg,name,password,user_id,role_id
-EnaviClients_01,enavi01,eins!,5,2
-EnaviClients_02,enavi02,zwei!,6,2
-EnaviClients_03,enavi03,drei!,7,2
-EnaviClients_04,enavi04,vier!,8,2
-EnaviClients_05,enavi05,fuenf!,9,2
+name_emg,name,password,user_id,role_id,location
+EnaviClients_01,enavi01,eins!,5,2,Transformer01
+EnaviClients_02,enavi02,zwei!,6,2,Transformer01
+EnaviClients_03,enavi03,drei!,7,2,Transformer01
+EnaviClients_04,enavi04,vier!,8,2,Transformer01
+EnaviClients_05,enavi05,fuenf!,9,2,Transformer01
