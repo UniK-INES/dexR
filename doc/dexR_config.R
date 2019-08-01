@@ -16,6 +16,10 @@
 #  dexpa$db$supassword		<- "supassword"
 
 ## ---- eval=FALSE---------------------------------------------------------
+#  preserve <- list()
+#  preserve$dexpa$db$supassword         <- "anotherSUpassword"
+
+## ---- eval=FALSE---------------------------------------------------------
 #  demo(run, package="dexR", echo=F)
 
 ## ---- eval=FALSE---------------------------------------------------------

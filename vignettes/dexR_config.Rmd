@@ -40,7 +40,15 @@ dexpa$db$suname			<- "postgres"
 dexpa$db$supassword		<- "supassword"
 ```
 
-If one if these is not correct, set the corresponding parameter in ```./Testproject/scripts/dexpa-project.R``` (setting via command line does not help as this is overridden by importing the dexpa parameter files afterwards). To run the sample project, call:
+If one if these is not correct, set the corresponding parameter in ```./Testproject/scripts/dexpa-project.R``` or assign them to ```preserve```:
+
+```{r, eval=FALSE}
+preserve <- list()
+preserve$dexpa$db$supassword         <- "anotherSUpassword"
+```
+(setting via command line directly does not help as this is overridden by importing the dexpa parameter files afterwards).
+
+To run the sample project, call:
 
 ```{r, eval=FALSE}
 demo(run, package="dexR", echo=F)

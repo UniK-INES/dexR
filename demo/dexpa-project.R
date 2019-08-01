@@ -31,3 +31,7 @@ dexpa$db$password		<- "enavi!"
 
 dexpa$db$suname			<- "postgres"
 dexpa$db$supassword		<- "supassword"
+
+
+### Apply params in preserve$dexpa #############################################
+if (exists("preserve") && is.list(preserve$dexpa)) dexpa <- modifyList(dexpa, preserve$dexpa)

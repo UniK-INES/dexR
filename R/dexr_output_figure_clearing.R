@@ -49,7 +49,11 @@ output_figure_clearing_prices_byCTbyProduct <- function(dexpa, data, filename = 
 			facet_column = NULL, facet_ncol = 1, filename = filename,
 			alpha = 1.0, ggplotaddons = list(
 					ggplot2::xlab("Clearing time"),
-					ggplot2::ylab("Price cleared")
+					ggplot2::ylab("Price cleared"),
+					ggplot2::theme(
+							legend.position = "bottom",
+							plot.margin = grid::unit(c(0.5,0.4,0.5,0.3), "cm")
+					)
 			),  x_column = "clearing_time", position = "dodge", returnplot = FALSE)
 }
 #' Output figure: Cleared price per clearing by clearing time and product (colour) and run ID.

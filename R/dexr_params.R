@@ -61,8 +61,6 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$dirs$tmp				<- "/tmp"
 	defdexpa$dirs$server			<- "set dexpa$dirs$server"
 	defdexpa$dirs$emgconfigtool		<- "set dexpa$dirs$emgconfigtool"
-	# not used any more
-	#defdexpa$classpath$emg			<- "set dexpa$classpath$emg"
 
 	### Files ################################################################
 	defdexpa$files <- list()
@@ -113,6 +111,10 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$fig$facetlabelsize	<- 12
 	defdexpa$fig$legend$ncols	<- 3
 	defdexpa$fig$labelsubs <- NULL
+	
+	### Report Settings ###########################################################
+	defdexpa$reports <- list()
+	defdexpa$reports$author <- "Uni Kassel"
 	
 	### Colour Settings ###########################################################
 	defdexpa$colours <- list()
