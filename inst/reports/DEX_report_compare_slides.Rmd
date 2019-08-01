@@ -2,7 +2,7 @@
 title: "DEX Comparison Report"
 header-includes:
   - \widowpenalties 1 150
-author: Sascha Holzhauer
+author: '`r dexpa$reports$author`'
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
     beamer_presentation:

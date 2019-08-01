@@ -1,6 +1,6 @@
 ---
 title: "DEX Comparison Report"
-author: Sascha Holzhauer
+author: '`r dexpa$reports$author`'
 output:
     pdf_document:
         toc: true

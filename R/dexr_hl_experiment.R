@@ -390,9 +390,11 @@ hl_write_runinfos <- function(dexpa, basetime, offset, infoData) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_closeexperiment <- function(dexpa) {
+hl_closeexperiment <- function(dexpa, outputfile = "", basetime, offset, infoData) {
 
 	hl_experiment_stopemg(dexpa)
+	
+	hl_write_runinfos(dexpa, basetime, offset, infoData)
 	
 	dexR::input_db_db2dump(dexpa, dumpdir = paste("dump_", dexpa$sim$id, sep=""), remoteServer=dexpa$remoteserver, 
 			outputfile= if (is.null(dexpa$db$sshoutput)) "" else 
@@ -404,12 +406,9 @@ hl_closeexperiment <- function(dexpa) {
 	
 	if (outputfile != "") {
 		sink()
-		sink()
-		sink()
+	  sink()
 		sink(type="message")
 	}
-	
-	hl_write_runinfos(dexpa, basetime, offset, infoData)
 }
 #' Concuct experiment from starting backend server to creation of full report
 #' @param dexpa 
@@ -451,7 +450,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	if (shutdown) {
 		Sys.sleep((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor)
-		dexR::hl_closeexperiment(dexpa)
+		dexR::hl_closeexperiment(dexpa, outputfile = outputfile, basetime = basetime, offset = offset, infoData = infoData)
 	}
 }
 #' Runs experiments and create the required config folder (for cluster execution)
