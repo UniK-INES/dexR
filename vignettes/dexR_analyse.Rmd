@@ -27,15 +27,10 @@ The generic way of comparing data of several simulation runs, i.e. combining the
 	+ Generate a `dexpa`-list for each run and store them in a list `dexpas`.
 2. Pass the list `dexpas` to a comparison function
 
-However, there a few high level functions that take a list of `dexpa` configurations and do not require the storage of combined data:
-
-* hl_comp_aggregate_aftcompositions
-* hl_comp_cell_aftcomposition# Comparing Runs/Scenarios
-
 # Output configuration
 
 ## Filter
-It is possible to filter data according to start and end data:
+It is possible to filter data according to start and end dates. This is in particular helpful to filter out marginal differences during start and end of simulations.
 
 ```{r, eval=FALSE, results="hide", echo=TRUE, messages=FALSE, warning=FALSE}
 dexpa$sim$starttime_min		<- as.numeric(strptime("30/11/19 12:00", "%d/%m/%y %H:%M"))*1000
@@ -68,7 +63,7 @@ dexR::input_db_dumps2db(dexR::create_dexpas(c("id1", "id2"))
 
 ### Clearing price per clearing by clearing time and by product
 
-```{r, eval=TRUE, results="hide", echo=TRUE, messages=FALSE, warning=FALSE}
+```{r, eval=TRUE, results="asis", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas <- dexR::demo_prepare_db4figures()
 dexR::hl_figure_clearing_comp_clearingPriceByCTbyProduct(dexpas, filename=NULL)
 dexR::input_db_dropdbs(dexpas)
@@ -76,7 +71,7 @@ dexR::input_db_dropdbs(dexpas)
 
 ### Number of considered requests per clearing by clearing time
 
-```{r, eval=TRUE, results="hide", echo=TRUE, messages=FALSE, warning=FALSE}
+```{r, eval=TRUE, results="asis", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas <- dexR::demo_prepare_db4figures()
 dexR::hl_figure_clearing_comp_numConsideredRequests(dexpas, filename=NULL)
 dexR::input_db_dropdbs(dexpas)

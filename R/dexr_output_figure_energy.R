@@ -201,10 +201,8 @@ output_figure_energy_requested_comp_sumByLoadGenByStartT <- function(dexpa, data
 #' @author Sascha Holzhauer
 #' @export
 output_figure_energy_requested_comp_sumGenByGenTypeStartT <- function(dexpa, data) {
-	# count requests
-	# data$id = "Test"
 	
-  data <- dexR::requests_identify_type(dexpa, data)
+	data <- requests_energy_identify_type(dexpa, data)
 	
 	output_figure_lines(dexpa, data, y_column = "energy", title = "Requested generation energy per generation type and delivery start time",
 			colour_column = "id", colour_legendtitle = "Run ID",

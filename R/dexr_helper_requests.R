@@ -7,8 +7,28 @@
 #' @author Sascha Holzhauer
 #' @export
 requests_num_identify_type <- function(dexpa, data) {
+	
+	# check interval length:
+	intervallengths <- plyr::ddply(data, c("id"), function(df) {
+				shortestDelivery <- min(df$end_time - df$start_time)
+				minStartTime 	 <- min(df$start_time)
+				maxEndTime		 <- max(df$end_time)				
+				intervallength <- length(seq(minStartTime, maxEndTime, by = shortestDelivery))
+			}
+	)
+	
+	if (max(intervallengths$V1) - min(intervallengths$V1) > dexpa$analyse$intervalsdifftoaccept) {
+		futile.logger::flog.warn("Interval length differ by %f (accepted threshold is %f)! Consider to apply filters (dexpa$sim$starttime_min/max)!",
+		    max(intervallengths$V1) - min(intervallengths$V1),
+		    dexpa$analyse$intervalsdifftoaccept,
+				name = "dexr.helper.types")
+	}
+	
+	
 	data <- plyr::ddply(data, c("id"), function(df) {
-				# df <- data[data$id == data[1,"id"],]
+				# df <- data[data$id == unique(data$id)[2],]
+				# df <- data[data$id == unique(data$id)[3],]
+				
 				# identify shortest delivery period:
 				shortestDelivery <- min(df$end_time - df$start_time)
 				minStartTime 	 <- min(df$start_time)

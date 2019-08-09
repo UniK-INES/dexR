@@ -1,4 +1,4 @@
 name,client,device,type,averagePrice,priceFluctuation,averagePriceOffer,priceOfferFluctuation
-EnaviWindPvRequests_01,EnaviClients_02,EnaviSimulatedWindDevices_01,PVPlant,1.2,0,1.2,0
-EnaviWindPvRequests_02,EnaviClients_03,EnaviSimulatedWindDevices_02,PVPlant,0.9,0,0.9,0
-EnaviWindPvRequests_03,EnaviClients_04,EnaviSimulatedWindDevices_03,PVPlant,1.1,0,1.1,0
+EnaviWindPvRequests_01,EnaviClients_02,EnaviSimulatedPVDevices_01,Pv,1.2,0,1.2,0
+EnaviWindPvRequests_02,EnaviClients_03,EnaviSimulatedPVDevices_02,Pv,0.9,0,0.9,0
+EnaviWindPvRequests_03,EnaviClients_04,EnaviSimulatedPVDevices_03,Pv,1.1,0,1.1,0
