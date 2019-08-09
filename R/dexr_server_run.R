@@ -20,7 +20,7 @@ server_start <- function(dexpa) {
 server_shutdown <- function(dexpa) {
 	futile.logger::flog.info("Shutting down Market Backend server...", name = "dexr.server.run.shutdown")
 	try(httr::POST(paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$shutdown,sep=""),
-			httr::authenticate(dexpa$server$username, dexpa$server$password, type = "basic")), silent=F)
+			httr::authenticate(dexpa$server$username, dexpa$server$password, type = "basic")), silent=T)
 	futile.logger::flog.info("Market Backend server shut down.", name = "dexr.server.run.shutdown")
 }
 #' Retrieve backend server status information

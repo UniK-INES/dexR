@@ -113,6 +113,10 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$fig$labelsubs <- NULL
 	
 	### Report Settings ###########################################################
+	defdexpa$analyse <- list()
+	defdexpa$analyse$intervalsdifftoaccept = 100
+	
+	### Report Settings ###########################################################
 	defdexpa$reports <- list()
 	defdexpa$reports$author <- "Uni Kassel"
 	
@@ -131,7 +135,14 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 							"1" = "ACCEPTED",
 							"2" = "PARTLY_ACCEPTED",
 							"3" = "DECLINED",
-							"6" = "INVALID")
+							"6" = "INVALID",
+							"7" = "INVALID_TOO_EARLY",
+							"8" = "INVALID_TOO_LATE",
+							"9" = "INVALID_STARTTIME",
+							"10"= "INVALID_ENDTIME",
+							"11"= "INVALID_PRODUCT",
+							"12"= "INVALID_PRICE",
+							"13"= "INVALID_ENERGY")
 
 	### Market Server Settings ############################################################	
 	defdexpa$server$url			<- "https://localhost"

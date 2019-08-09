@@ -153,7 +153,7 @@ dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(dexpas)
 ```
 
 ### Request Statistics by requests type and delivery start time
-```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+```{r numReqByTypeByStart, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 950
 hl_figure_requests_numRequests_comp_byTypeByStartT(dexpas)
 ```

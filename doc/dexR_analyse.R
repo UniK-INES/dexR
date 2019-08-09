@@ -14,12 +14,12 @@
 ## ---- eval=FALSE, results="hide", echo=TRUE, messages=FALSE, warning=FALSE----
 #  dexR::input_db_dumps2db(dexR::create_dexpas(c("id1", "id2"))
 
-## ---- eval=TRUE, results="hide", echo=TRUE, messages=FALSE, warning=FALSE----
+## ---- eval=TRUE, results="asis", echo=FALSE, messages=FALSE, warning=FALSE----
 dexpas <- dexR::demo_prepare_db4figures()
 dexR::hl_figure_clearing_comp_clearingPriceByCTbyProduct(dexpas, filename=NULL)
 dexR::input_db_dropdbs(dexpas)
 
-## ---- eval=TRUE, results="hide", echo=TRUE, messages=FALSE, warning=FALSE----
+## ---- eval=TRUE, results="asis", echo=FALSE, messages=FALSE, warning=FALSE----
 dexpas <- dexR::demo_prepare_db4figures()
 dexR::hl_figure_clearing_comp_numConsideredRequests(dexpas, filename=NULL)
 dexR::input_db_dropdbs(dexpas)
