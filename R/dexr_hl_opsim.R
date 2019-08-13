@@ -153,7 +153,7 @@ hl_opsim <- function(dexpa, startsservice = T, startnetsim = T, emptydb = T, bas
 	
 	dexR::hl_opsim_startmarket(dexpa, basetime = basetime)
 	
-	dexR::hl_closeexperiment(dexpa)
+	dexR::hl_closeexperiment(dexpa, basetime = basetime)
 	
 
 	## drop DBs:
@@ -162,7 +162,11 @@ hl_opsim <- function(dexpa, startsservice = T, startnetsim = T, emptydb = T, bas
 	
 	## TODO shut down OpSim controller / check processx
 	
-	## TODO shut down pandapower
+	if (startnetsim) {
+	## TODO shut down pandapower	
+	}
 	
-	## TODO shut down Schedule Service
+	if (startsservice) {
+	## TODO shut down Schedule Service	
+	}
 }

@@ -79,7 +79,32 @@ input_csv_clientdata <- function(dexpa) {
 					"profileType", "rotorArea", "panelArea", "ratedEnergy_upperLimit")]
 	data
 }
-
+#' Reads params for the given dexpa from the parameter configuration CSV file
+#' 
+#' @param dexpa 
+#' @param columns  
+#' @return vector of columns
+#' 
+#' @author Sascha Holzhauer
+#' @export
+input_csv_configparam <- function(dexpa, columns=NULL) {
+	if (tools::file_ext(dexpa$files$paramconfigs)=="ods") {
+		futile.logger::flog.info("Reading config ODS file %s", dexpa$files$paramconfigs, name = "dexr.hl.experiment")
+		paramConfigs <- readODS::read_ods(dexpa$files$paramconfigs, sheet = 1)
+	} else {
+		futile.logger::flog.info("Reading config CSV file %s", dexpa$files$paramconfigs, name = "dexr.hl.experiment")
+		paramConfigs <- read.csv(dexpa$files$paramconfigs, header = TRUE, sep = ",", quote = "\"",
+				dec = ".", fill = TRUE, comment.char = "")
+	}
+	
+	# Check Runs.csv for requested ID:
+	idMatch <- match(dexpa$sim$id, paramConfigs$ID)
+	if(is.na(idMatch)) {
+		futile.logger::flog.warn("ID %s not present in config table (%s)!", dexpa$sim$id, dexpa$files$paramconfigs, 
+				name = "dexr.hl.experiment")
+	}
+	paramConfigs[idMatch,]
+}
 #' Extract the runinfos entry from CSV file for the dexpa's sim ID
 #' 
 #' In case there are more than one entries, return the latest. In case there is none found for the given dexpa ID, the last row

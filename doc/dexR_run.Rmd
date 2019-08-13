@@ -18,6 +18,8 @@ vignette: >
 
 ## Run locally
 
+To run experiments with DEX locally, there are a few prerequesits which are decribed in the [DEX main documentation](https://gyges.iee.fraunhofer.de/doc/market.html#installation-and-configuration).
+
 All procedures to acutally run a simulation are included in `hl_experiment`:
 
 ```{r, eval=FALSE}

@@ -150,6 +150,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$server$api$start	<- "admin/start"
 	defdexpa$server$api$shutdown	<- "admin/shutdown"
 	defdexpa$server$api$status	<- "admin/status"
+	defdexpa$server$api$status	<- "admin/version"
 	defdexpa$server$api$submit	<- "api/submit"
 	defdexpa$server$username	<- "admin"
 	defdexpa$server$password	<- "multimodalES"
@@ -172,6 +173,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$emg$startport		<- 8400
 	defdexpa$emg$portoffset 	<- 0
 	
+	defdexpa$emg$propertiesfile <- "config/sh_ogema.properties"
 	defdexpa$emg$httpport		<- "8088"
 	defdexpa$emg$httpstartport	<- 9000
 	defdexpa$emg$httpportoffset 	<- 0

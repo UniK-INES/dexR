@@ -27,7 +27,7 @@ high level functions start with 'hl'.
 
 # Configuration and Simulation Course
 
-This gives an overview whereas the configuration is described in [Config](dexR_config.html), running simulations in [Run](/dexR_run.html), any analysing results in [Analyse](dexR_analyse.html).
+This gives an overview whereas the configuration is described in [Config](dexR_config.html), running simulations in [Run](dexR_run.html), any analysing results in [Analyse](dexR_analyse.html).
 
 1. Copy CSV templates
 2. Edit CSV tables (manual!)

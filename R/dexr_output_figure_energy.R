@@ -61,6 +61,71 @@ output_figure_energy_requested_sumByStartT <- function(dexpa, data) {
 			position = "stack", returnplot = FALSE)
 }
 #' Output figure: Requested energy per submission time and status.
+#' 
+#' Requirement: Delivery periods of all products must be a multiple of the shortest delivery period (with start and end
+#' times matching those of the shortest delivery period product)!
+#' 
+#' @param dexpa 
+#' @param data 
+#' @return figure file
+#' @seealso \code{\link{output_figure_lines}}
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_figure_energy_requested_sumByLoadGenByStartT <- function(dexpa, data) {
+	# count requests
+	# data$id = "Test"
+	
+
+	# identify shortest delivery period:
+	shortestDelivery <- min(data$end_time - data$start_time)
+	minStartTime 	 <- min(data$start_time)
+	maxEndTime		 <- max(data$end_time)
+				
+	# create interval vector of shortest delivery period:
+	intervals <- seq(minStartTime, maxEndTime, by = shortestDelivery)
+	intervals <- lubridate::interval(intervals[1:(length(intervals)-1)], intervals[(1+1):length(intervals)])
+	result <- data.frame(start_time = intervals, 
+				Load = rep(0, length(intervals)),
+				Gen  = rep(0, length(intervals)))
+				
+	# aggregate energy:
+	for (r in 1:nrow(data)) {
+		# r = 1
+		if (data[r, "energy_requested"] > 0) {
+				result[intervals %within% lubridate::interval(data[r, "start_time"],data[r, "end_time"]),
+						"Load"] = result[intervals %within% lubridate::interval(data[r, "start_time"],data[r, "end_time"]),
+								"Load"] + data[r, if(data$status==2) "energy_accepted" else "energy_requested"]
+		} else {
+			result[intervals %within% lubridate::interval(data[r, "start_time"],data[r, "end_time"]),
+					"Gen"] = result[intervals %within% lubridate::interval(data[r, "start_time"],data[r, "end_time"]),
+							"Gen"] + data[r, if(data$status==2) "energy_accepted" else "energy_requested"]
+		}
+	}
+	result$start_time <- lubridate::int_start(result$start_time)
+	data <- result
+	
+	# calculate residuals:
+	data$Residual <- data$Load + data$Gen
+	data$Gen <- -data$Gen
+	
+	data <- reshape2::melt(data, id.vars=c("start_time"), variable.name = "Type",
+			value.name = "energy")
+	
+	output_figure_lines(dexpa, data, y_column = "energy", title = "Requested energy of requests by generation/load and delivery start time",
+			colour_legendtitle = "Run ID",
+			linetype_column = "Type", linetype_legendtitle = "Type",
+			facet_ncol = 1, filename = "dex_energy_requested_comp_sumGenLoadByCTlines",
+			alpha=1.0, ggplotaddons = list(
+					ggplot2::xlab("Start time"),
+					ggplot2::ylab("Requested energy"),
+					ggplot2::scale_x_datetime(),
+					ggplot2::theme(
+							legend.position = "bottom"
+					), ggplot2::guides(linetype = ggplot2::guide_legend(ncol=1))
+			),  x_column = "start_time", returnplot = FALSE)
+}
+#' Output figure: Requested energy per submission time and status.
 #' @param dexpa 
 #' @param data 
 #' @return figure file
