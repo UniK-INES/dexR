@@ -36,6 +36,19 @@ server_status <- function(dexpa) {
 			httr::authenticate(dexpa$server$username, dexpa$server$password, type = "basic"))
 	httr::content(req, as = "parsed")
 }
+#' Retrieve backend server version
+#' @param dexpa 
+#' @return JSON info map
+#' 
+#' @author Sascha Holzhauer
+#' @export
+server_version <- function(dexpa) {
+	futile.logger::flog.debug("Request server (%s:%s) version...", dexpa$server$url, dexpa$server$port,
+			name = "dexr.server.run.status")
+	req <- httr::GET(paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$version,sep=""),
+			httr::authenticate(dexpa$server$username, dexpa$server$password, type = "basic"))
+	httr::content(req, as = "parsed")$version
+}
 #' Checks whether the server is ready for requests.
 #' @param dexpa 
 #' @return TRUE if the server is up

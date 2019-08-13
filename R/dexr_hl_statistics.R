@@ -5,6 +5,16 @@
 #' 
 #' @author Sascha Holzhauer
 #' @export
+hl_statistics_energy <- function(dexpa) {
+  hl_statistics_comp_energy(setNames(list(dexpa), dexpa$sim$id))
+}
+#' Retrieves clearing and request information an outputs aggregated figures in a table
+#' 
+#' @param dexpas  
+#' @return table containing aggregated figures
+#' 
+#' @author Sascha Holzhauer
+#' @export
 hl_statistics_comp_energy <- function(dexpas) {
 
 	cinfos = data.frame()
