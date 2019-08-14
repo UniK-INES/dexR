@@ -62,7 +62,7 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 	initialbasetime = basetime + (firstDelivery - (basetime + dexpa$sim$timefactor * dexpa$emg$emgstartuptime))/2
 	
 	paramConfigs = input_csv_configparam(dexpa)
-	if (nrow(paramConfigs) > 0 && paramConfigs["dexprofile"]!="") {
+	if (nrow(paramConfigs) > 0 && !is.na(paramConfigs["dexprofile"])) {
 		dexpa$server$profile <- paramConfigs["dexprofile"]
 	}
 	
@@ -225,7 +225,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 	}
 	
 	paramConfigs = input_csv_configparam(dexpa)
-	if (nrow(paramConfigs) > 0 && paramConfigs["emgproperties"]!="") {
+	if (nrow(paramConfigs) > 0 && !is.na(paramConfigs["emgproperties"])) {
 		dexpa$server$propertiesfile <- paramConfigs["emgproperties"]
 	}
 	
@@ -250,7 +250,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 	#setwd(dexpa$dirs$emgrundir)
 	#system2(wait=FALSE, "bash", args = paste(
 	#	"./start.sh -clean --properties config/sh_ogema.properties", sep=""))	
-	
+
 	system2(wait=FALSE, "java", args = paste(' -cp ',
 			paste('"', dexpa$files$emgconfigtool, '"', sep=""), "de.unik.ines.enavi.ctool.RunEmg", 
 			paste('"', dexpa$dirs$config, "/", dexpa$sim$id, '"', sep=""),
