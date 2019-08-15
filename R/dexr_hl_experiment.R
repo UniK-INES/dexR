@@ -156,46 +156,53 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 	}
 
 	if (!is.na(idMatch)) {
+		args = paste(' -cp "',
+				dexpa$files$emgconfigtool, '" de.unik.ines.enavi.ctool.EmgConfigManager',
+				' -i ', dexpa$sim$id,
+				' -o "', dexpa$dirs$config, '"',
+				' -t "', dexpa$dirs$freemarkertemplate, '"',
+				' -c "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'clients'], sep=''), '"',
+				' -l "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'loads'], sep=''), '"',
+				' -g "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'generations'], sep=''), '"',
+				' -b "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'buildings'], sep=''), '"',
+				' -p "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'pvplants'], sep=''), '"',
+				' -w "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'windplants'], sep=''), '"',
+				' -s "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'loadProfiles'], sep=''), '"',
+				' -d "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'storages'], sep=''), '"',
+				' -dd "',paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'devicesStorage'], sep=''), '"',
+				' -r "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'requestConfig'], sep=''), '"',
+				' -sc "',paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'ogemaConfig'], sep=''), '"',
+				' -u "', dexpa$server$url, '"',
+				' -po "',dexpa$server$port, '"',
+				sep="")
+		futile.logger::flog.debug("Arguments when calling EmgConfigManager: %s", args, name = "dexr.hl.experiment.emg")
+		
 		# Read CSV sources from DEX_Param_Configs.csv:
-		system2(wait=TRUE, "java", args = paste(' -cp "',
-						dexpa$files$emgconfigtool, '" de.unik.ines.enavi.ctool.EmgConfigManager',
-						' -i ', dexpa$sim$id,
-						' -o "', dexpa$dirs$config, '"',
-						' -t "', dexpa$dirs$freemarkertemplate, '"',
-						' -c "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'clients'], sep=''), '"',
-						' -l "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'loads'], sep=''), '"',
-						' -g "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'generations'], sep=''), '"',
-						' -b "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'buildings'], sep=''), '"',
-						' -p "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'pvplants'], sep=''), '"',
-						' -w "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'windplants'], sep=''), '"',
-						' -s "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'loadProfiles'], sep=''), '"',
-						' -d "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'storages'], sep=''), '"',
-						' -dd "',paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'devicesStorage'], sep=''), '"',
-						' -r "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'requestConfig'], sep=''), '"',
-						' -sc "',paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'ogemaConfig'], sep=''), '"',
-						' -u "', dexpa$server$url, '"',
-						' -po "',dexpa$server$port, '"',
-						sep=""), stdout=outfilesys, stderr=outfilesys)
+		system2(wait=TRUE, "java", args, stdout=outfilesys, stderr=outfilesys)
 	} else {
-		system2(wait=TRUE, "java", args = paste(' -cp "',
-						dexpa$files$emgconfigtool, '" de.unik.ines.enavi.ctool.EmgConfigManager',
-						' -i ', dexpa$sim$id,
-						' -o "', dexpa$dirs$config, '"',
-						' -t "', dexpa$dirs$freemarkertemplate, '"',
-						' -c "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_EnaviClient_', dexpa$sim$id, '.csv', sep=''), '"',
-						' -l "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_Loads_', dexpa$sim$id, '.csv', sep=''), '"',
-						' -g "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_Generations_', dexpa$sim$id, '.csv', sep=''), '"',
-						' -b "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_DevicesBuilding_', dexpa$sim$id, '.csv', sep=''), '"',
-						' -p "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_DevicesPVplant_', dexpa$sim$id, '.csv', sep=''), '"',
-						' -w "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_DevicesWindplant_', dexpa$sim$id, '.csv', sep=''), '"',
-						' -s "', paste(dexpa$dirs$config, '/',  dexpa$sim$id, '/DEX_Param_LoadProfiles_', dexpa$sim$id, '.csv', sep=''), '"',
-						' -d "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_Storages_', dexpa$sim$id, '.csv', sep=''), '"',
-						' -dd "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_DevicesStorage_', dexpa$sim$id, '.csv', sep=''), '"',
-						' -r "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_RequestConfig_', dexpa$sim$id, '.csv', sep=''), '"',
-						' -sc "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_OgemaConfig_', dexpa$sim$id, '.csv', sep=''), '"',
-						' -u "', dexpa$server$url, '"',
-						' -po "',dexpa$server$port, '"',
-						sep=""), stdout=outfilesys, stderr=outfilesys)
+		args = paste(' -cp "',
+				dexpa$files$emgconfigtool, '" de.unik.ines.enavi.ctool.EmgConfigManager',
+				' -i ', dexpa$sim$id,
+				' -o "', dexpa$dirs$config, '"',
+				' -t "', dexpa$dirs$freemarkertemplate, '"',
+				' -c "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_EnaviClient_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -l "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_Loads_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -g "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_Generations_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -b "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_DevicesBuilding_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -p "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_DevicesPVplant_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -w "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_DevicesWindplant_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -s "', paste(dexpa$dirs$config, '/',  dexpa$sim$id, '/DEX_Param_LoadProfiles_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -d "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_Storages_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -dd "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_DevicesStorage_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -r "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_RequestConfig_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -sc "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_OgemaConfig_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -u "', dexpa$server$url, '"',
+				' -po "',dexpa$server$port, '"',
+				sep="")
+		
+		futile.logger::flog.debug("Arguments when calling EmgConfigManager: %s", args, name = "dexr.hl.experiment.emg")
+		
+		system2(wait=TRUE, "java", args, stdout=outfilesys, stderr=outfilesys)
 	}
 		
 	# copy static XML files:
@@ -251,7 +258,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 	#system2(wait=FALSE, "bash", args = paste(
 	#	"./start.sh -clean --properties config/sh_ogema.properties", sep=""))	
 
-	system2(wait=FALSE, "java", args = paste(' -cp ',
+	args = paste(' -cp ',
 			paste('"', dexpa$files$emgconfigtool, '"', sep=""), "de.unik.ines.enavi.ctool.RunEmg", 
 			paste('"', dexpa$dirs$config, "/", dexpa$sim$id, '"', sep=""),
 			dexpa$emg$rseed,
@@ -260,7 +267,11 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 			dexpa$emg$port,
 			dexpa$emg$httpport,
 			dexpa$emg$propertiesfile,
-			dexpa$emg$startoptions),
+			dexpa$emg$startoptions)
+	
+	futile.logger::flog.debug("Arguments when calling RunEMG: %s", args, name = "dexr.hl.experiment.emg")
+	
+	system2(wait=FALSE, "java", args,
 			stdout=outfileemg, stderr=outfileemg)
 
 	# https://www.rdocumentation.org/packages/sys/versions/1.5/topics/exec

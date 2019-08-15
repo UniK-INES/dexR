@@ -60,6 +60,39 @@ output_figure_energy_requested_sumByStartT <- function(dexpa, data) {
 			),  x_column = "start_time",
 			position = "stack", returnplot = FALSE)
 }
+#' Output figure: Requested energy sum per submission time.
+#' @param dexpa 
+#' @param data 
+#' @return figure file
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_figure_energycosts_requested_sumByStartT <- function(dexpa, data) {
+	# count requests
+	data <- plyr::ddply(data, c("start_time"), function(d) {
+				new = data.frame(
+						"energy" = sum(d[, "energy_requested"]),
+						"costs" = sum(d[, "price_accepted"]),
+						"start_time" = d$start_time[1])
+				new
+			})
+
+	data <- reshape2::melt(data, id.vars=c("start_time"), variable.name = "Type",
+			value.name = "values")
+	
+	output_figure_lines(dexpa, data, y_column = "values", title = "Requested energy and costs by delivery start time",
+			colour_column = "Type",
+			facet_ncol = 1, filename = "dex_energycosts_requested_sumByCT",
+			alpha=1.0, ggplotaddons = list(
+					ggplot2::xlab("Start time"),
+					ggplot2::ylab("Requested energy/costs"),
+					ggplot2::theme(
+							legend.position = "bottom"
+					), ggplot2::guides(colour = ggplot2::guide_legend(ncol=1))
+			),  x_column = "start_time",
+			
+			returnplot = FALSE)
+}
 #' Output figure: Requested energy per submission time and status.
 #' 
 #' Requirement: Delivery periods of all products must be a multiple of the shortest delivery period (with start and end
@@ -174,7 +207,7 @@ output_figure_energy_requested_comp_sumByStartT <- function(dexpa, data) {
 						"id" = d$id)
 				new
 			})
-	output_figure_bars(dexpa, data, y_column = "energy", title = "Requested energy of requests by status and delivery start time",
+	output_figure_bars(dexpa, data, y_column = "energy", title = "Requested energy of requests by delivery start time",
 			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
 			facet_ncol = 1, filename = "dex_energy_requested_comp_sumByCT",
 			alpha=1.0, ggplotaddons = list(
@@ -185,6 +218,39 @@ output_figure_energy_requested_comp_sumByStartT <- function(dexpa, data) {
 					)
 			),  x_column = "start_time", group_column = "id", 
 			position = "dodge", returnplot = FALSE)
+}
+#' Output figure: Requested energy per submission time.
+#' @param dexpa 
+#' @param data 
+#' @return figure file
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_figure_energycosts_requested_comp_sumByStartT <- function(dexpa, data) {
+	# count requests
+	data <- plyr::ddply(data, c("id", "start_time"), function(d) {
+				new = data.frame(
+						"energy" = sum(d[, "energy_requested"]),
+						"costs" = sum(d[, "price_accepted"]),
+						"start_time" = d$start_time[1],
+						"id" = d$id)
+				new
+			})
+	data <- reshape2::melt(data, id.vars=c("id", "start_time"), variable.name = "Type",
+			value.name = "values")
+	
+	output_figure_lines(dexpa, data, y_column = "values", title = "Requested energy and accepted costs of requests by delivery start time",
+			colour_column = "id",
+			facet_ncol = 1, filename = "dex_energycosts_requested_comp_sumByCT",
+			alpha=1.0, ggplotaddons = list(
+					ggplot2::xlab("Start time"),
+					ggplot2::ylab("Requested energy/Accepted costs"),
+					ggplot2::theme(
+							legend.position = "bottom"
+					), ggplot2::guides(colour = ggplot2::guide_legend(ncol=1), 
+							linetype = ggplot2::guide_legend(ncol=1))
+			),  x_column = "start_time", group_column = "id", 
+			returnplot = FALSE)
 }
 #' Output figure: Requested energy per submission time and status.
 #' 
