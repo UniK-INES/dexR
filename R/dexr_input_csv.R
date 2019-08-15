@@ -5,41 +5,32 @@
 #' @author Sascha Holzhauer
 #' @export
 input_csv_clientdata <- function(dexpa) {
-	if (tools::file_ext(dexpa$files$paramconfigs)=="ods") {
-		paramConfigs <- readODS::read_ods(dexpa$files$paramconfigs, sheet = 1, col_names = TRUE)
-	} else {
-		paramConfigs <- read.csv(dexpa$files$paramconfigs, header = TRUE, sep = ",", quote = "\"",
-				dec = ".", fill = TRUE, comment.char = "")
-	}
-	idMatch <- match(dexpa$sim$id, paramConfigs$ID)
-	if(is.na(idMatch)) {
-		futile.logger::flog.warn("ID %s not present in config table (%s)!", dexpa$sim$id, dexpa$files$paramconfigs, 
-				name = "dexr.input.csv.clientdata")
-	}
-	
+
+	paramConfigs <- dexR::input_csv_configparam(dexpa, columns=NULL)
+		
 	clients <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs[idMatch, "clients"], sep="/"))
+					paramConfigs["clients"], sep="/"))
 	loads <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs[idMatch,"loads"], sep="/"))
+					paramConfigs["loads"], sep="/"))
 	
 	loadProfiles <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs[idMatch,"loadProfiles"], sep="/"))
+					paramConfigs["loadProfiles"], sep="/"))
 	
 	generations <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
 					paramConfigs[idMatch,"generations"], sep="/"))
 	
 	pvplants <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs[idMatch,"pvplants"], sep="/"))
+					paramConfigs["pvplants"], sep="/"))
 	
 	windplants <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs[idMatch,"windplants"], sep="/"))
+					paramConfigs["windplants"], sep="/"))
 	
 	storages <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
 					paramConfigs[idMatch,"devicesStorage"], sep="/"))
 	
 	# connect storages with clients via RequestConfig:
 	requestConfigs <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs[idMatch,"requestConfig"], sep="/"))
+					paramConfigs["requestConfig"], sep="/"))
 	
 	data <- merge(clients, loads, by.x="name_emg", by.y="client", all=T)
 	colnames(data)[colnames(data)=="name.y"] <- "nameLoad"
