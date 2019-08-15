@@ -231,9 +231,9 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 		}
 	}
 	
-	paramConfigs = input_csv_configparam(dexpa)
+	paramConfigs = dexR::input_csv_configparam(dexpa)
 	if (nrow(paramConfigs) > 0 && !is.na(paramConfigs["emgproperties"])) {
-		dexpa$server$propertiesfile <- paramConfigs["emgproperties"]
+		dexpa$emg$propertiesfile <- paramConfigs["emgproperties"]
 	}
 	
 	futile.logger::flog.info("Starting EMG with properties file %s...", 
