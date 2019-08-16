@@ -82,6 +82,7 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 				"-Dde.unik.enavi.market.testing.load=FALSE ",
 				"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
 				"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ",
+				if (dexpa$sim$setinitialbasetime)
 				"-Dde.unik.enavi.market.time.basetime.initial=", format(initialbasetime, scientific = FALSE), " ", 
 				"-Dde.unik.enavi.market.time.matchbasetime=", dexpa$server$matchbasetime, " ",
 				"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), " ",
@@ -102,6 +103,7 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 						'--de.unik.enavi.market.testing.load=FALSE ',
 						'--de.unik.enavi.market.time.factor=', dexpa$sim$timefactor, ' ',
 						'--de.unik.enavi.market.time.basetime=', format(basetime, scientific = FALSE), ' ',
+						if (dexpa$sim$setinitialbasetime)
 						'--de.unik.enavi.market.time.basetime.initial=', format(initialbasetime, scientific = FALSE), ' ', 
 						'--de.unik.enavi.market.time.matchbasetime=', dexpa$server$matchbasetime, ' ',
 						'--de.unik.enavi.market.time.offset=', format(offset, scientific = FALSE), sep=''),
