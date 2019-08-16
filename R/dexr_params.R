@@ -20,7 +20,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 
 	defdexpa$sim$firstdeliverystart		<- list()
 	defdexpa$sim$firstdeliverystart$delay	<- 0
-
+	defdexpa$sim$setinitialbasetime <- TRUE
+	
 	defdexpa$sim$starttime_min		<- as.numeric(strptime("01/01/1970 00:00", "%d/%m/%Y %H:%M"))*1000
 	defdexpa$sim$starttime_max		<- as.numeric(strptime("31/12/2099 24:00", "%d/%m/%Y %H:%M"))*1000
 
