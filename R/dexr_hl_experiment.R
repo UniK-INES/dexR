@@ -269,7 +269,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 			dexpa$emg$port,
 			dexpa$emg$httpport,
 			dexpa$emg$propertiesfile,
-			dexpa$emg$startoptions)
+			paste('"',dexpa$emg$startoptions,'"', sep=""))
 	
 	futile.logger::flog.debug("Arguments when calling RunEMG: %s", args, name = "dexr.hl.experiment.emg")
 	
