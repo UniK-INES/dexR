@@ -82,8 +82,8 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 				"-Dde.unik.enavi.market.testing.load=FALSE ",
 				"-Dde.unik.enavi.market.time.factor=", dexpa$sim$timefactor, " ",
 				"-Dde.unik.enavi.market.time.basetime=", format(basetime, scientific = FALSE), " ",
-				if (dexpa$sim$setinitialbasetime)
-				"-Dde.unik.enavi.market.time.basetime.initial=", format(initialbasetime, scientific = FALSE), " ", 
+				if (dexpa$sim$setinitialbasetime) {paste(
+				"-Dde.unik.enavi.market.time.basetime.initial=", format(initialbasetime, scientific = FALSE), " ",sep="")}, 
 				"-Dde.unik.enavi.market.time.matchbasetime=", dexpa$server$matchbasetime, " ",
 				"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), " ",
 				'-Dlogback.configuration.file="', dexpa$server$logconfigfile, '"',  sep="")
@@ -103,8 +103,8 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 						'--de.unik.enavi.market.testing.load=FALSE ',
 						'--de.unik.enavi.market.time.factor=', dexpa$sim$timefactor, ' ',
 						'--de.unik.enavi.market.time.basetime=', format(basetime, scientific = FALSE), ' ',
-						if (dexpa$sim$setinitialbasetime)
-						'--de.unik.enavi.market.time.basetime.initial=', format(initialbasetime, scientific = FALSE), ' ', 
+						if (dexpa$sim$setinitialbasetime) {paste(
+						'--Dde.unik.enavi.market.time.basetime.initial=', format(initialbasetime, scientific = FALSE), ' ',sep='')},
 						'--de.unik.enavi.market.time.matchbasetime=', dexpa$server$matchbasetime, ' ',
 						'--de.unik.enavi.market.time.offset=', format(offset, scientific = FALSE), sep=''),
 				stdout=outfilesys, stderr=outfilesys)
@@ -163,17 +163,17 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 				' -i ', dexpa$sim$id,
 				' -o "', dexpa$dirs$config, '"',
 				' -t "', dexpa$dirs$freemarkertemplate, '"',
-				' -c "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'clients'], sep=''), '"',
-				' -l "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'loads'], sep=''), '"',
-				' -g "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'generations'], sep=''), '"',
-				' -b "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'buildings'], sep=''), '"',
-				' -p "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'pvplants'], sep=''), '"',
-				' -w "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'windplants'], sep=''), '"',
-				' -s "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'loadProfiles'], sep=''), '"',
-				' -d "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'storages'], sep=''), '"',
-				' -dd "',paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'devicesStorage'], sep=''), '"',
-				' -r "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'requestConfig'], sep=''), '"',
-				' -sc "',paste(dexpa$dirs$config, '/', dexpa$sim$id, '/', paramConfigs[idMatch,'ogemaConfig'], sep=''), '"',
+				' -c "', paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'clients']), sep=''), '"',
+				' -l "', paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'loads']), sep=''), '"',
+				' -g "', paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'generations']), sep=''), '"',
+				' -b "', paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'buildings']), sep=''), '"',
+				' -p "', paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'pvplants']), sep=''), '"',
+				' -w "', paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'windplants']), sep=''), '"',
+				' -s "', paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'loadProfiles']), sep=''), '"',
+				' -d "', paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'storages']), sep=''), '"',
+				' -dd "',paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'devicesStorage']), sep=''), '"',
+				' -r "', paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'requestConfig']), sep=''), '"',
+				' -sc "',paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'ogemaConfig']), sep=''), '"',
 				' -u "', dexpa$server$url, '"',
 				' -po "',dexpa$server$port, '"',
 				sep="")
@@ -209,7 +209,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 		
 	# copy static XML files:
 	for (f in dexpa$xml$staticfiles) {
-		file.copy(from = paste(dexpa$dirs$xmltemplatesstatic, f, sep="/"), to = paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""),
+		file.copy(from = paste(dexpa$dirs$xmltemplatesstatic, f, sep="/"), to = paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", sep=""),
 				overwrite = TRUE)
 	}
 }
