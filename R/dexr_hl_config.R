@@ -29,6 +29,13 @@ hl_config_copycsvtemplates <- function(dexpa, targetdir=paste(dexpa$dirs$config,
 						basename(f)), sep="/"), overwrite = T)
 	}
 }
+combine_sourcedirfile <- function(sourcedir, sourcefile) {
+	if (stringi::stri_startswith_fixed(sourcefile, "../")) {
+		return(paste(dirname(sourcedir), substring(sourcefile,4),sep="/"))
+	} else {
+		return(paste(sourcedir, sourcefile, sep="/"))
+	}
+}
 #' Stores market products from CSV file to PostGreSQL database.
 #' The database tables are emptied before submission.
 #' 
@@ -52,7 +59,7 @@ hl_config_copycsvtemplates <- function(dexpa, targetdir=paste(dexpa$dirs$config,
 hl_config_marketProducts2db <- function(dexpa, sourcedir=paste(dexpa$dirs$config,dexpa$sim$id, sep="/"), 
 		sourcefile=paste("DEX_Param_MarketProducts_", dexpa$sim$id, ".csv", sep=""),
 		firstDeliveryPeriodStart = Sys.time()) {
-	futile.logger::flog.info("Configure Market Backend products (%s/%s)...", sourcedir, sourcefile, 
+	futile.logger::flog.info("Configure Market Backend products (%s)...", combine_sourcedirfile(sourcedir, sourcefile), 
 			name = "dexr.hl.config.backend")
 	
 	futile.logger::flog.debug("First delivery start is %s", 
@@ -69,7 +76,7 @@ hl_config_marketProducts2db <- function(dexpa, sourcedir=paste(dexpa$dirs$config
 			name = "dexr.hl.config.backend")
 	
 	
-	products <- read.csv(file=paste(sourcedir, sourcefile,sep="/"), stringsAsFactors=F)
+	products <- read.csv(file=combine_sourcedirfile(sourcedir, sourcefile), stringsAsFactors=F)
 	for (i in 1:nrow(products)) {
 		# lubridate does not deal with secs > 60 as expected (https://github.com/tidyverse/lubridate/issues/661)
 		products[i, "first_delivery_period_start"] <- as.numeric(lubridate::ceiling_date(firstDeliveryPeriodStart + 
@@ -108,9 +115,9 @@ hl_config_clients2db <- function(dexpa,sourcedir = paste(dexpa$dirs$config, dexp
 		sourcefile=paste("DEX_Param_EnaviClient_", dexpa$sim$id, ".csv", sep="")) {
 	
 	
-	futile.logger::flog.info("Configure Market Backend clients (%s/%s)...", sourcedir, sourcefile, 
+	futile.logger::flog.info("Configure Market Backend clients (%s)...", combine_sourcedirfile(sourcedir, sourcefile), 
 			name = "dexr.hl.config.backend")
-	clients <- read.csv(file=paste(sourcedir, sourcefile, sep="/"))
+	clients <- read.csv(file=combine_sourcedirfile(sourcedir, sourcefile))
 	clients$id <- clients$user_id
 	
 	if(!("location" %in% colnames(clients))) {
