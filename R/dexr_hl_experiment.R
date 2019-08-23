@@ -463,7 +463,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	# for each EMG instance:
 	nodeids = strsplit(paste(input_csv_configparam(dexpa)[,"Nodes"], collapse=";"), ';', fixed=T)[[1]]
-	if (nodeids = "NA") nodeids = c("0")
+	if (nodeids == "NA") nodeids = c("0")
 		
 	for (nodeid in nodeids) {
 		dexpa$sim$nodeid = nodeid
