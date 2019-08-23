@@ -58,10 +58,15 @@ input_db_dump2db <- function(dexpa, dumpfile =  paste("dump_", dexpa$sim$id, sep
 	# Superuser required as long as other user does not have rights for new database:
 	Sys.setenv("PGPASSWORD"=dexpa$db$supassword)
 	
-	system(paste("createdb -T", dexpa$db$dbname_template, "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, "--no-password", dexpa$db$dbname, sep=" "))
+	command = paste("createdb -T", dexpa$db$dbname_template, "-h", dexpa$db$host, "-p", dexpa$db$port, 
+			"--username", dexpa$db$suname, "--no-password", dexpa$db$dbname, sep=" ")
+	futile.logger::flog.debug("Command: %s", command, name = "dexr.input.db.dump")
+	system(command)
 	
-	system(paste("pg_restore",  "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, 
-					"--no-password --clean --if-exists -d", dexpa$db$dbname, paste(dexpa$dirs$output$dbdumps,dumpfile,sep="/")))
+	command = paste("pg_restore",  "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, 
+			"--no-password --clean --if-exists -d", dexpa$db$dbname, paste(dexpa$dirs$output$dbdumps,dumpfile,sep="/"))
+	futile.logger::flog.debug("Command: %s", command, name = "dexr.input.db.dump")
+	system(command)
 	
 	# set privileges:
 	dp2 <- dexpa

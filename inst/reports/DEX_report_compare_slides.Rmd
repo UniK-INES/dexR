@@ -115,6 +115,13 @@ dexpas[[1]]$fig$height <- 750
 dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas, type="generation", skiplegend=T)
 ```
 
+## Requested Energy by Type
+### Requested Energy by Type
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+dexpas[[1]]$fig$height <- 750
+dexR::hl_figure_energy_requested_comp_sumGenByTypeStartT(dexpas, skiplegend=T)
+```
+
 
 ## Requested Energy summed
 ### Requested Energy summed
