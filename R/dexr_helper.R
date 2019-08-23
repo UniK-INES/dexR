@@ -178,3 +178,14 @@ demo_prepare_db4figures <- function() {
 	dexR::input_db_dump2db(dp2, dumpfile="dump_enavi_07-09")
 	return(list("dp1" = dp1, "dp2" = dp2))
 }
+#' Determine EMG port in multi-node (and other) setting
+#' @param dexpa 
+#' @param nodeid 
+#' @return EMG port for specific node ID
+#' 
+#' @author Sascha Holzhauer
+#' @export
+emggetport <- function(dexpa, nodeid) {
+	return(dexpa$emg$startport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) + as.numeric(nodeid) + 
+					dexpa$emg$portoffset)
+}

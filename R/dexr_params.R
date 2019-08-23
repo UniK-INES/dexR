@@ -15,6 +15,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 
 	defdexpa$sim$version			<- "version"
 	defdexpa$sim$id				<- c("NN")
+	defdexpa$sim$nodeid   <- 0
 	defdexpa$sim$duration			<- 2*60*60             # in sec
 	defdexpa$sim$timefactor			<- 60.0
 
@@ -74,7 +75,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	### DB Settings ##################################################################
 	defdexpa$db <- list()	
 	defdexpa$db$host			<- "localhost"
-
+  	defdexpa$db$port			<- "5432"
+  
 	defdexpa$db$suname			<- "postgres"
 	defdexpa$db$supassword			<- "NotSet"
 

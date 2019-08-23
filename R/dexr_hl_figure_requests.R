@@ -1,6 +1,6 @@
 #' Retrieves requests data from DB and creates figure of the number of received requests per 
 #' product pattern and status by delivery start time.
-#' @param dexpa  
+#' @param dexpa parameter
 #' @return figure file
 #' 
 #' @author Sascha Holzhauer
@@ -18,7 +18,7 @@ hl_figure_requests_numRequests_byStatusByStartT <- function(dexpa) {
 }
 #' Retrieves requests data from DB and creates figure of the number of received 
 #' requests per product pattern and status by submission time.
-#' @param dexpa  
+#' @param dexpa parameter
 #' @return figure file
 #' 
 #' @author Sascha Holzhauer
@@ -37,7 +37,7 @@ hl_figure_requests_numRequests_byStatusBySubmT <- function(dexpa) {
 #' Retrieves requests data from DB and creates figure of the number of received requests per 
 #' request type (Wind/PV/Storage/Load) by delivery start time.
 #' 
-#' @param dexpa
+#' @param dexpa parameter
 #' @return figure file
 #' 
 #' @author Sascha Holzhauer
@@ -48,7 +48,7 @@ hl_figure_requests_numRequests_byTypeByStartT <- function(dexpa) {
 #' Retrieves requests data from DB and creates figure of the number of received requests per 
 #' product pattern by delivery start time.
 #' 
-#' @param dexpa
+#' @param dexpa parameter
 #' @return figure file
 #' 
 #' @author Sascha Holzhauer
@@ -59,7 +59,7 @@ hl_figure_requests_numRequests_byProductByStartT <- function(dexpa) {
 #' Retrieves requests data from DB and creates figure of the number of received 
 #' requests per product pattern by submission time.
 #' 
-#' @param dexpa
+#' @param dexpa parameter
 #' @return figure file
 #' 
 #' @author Sascha Holzhauer
@@ -101,7 +101,7 @@ hl_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpas, ...) {
 }
 #' Retrieves requests data from DB and creates figure of the number of received requests per 
 #' request type (Wind/PV/Storage/Load) by delivery start time.
-#' @param dexpa  
+#' @param dexpa parameter
 #' @return figure file
 #' 
 #' @author Sascha Holzhauer

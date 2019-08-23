@@ -174,6 +174,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 				' -dd "',paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'devicesStorage']), sep=''), '"',
 				' -r "', paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'requestConfig']), sep=''), '"',
 				' -sc "',paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'ogemaConfig']), sep=''), '"',
+				' -pr "',paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'windpvpricing']), sep=''), '"',
 				' -u "', dexpa$server$url, '"',
 				' -po "',dexpa$server$port, '"',
 				sep="")
@@ -198,6 +199,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 				' -dd "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_DevicesStorage_', dexpa$sim$id, '.csv', sep=''), '"',
 				' -r "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_RequestConfig_', dexpa$sim$id, '.csv', sep=''), '"',
 				' -sc "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_OgemaConfig_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -pr "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_WindPvPricing_', dexpa$sim$id, '.csv', sep=''), '"',
 				' -u "', dexpa$server$url, '"',
 				' -po "',dexpa$server$port, '"',
 				sep="")
@@ -404,13 +406,18 @@ hl_write_runinfos <- function(dexpa, basetime, offset, infoData) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_closeexperiment <- function(dexpa, outputfile = "", basetime, offset = round(basetime - as.numeric(Sys.time())*1000), infoData=NULL) {
-
-	hl_experiment_stopemg(dexpa)
+hl_closeexperiment <- function(dexpa, outputfile = "", basetime, offset = round(basetime - as.numeric(Sys.time())*1000), 
+		infoData=NULL, nodeids) {
 	
-  if (!is.null(infoData)) {
-  	hl_write_runinfos(dexpa = dexpa, basetime = basetime, offset = offset, infoData=infoData)
-  }
+	for (nodeid in nodeinds) {
+		dexpa$emg$copyrundir = F
+		dexpa$emg$port = emggetport(dexpa, nodeid)
+		hl_experiment_stopemg(dexpa)
+	}
+	
+	if (!is.null(infoData)) {
+		hl_write_runinfos(dexpa = dexpa, basetime = basetime, offset = offset, infoData=infoData)
+	}
 	
 	dexR::input_db_db2dump(dexpa, dumpdir = paste("dump_", dexpa$sim$id, sep=""), remoteServer=dexpa$remoteserver, 
 			outputfile= if (is.null(dexpa$db$sshoutput)) "" else 
@@ -422,8 +429,8 @@ hl_closeexperiment <- function(dexpa, outputfile = "", basetime, offset = round(
 	
 	if (outputfile != "") {
 		sink()
-	  	sink()
-	  	sink()
+		sink()
+		sink()
 		sink(type="message")
 	}
 }
@@ -454,7 +461,14 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset, startServer=F)
 	
-	hl_experiment_runemg(dexpa, outfileemg = outfileemg, outfilesys = outputfile, pauseafterxmlcreation = pauseafterxmlcreation)
+	# for each EMG instance:
+	nodeids = strsplit(paste(input_csv_configparam(dexpa)[,"Nodes"], collapse=";"), ';', fixed=T)[[1]]
+	if (nodeids = "NA") nodeids = c("0")
+		
+	for (nodeid in nodeids) {
+		dexpa$sim$nodeid = nodeid
+		hl_experiment_runemg(dexpa, outfileemg = outfileemg, outfilesys = outputfile, pauseafterxmlcreation = pauseafterxmlcreation)
+	}
 	
 	message = server_start(dexpa)
 	futile.logger::flog.info(message, name = "dexr.hl.experiment")	
@@ -467,7 +481,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	if (shutdown) {
 		Sys.sleep((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor)
-		dexR::hl_closeexperiment(dexpa, outputfile = outputfile, basetime = basetime, offset = offset, infoData = infoData)
+		dexR::hl_closeexperiment(dexpa, outputfile = outputfile, basetime = basetime, offset = offset, infoData = infoData, nodeids = nodeids)
 	}
 }
 #' Runs experiments and create the required config folder (for cluster execution)

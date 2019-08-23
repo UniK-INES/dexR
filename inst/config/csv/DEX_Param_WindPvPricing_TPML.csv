@@ -1,0 +1,3 @@
+name,enaviClientType,minPrice,maxPrice,solarWeight,cutOffShare,ratedSolarIrradWPerM2,ratedWindSpeedMPerS
+enaviWindPvPricing_0,pv,0,"0,5",1,"0,6",800,25
+enaviWindPvPricing_1,wind,0,"0,3",1,"0,6",800,25

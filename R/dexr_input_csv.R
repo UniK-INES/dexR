@@ -8,29 +8,22 @@ input_csv_clientdata <- function(dexpa) {
 
 	paramConfigs <- dexR::input_csv_configparam(dexpa, columns=NULL)
 		
-	clients <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs["clients"], sep="/"))
-	loads <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs["loads"], sep="/"))
+	clients <- checkandloadcsvfile(dexpa, paramConfigs["clients"])
+
+	loads <- checkandloadcsvfile(dexpa, paramConfigs["loads"])
 	
-	loadProfiles <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs["loadProfiles"], sep="/"))
+	loadProfiles <- checkandloadcsvfile(dexpa, paramConfigs["loadProfiles"])
 	
-	generations <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs[idMatch,"generations"], sep="/"))
+	generations <- checkandloadcsvfile(dexpa, paramConfigs["generations"])
 	
-	pvplants <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs["pvplants"], sep="/"))
+	pvplants <- checkandloadcsvfile(dexpa, paramConfigs["pvplants"])
 	
-	windplants <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs["windplants"], sep="/"))
+	windplants <- checkandloadcsvfile(dexpa, paramConfigs["windplants"])
 	
-	storages <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs[idMatch,"devicesStorage"], sep="/"))
+	storages <- checkandloadcsvfile(dexpa, paramConfigs["devicesStorage"])
 	
 	# connect storages with clients via RequestConfig:
-	requestConfigs <- read.csv(file=paste(sourcedir=paste(dexpa$dirs$config, dexpa$sim$id, sep=""), 
-					paramConfigs["requestConfig"], sep="/"))
+	requestConfigs <- checkandloadcsvfile(dexpa, paramConfigs["requestConfig"])
 	
 	data <- merge(clients, loads, by.x="name_emg", by.y="client", all=T)
 	colnames(data)[colnames(data)=="name.y"] <- "nameLoad"
@@ -70,6 +63,13 @@ input_csv_clientdata <- function(dexpa) {
 					"profileType", "rotorArea", "panelArea", "ratedEnergy_upperLimit")]
 	data
 }
+checkandloadcsvfile <- function(dexpa, configfilename) {
+	filename = combine_sourcedirfile(paste(dexpa$dirs$config, dexpa$sim$id, sep="/"), configfilename)
+	data <- read.csv(file=filename)
+	if (ncol(data) == 1)
+		futile.logger::flog.warn("Make sure to sure to use commata in %s!", filename, name = "dexr.input.csv.client")
+	return(data)
+}
 #' Reads params for the given dexpa from the parameter configuration CSV file
 #' 
 #' @param dexpa 
@@ -89,12 +89,12 @@ input_csv_configparam <- function(dexpa, columns=NULL) {
 	}
 	
 	# Check Runs.csv for requested ID:
-	idMatch <- match(dexpa$sim$id, paramConfigs$ID)
-	if(is.na(idMatch)) {
+	idMatches <- which(paramConfigs$ID %in% dexpa$sim$id)
+	if(length(idMatches)==0) {
 		futile.logger::flog.warn("ID %s not present in config table (%s)!", dexpa$sim$id, dexpa$files$paramconfigs, 
 				name = "dexr.hl.experiment")
 	}
-	paramConfigs[idMatch,]
+	paramConfigs[idMatches,]
 }
 #' Extract the runinfos entry from CSV file for the dexpa's sim ID
 #' 

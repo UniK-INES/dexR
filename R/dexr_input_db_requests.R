@@ -5,7 +5,7 @@
 #' 
 #' @author Sascha Holzhauer
 #' @export
-input_db_requests <- function(dexp) {
+input_db_requests <- function(dexp, additionalwhere="TRUE") {
 	
 	futile.logger::flog.info("Retrieve request data from PostgreSQL database %s",
 			dexp$db$dbname,
@@ -40,7 +40,8 @@ input_db_requests <- function(dexp) {
 						p.product_id = mp.product_pattern_product_id AND
 						m.user_account_id = u.id AND
 						e.start_time >= ", dexpa$sim$starttime_min, " AND
-						e.start_time <= ", dexpa$sim$starttime_max, ";"), sep="")
+						e.start_time <= ", dexpa$sim$starttime_max, " AND ",
+						additionalwhere,";"), sep="")
 		
 	df_requests$submission_time <- ms_to_date(df_requests$submission_time, timezone="Europe/Berlin")
 	df_requests$start_time <- ms_to_date(df_requests$start_time, timezone="Europe/Berlin")

@@ -66,25 +66,6 @@ hl_figure_energy_requested_sumByStartT <- function(dexpa) {
 				name = "dexr.hl.requests")
 	}
 }
-#' Retrieves requests data from DB and creates figure of requested energy and associated costs
-#' summed by delivery start time.
-#' TODO implement output_figure_energycosts_requested_sumByStartT
-#' @param dexpa
-#' @return figure file
-#' 
-#' @author Sascha Holzhauer
-#' @export
-hl_figure_energycosts_requested_sumByStartT <- function(dexpa) {
-	data <- input_db_requests(dexpa)
-	if (nrow(data) > 0) {
-		data <- dexpa$sim$filter$requests(dexpa, data)
-		output_figure_energycosts_requested_sumByStartT(dexpa, data)
-	} else {
-		futile.logger::flog.warn("No requests retrieved from PostgreSQL database %s!",
-				dexpa$db$dbname,
-				name = "dexr.hl.requests")
-	}
-}
 #' Retrieves requests data from DB and creates figure of requested energy per 
 #' status by delivery start time.
 #' @param dexpa  
@@ -141,33 +122,6 @@ hl_figure_energy_requested_comp_sumByStartT <- function(dexpas) {
 		output_figure_energy_requested_comp_sumByStartT(dexpas[[1]], data)
 	}
 }
-#' Retrieves requests data from DB and creates figure of requested energy by delivery start time.
-#' @param dexpa  
-#' @return figure file
-#' 
-#' @author Sascha Holzhauer
-#' @export
-hl_figure_energycosts_requested_comp_sumByStartT <- function(dexpas) {
-	data = data.frame()
-	for (dp in dexpas) {
-		# dp = dexpas[[1]]
-		d <- input_db_requests(dp)
-		if (nrow(d) == 0) {
-			# R.oo::throw.default("No requests in DB for ID ", dp$id, "!")
-			futile.logger::flog.warn("No requests retrieved from PostgreSQL database %s for ID %s!",
-					dp$db$dbname,
-					dp$id,
-					name = "dexr.hl.requests")
-		} else {
-			d$id <- input_db_runID(dp)
-			data <- rbind(data, d)
-		}
-	}
-	if (nrow(data) > 0) {
-		data <- dexpa$sim$filter$requests(dexpa, data)
-		output_figure_energycosts_requested_comp_sumByStartT(dexpas[[1]], data)
-	}
-}
 #' Retrieves requests data from DB and creates figure of requested energy by delivery start time 
 #' (generation, load, and residual as lines).
 #' @param dexpa  
@@ -213,7 +167,7 @@ hl_figure_energy_requested_comp_sumLoadGenByStartT <- function(dexpas) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_figure_energy_requested_comp_sumGenByTypeStartT <- function(dexpas) {
+hl_figure_energy_requested_comp_sumGenByTypeStartT <- function(dexpas, skiplegend=F) {
 	data = data.frame()
 	products <- input_db_param_products(dexpas[[1]])
 	for (dp in dexpas) {
@@ -241,7 +195,7 @@ hl_figure_energy_requested_comp_sumGenByTypeStartT <- function(dexpas) {
 	}
 	if (nrow(data) > 0) {
 		data <- dexpa$sim$filter$requests(dexpa, data)
-		dexR::output_figure_energy_requested_comp_sumGenByGenTypeStartT(dexpas[[1]], data)
+		dexR::output_figure_energy_requested_comp_sumGenByGenTypeStartT(dexpas[[1]], data, skiplegend=skiplegend)
 	}
 }
 
