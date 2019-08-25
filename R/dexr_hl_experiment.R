@@ -409,7 +409,7 @@ hl_write_runinfos <- function(dexpa, basetime, offset, infoData) {
 hl_closeexperiment <- function(dexpa, outputfile = "", basetime, offset = round(basetime - as.numeric(Sys.time())*1000), 
 		infoData=NULL, nodeids) {
 	
-	for (nodeid in nodeinds) {
+	for (nodeid in nodeids) {
 		dexpa$emg$copyrundir = F
 		dexpa$emg$port = emggetport(dexpa, nodeid)
 		hl_experiment_stopemg(dexpa)

@@ -189,3 +189,50 @@ emggetport <- function(dexpa, nodeid) {
 	return(dexpa$emg$startport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) + as.numeric(nodeid) + 
 					dexpa$emg$portoffset)
 }
+requests_identify_type <- function(data, dataexp='df[r, if(df$status==2) "energy_accepted" else "energy_requested"]') {
+	data <- plyr::ddply(data, c("id"), function(df) {
+				# df <- data[data$id == data[1,"id"],]
+				# identify shortest delivery period:
+				shortestDelivery <- min(df$end_time - df$start_time)
+				minStartTime 	 <- min(df$start_time)
+				maxEndTime		 <- max(df$end_time)
+				
+				# create interval vector of shortest delivery period:
+				intervals <- seq(minStartTime, maxEndTime, by = shortestDelivery)
+				futile.logger::flog.debug("consider %d intervals and %d reqeusts...", 
+						length(intervals), nrow(df), name="dexr.helper.types")
+				
+				intervals <- lubridate::interval(intervals[1:(length(intervals)-1)], intervals[(1+1):length(intervals)])
+				result <- data.frame(start_time = intervals, 
+						PV = rep(0, length(intervals)),
+						Wind  = rep(0, length(intervals)),
+						StorageOut  = rep(0, length(intervals)),
+						StorageIn  = rep(0, length(intervals)))
+				
+				# aggregate energy:
+				# TODO more efficient implementation!
+				for (r in 1:nrow(df)) {
+					# r = 1
+					# assign the according energy to all intervals that are within the delivery period:
+					if (grepl("Pv", df[r, "cid"])) {
+						result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+								"PV"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+										"PV"] + eval(parse(text=dataexp))
+					} else if (grepl("Wind", df[r, "cid"])) {
+						result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+								"Wind"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+										"Wind"] + eval(parse(text=dataexp))			
+					} else if (grepl("Storage", df[r, "cid"]) & (df[r, "energy_requested"] < 0)) {
+						result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+								"StorageOut"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+										"StorageOut"] + eval(parse(text=dataexp))
+					} else if (grepl("Storage", df[r, "cid"]) & (df[r, "energy_requested"] > 0)) {
+						result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+								"StorageIn"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
+										"StorageIn"] + eval(parse(text=dataexp))
+					} 
+				}
+				result$start_time <- lubridate::int_start(result$start_time)
+				result
+			})
+}
