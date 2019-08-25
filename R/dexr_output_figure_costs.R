@@ -113,7 +113,7 @@ output_figure_energycosts_requested_sumByStartT <- function(dexpa, data) {
 #' @author Sascha Holzhauer
 #' @export
 output_figure_energycosts_requested_comp_sumByStartT <- function(dexpa, data) {
-	# count requests
+	futile.logger::flog.debug("Figure: Energycosts Summed by delviery start time: sum costs...", name="dexr.hl.costs")
 	data <- plyr::ddply(data, c("id", "start_time"), function(d) {
 				new = data.frame(
 						"energy" = sum(d[, "energy_requested"]),
@@ -122,15 +122,55 @@ output_figure_energycosts_requested_comp_sumByStartT <- function(dexpa, data) {
 						"id" = d$id)
 				new
 			})
+	futile.logger::flog.debug("Figure: Energycosts Summed by delviery start time: reshape data...", name="dexr.hl.costs")
 	data <- reshape2::melt(data, id.vars=c("id", "start_time"), variable.name = "Type",
 			value.name = "values")
 	
+	futile.logger::flog.debug("Figure: Energycosts Summed by delviery start time: plot figure...", name="dexr.hl.costs")
 	output_figure_lines(dexpa, data, y_column = "values", title = "Requested energy and accepted costs of requests by delivery start time",
-			colour_column = "id",
+			colour_column = "id", linetype_column = "Type",
 			facet_ncol = 1, filename = "dex_energycosts_requested_comp_sumByCT",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
 					ggplot2::ylab("Requested energy/Accepted costs"),
+					ggplot2::theme(
+							legend.position = "bottom"
+					), ggplot2::guides(colour = ggplot2::guide_legend(ncol=1), 
+							linetype = ggplot2::guide_legend(ncol=1))
+			),  x_column = "start_time", 
+			returnplot = FALSE)
+}
+#' Output figure: Comparison of average costs of requested energy per type and per delivery start time.
+#' @param dexpa 
+#' @param data 
+#' @return figure file
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_figure_energycosts_requested_comp_avgByTypeStartT <- function(dexpa, data) {
+	futile.logger::flog.debug("Figure: Energycosts Summed by delviery start time: sum costs...", name="dexr.hl.costs")
+	
+	dataPrice <- requests_identify_type(data, dataexp='df[r, "price_requested"]')
+	dataNums <- requests_identify_type(data, dataexp='1')
+	
+	futile.logger::flog.debug("Figure: Energy prices by type and delviery start time: reshape data...", 
+			name="dexr.hl.costs")
+	dataPrice <- reshape2::melt(dataPrice, id.vars=c("id", "start_time"), variable.name = "Type",
+			value.name = "Price")
+	dataNum <- reshape2::melt(dataNums, id.vars=c("id", "start_time"), variable.name = "Type",
+			value.name = "number")
+	
+	dataPrice$Price[dataPrice$Price > 0] = dataPrice$Price[dataPrice$price > 0] / dataNum$number[dataPrice$Price > 0]
+	return(data)
+	
+	futile.logger::flog.debug("Figure: Energy prices by type and delviery start time: plot figure...", 
+			name="dexr.hl.costs")
+	output_figure_lines(dexpa, dataPrice, y_column = "price", title = "Requested energy price by type and delivery start time",
+			colour_column = "id", linetype_column = "Type",
+			facet_ncol = 1, filename = "dex_energyprices_requested_comp_avgByTypeDT",
+			alpha=1.0, ggplotaddons = list(
+					ggplot2::xlab("Start time"),
+					ggplot2::ylab("Average price"),
 					ggplot2::theme(
 							legend.position = "bottom"
 					), ggplot2::guides(colour = ggplot2::guide_legend(ncol=1), 

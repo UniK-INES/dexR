@@ -132,7 +132,7 @@ dexR::hl_figure_energy_requested_comp_sumByStartT(dexpas)
 
 ## Requested Energy (Generation, Load, Residual)
 ### Requested Energy (Generation, Load, Residual)
-```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+```{r energy_req_type, eval=TRUE, echo=FALSE, warning=FALSE, messages=FALSE, results="hide"}
 dexpas[[1]]$fig$height <- 750
 dexR::hl_figure_energy_requested_comp_sumLoadGenByStartT(dexpas)
 ```
