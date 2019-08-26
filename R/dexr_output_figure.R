@@ -62,7 +62,7 @@ output_figure_bars <- function(dexpa, data, y_column, title = NULL,
 	
 	facetElem = NULL
 	if (!is.null(facet_column)) {
-		facetElem <- ggplot2::facet_wrap(as.formula(paste("~", facet_column)), ncol = facet_ncol)
+		facetElem <- ggplot2::facet_wrap(as.formula(paste("~", facet_column)), ncol = facet_ncol, scales="free_y")
 	}
 	
 	p1 <- ggplot2::ggplot() +
@@ -70,6 +70,7 @@ output_figure_bars <- function(dexpa, data, y_column, title = NULL,
 							fill = fill_column, group = group_column), stat="identity", position = position) +
 			facetElem  +
 			scaleFillElem +
+			{if (dexpa$fig$skiptitles)  ggplot2::theme(plot.title =  ggplot2::element_blank()) else NULL} + 
 			{if (!is.null(title) && title != "") ggplot2::labs(title = title) else NULL} +
 			(if (!is.null(fill_column) && x_column == fill_column) ggplot2::scale_x_discrete(breaks=NULL) else NULL) +
 			ggplotaddons +

@@ -26,9 +26,9 @@ setwd(paste(dexpas[[1]]$dirs$scripts, sep="/"))
 dexpas <- lapply(dexpas, function(dp) {
 	dp$fig$init <- function(simp, outdir, filename) {}
 	dp$fig$close<- function() {}
+	dp$fig$skiptitles <- T
 	dp
 })
-
 ```
 # Parameters
 ## General Information
@@ -49,10 +49,15 @@ invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ### Product Information {.allowframebreaks}
 ```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
-for (dp in dexpas) {
-	cat('\n')
-	cat("#### Product Information (", input_db_runID(dp), ")", sep = "") 
-	print(dexR::output_table_param_products(dp))
+if (dexR::param_marketproductsdiffer(dexpas)) {
+  for (dp in dexpas) {
+  	cat('\n')
+  	cat("#### Market Information (", input_db_runID(dp), ")", sep = "")
+  	print(dexR::output_table_param_products(dp))
+  }
+} else {
+  cat("#### Market Information")
+  print(dexR::output_table_param_products(dexpas[[1]]))
 }
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
@@ -62,9 +67,9 @@ invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 for (dp in dexpas) {
-	cat('\n')
-	cat("#### Market Information (", input_db_runID(dp), ")", sep = "")
-	print(dexR::output_table_param_marketinfo(dp))
+  	cat('\n')
+  	cat("#### Market Information (", input_db_runID(dp), ")", sep = "")
+  	print(dexR::output_table_param_marketinfo(dp))
 }
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
@@ -72,69 +77,108 @@ invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ## Client Information
 ```{r, eval=TRUE, results="asis", message=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
-for (dp in dexpas) {
-	cat("\n### Client Information (", input_db_runID(dp), ")", sep = "") 
-	dexR::output_table_param_clients(dp)
+if (dexR::param_clientsdiffer(dexpas)) {
+  for (dp in dexpas) {
+  	cat("\n### Client Information (", input_db_runID(dp), ")", sep = "") 
+  	dexR::output_table_param_clients(dp)
+  }
+} else {
+  cat("\n### Client Information") 
+  	dexR::output_table_param_clients(dexpas[[1]])
 }
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
 
 # Time Series: Clearing
-## Clearing: Number of considered requests
-### Clearing: Number of considered requests
+
+## Clearing: Number of Considered Requests by Delivery
+### Clearing: Number of Considered Requests by Delivery
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexR::hl_figure_clearing_comp_numConsideredRequests(dexpas)
 ```
 
-## Clearing: Price Statistics
-### Clearing: Price Statistics
+## Clearing: Prices by Delivery
+### Clearing: Prices by Delivery
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 750
 dexR::hl_figure_clearing_comp_clearingPriceByCTbyProduct(dexpas)
 ```
 
+
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+if (dexpa$fig$show$costs$summed_delivery) {
+  cat("\n## Summed Costs by Delivery")
+  cat("\n### Summed Costs by Delivery")
+  dexpas[[1]]$fig$height <- 750
+  dexR::hl_figure_energycosts_requested_comp_sumByStartT(dexpas, skiplegend=T)
+}
+```
+
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+if (dexpa$fig$show$costs$costgini_gen_delivery) {
+  cat("\n## Energy, Costs, and Gini Coefficient for Generation by Delivery")
+  cat("\n### Energy, Costs, and Gini Coefficient for Generation by Delivery")
+  dexpas[[1]]$fig$height <- 750
+  dexR::hl_figure_energycosts_requests_comp_giniByStartT(dexpas, type = "gen", skiplegend=T)
+}
+```
+
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+if (dexpa$fig$show$costs$costgini_load_delivery) {
+  cat("\n## Energy, Costs, and Gini Coefficient for Loads by Delivery")
+  cat("\n### Energy, Costs, and Gini Coefficient for Loads by Delivery")
+  dexpas[[1]]$fig$height <- 750
+  dexR::hl_figure_energycosts_requests_comp_giniByStartT(dexpas, type = "load", skiplegend=T)
+}
+```
+
 # Time Series: Energy
-## Requested Energy by Status (Residual)
-### Requested Energy by Status (Residual)
-```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+
+## Requested Energy (Generation, Load, Residual) by Delivery
+### Requested Energy (Generation, Load, Residual) by Delivery
+```{r energy_req_type, eval=TRUE, echo=FALSE, warning=FALSE, messages=FALSE, results="hide"}
 dexpas[[1]]$fig$height <- 750
-dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas, type="residual", skiplegend=T)
+dexR::hl_figure_energy_requested_comp_sumLoadGenByStartT(dexpas)
 ```
 
-## Requested Energy by Status (Load)
-### Requested Energy by Status (Load)
-```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
-dexpas[[1]]$fig$height <- 750
-dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas, type="load", skiplegend=T)
-```
-
-## Requested Energy by Status (Generation)
-### Requested Energy by Status (Generation)
-```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
-dexpas[[1]]$fig$height <- 750
-dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas, type="generation", skiplegend=T)
-```
-
-## Requested Energy by Type
-### Requested Energy by Type
+## Requested Energy by type and delivery
+### Requested Energy by type and delivery
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 750
 dexR::hl_figure_energy_requested_comp_sumGenByTypeStartT(dexpas, skiplegend=T)
 ```
 
-
-## Requested Energy summed
-### Requested Energy summed
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
-dexpas[[1]]$fig$height <- 750
-dexR::hl_figure_energy_requested_comp_sumByStartT(dexpas)
+if (dexpa$fig$show$energy$summed_delivery) {
+  cat("\n## Requested Energy summed by delivery")
+  cat("\n### Requested Energy summed by delivery")
+  dexpas[[1]]$fig$height <- 750
+  dexR::hl_figure_energy_requested_comp_sumByStartT(dexpas)
+}
 ```
 
-## Requested Energy (Generation, Load, Residual)
-### Requested Energy (Generation, Load, Residual)
-```{r energy_req_type, eval=TRUE, echo=FALSE, warning=FALSE, messages=FALSE, results="hide"}
+## Requested Energy (Generation) by Status and Delivery
+### Requested Energy (Generation) by Status and Delivery
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 750
-dexR::hl_figure_energy_requested_comp_sumLoadGenByStartT(dexpas)
+dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas, type="generation", skiplegend=T)
+```
+
+## Requested Energy
+### Requested Energy (Load) by Status and Delivery
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+dexpas[[1]]$fig$height <- 750
+dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas, type="load", skiplegend=T)
+```
+
+
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+if (dexpa$fig$show$energy$residual_status_delivery) {
+  cat("\n## Requested Energy (Residual) by Status and Delivery")
+  cat("\n### Requested Energy (Residual) by Status and Delivery")
+  dexpas[[1]]$fig$height <- 750
+  dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas, type="residual", skiplegend=T)
+}
 ```
 
 ## Aggregated Energy Figures
@@ -146,35 +190,41 @@ invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
 
 # Time Series: Requests
-## Request Statistics by status and submission time
-### Request Statistics by status and submission time
+### Request Statistics by status and delivery
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 950
-dexR::hl_figure_requests_numRequests_comp_byStatusBySubmT(dexpas)
+dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(dexpas, skiplegend=T)
 ```
 
-### Request Statistics by status and delivery start time
-```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
-dexpas[[1]]$fig$height <- 950
-dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(dexpas)
-```
-
-### Request Statistics by requests type and delivery start time
+### Request Statistics by requests type and delivery
 ```{r numReqByTypeByStart, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 950
-hl_figure_requests_numRequests_comp_byTypeByStartT(dexpas)
+hl_figure_requests_numRequests_comp_byTypeByStartT(dexpas, skiplegend=T)
 ```
 
-## Request Statistics by product and submission time
-### Request Statistics by product and submission time
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
-dexpas[[1]]$fig$height <- 750
-dexR::hl_figure_requests_numRequests_comp_byProductBySubmT(dexpas)
+if (dexpa$fig$show$requests$product_delivery) {
+  cat("\n## Request Statistics by product and delivery")
+  cat("\n### Request Statistics by product and delivery")
+  dexpas[[1]]$fig$height <- 750
+  dexR::hl_figure_requests_numRequests_comp_byProductByStartT(dexpas, skiplegend=T)
+}
 ```
 
-## Request Statistics by product and delivery start time
-### Request Statistics by product and delivery start time
 ```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
-dexpas[[1]]$fig$height <- 750
-dexR::hl_figure_requests_numRequests_comp_byProductByStartT(dexpas)
+if (dexpa$fig$show$requests$status_submission) {
+  cat("\n## Request Statistics by status and submission")
+  cat("\n### Request Statistics by status and submission")
+  dexpas[[1]]$fig$height <- 950
+  dexR::hl_figure_requests_numRequests_comp_byStatusBySubmT(dexpas, skiplegend=T)
+}
+```
+
+```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+if (dexpa$fig$show$requests$product_submission) {
+  cat("\n## Request Statistics by product and submission")
+  cat("\n### Request Statistics by product and submission")
+  dexpas[[1]]$fig$height <- 750
+  dexR::hl_figure_requests_numRequests_comp_byProductBySubmT(dexpas, skiplegend=T)
+}
 ```
