@@ -7,7 +7,7 @@
     <#list windpvpricings as pricing>
     <resource>
         <name>${pricing.name}</name>
-        <type>de.iee.enavi.windpvpricing.resource.model.WindPvPricing</type>
+        <type>de.iee.enavi.windpvpricing.resource.model.WindPvPricingConfig</type>
         <path>enaviWindPvPricing/${pricing.name}</path>
         <decorating>true</decorating>
         <active>true</active>
@@ -76,5 +76,5 @@
         </resource>
     </resource>
     </#list>
-    <elementType>de.iee.enavi.windpvpricing.resource.model.WindPvPricing</elementType>
+    <elementType>de.iee.enavi.windpvpricing.resource.model.WindPvPricingConfig</elementType>
 </og:resource>

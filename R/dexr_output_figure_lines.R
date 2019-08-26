@@ -74,7 +74,7 @@ output_figure_lines <- function(dexpa = dexpa, data = data, x_column= NULL, y_co
 	
 	facetElem = NULL
 	if (!is.null(facet_column)) {
-		facetElem <- ggplot2::facet_wrap(as.formula(paste("~", facet_column)), ncol = facet_ncol)
+		facetElem <- ggplot2::facet_wrap(as.formula(paste("~", facet_column)), ncol = facet_ncol, scales="free_y")
 	}
 	
 	if (is.null(x_column)) {
@@ -105,6 +105,7 @@ output_figure_lines <- function(dexpa = dexpa, data = data, x_column= NULL, y_co
 		 	scaleColourElem +
 			scaleLinetypeElem + 
 			(if (!is.null(title) && title != "") ggplot2::labs(title = title) else NULL) +
+			{if (dexpa$fig$skiptitles)  ggplot2::theme(plot.title =  ggplot2::element_blank()) else NULL} +
 			ggplotaddons
 	print(p1)
 	dexpa$fig$close()

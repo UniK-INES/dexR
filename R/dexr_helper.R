@@ -236,3 +236,63 @@ requests_identify_type <- function(data, dataexp='df[r, if(df$status==2) "energy
 				result
 			})
 }
+#' Check differences in market product configuration
+#' @param dexpas 
+#' @return true if market product configurations differ between passed dexpas
+#' 
+#' @author Sascha Holzhauer
+#' @export
+param_marketproductsdiffer <- function(dexpas) {
+	tocomp = ""
+	for (dp in dexpas)
+		paramConfigs <- dexR::input_csv_configparam(dp)
+		if (tocomp == "") {
+			tocomp = paramConfigs["products"]
+		} else {
+			if (tocomp != paramConfigs["products"]) {
+				return(TRUE)
+		} 
+	}
+	return(FALSE)
+}
+#' Check differences in client configuration
+#' @param dexpas 
+#' @return true if client configurations differ between passed dexpas
+#' 
+#' @author Sascha Holzhauer
+#' @export
+param_clientsdiffer <- function(dexpas) {	
+	tocompclients = ""
+	tocomploads = ""
+	tocomploadprofiles = ""
+	tocompgenerations = ""
+	tocomppvplant = ""
+	tocompwindplants = ""
+	tocompstorages = ""
+	tocomprequestconfigs = ""
+	
+	for (dp in dexpas)
+		paramConfigs <- dexR::input_csv_configparam(dp)
+		if (tocompclients == "") {
+			tocompclients = paramConfigs["clients"]
+			tocomploads = paramConfigs["loads"]
+			tocomploadprofiles = paramConfigs["loadProfiles"]
+			tocompgenerations = paramConfigs["generations"]
+			tocomppvplant = paramConfigs["pvplants"]
+			tocompwindplants = paramConfigs["windplants"]
+			tocompstorages = paramConfigs["devicesStorage"]
+			tocomprequestconfigs = paramConfigs["requestConfig"]
+		} else {
+			if (tocompclients != paramConfigs["clients"] || 
+				tocomploads != paramConfigs["loads"] ||
+				tocomploadprofiles != paramConfigs["loadProfiles"] ||
+				tocompgenerations != paramConfigs["generations"] ||
+				tocomppvplant != paramConfigs["pvplants"] ||
+				tocompwindplants != paramConfigs["windplants"] ||
+				tocompstorages != paramConfigs["devicesStorage"] ||
+				tocomprequestconfigs != paramConfigs["requestConfig"]) {
+				return(TRUE)
+		} 
+	}
+	return(FALSE)
+}

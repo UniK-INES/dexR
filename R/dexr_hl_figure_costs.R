@@ -35,18 +35,18 @@ hl_figure_energycosts_requests_giniByStartT <- function(dexpa, type = "load") {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_figure_energycosts_requests_comp_giniByStartT <- function(dexpas, type = "load") {
+hl_figure_energycosts_requests_comp_giniByStartT <- function(dexpas, type = "load", skiplegend=F) {
 	data = data.frame()
 	for (dp in dexpas) {
 		# dp = dexpas[[1]]
 		if (type == "gen") {
-			d <- dexR::input_db_requests(dexpa, additionalwhere = "e.status IN (1,2) AND e.energy_accepted < 0")
+			d <- dexR::input_db_requests(dp, additionalwhere = "e.status IN (1,2) AND e.energy_accepted < 0")
 			data$energy_accepted <- data$energy_accepted * (-1)
 		} else if (type == "load") {
-			d <- dexR::input_db_requests(dexpa, additionalwhere = "e.status IN (1,2) AND e.energy_accepted > 0")
+			d <- dexR::input_db_requests(dp, additionalwhere = "e.status IN (1,2) AND e.energy_accepted > 0")
 		} else {
 			futile.logger::flog.warn("Type needs to be either 'gen' or 'load'",
-					dexpa$db$dbname,
+					dp$db$dbname,
 					name = "dexr.hl.costs")
 		}
 		
@@ -62,8 +62,8 @@ hl_figure_energycosts_requests_comp_giniByStartT <- function(dexpas, type = "loa
 		}
 	}
 	if (nrow(data) > 0) {
-		data <- dexpa$sim$filter$requests(dexpa, data)
-		output_figure_energycosts_requested_comp_giniByStartT(dexpas[[1]], data)
+		data <- dexpas[[1]]$sim$filter$requests(dexpas[[1]], data)
+		output_figure_energycosts_requested_comp_giniByStartT(dexpas[[1]], data, skiplegend=skiplegend)
 	}
 }
 #' Retrieves requests data from DB and creates figure of requested energy and associated costs
@@ -93,7 +93,7 @@ hl_figure_energycosts_requested_sumByStartT <- function(dexpa) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_figure_energycosts_requested_comp_sumByStartT <- function(dexpas) {
+hl_figure_energycosts_requested_comp_sumByStartT <- function(dexpas, skiplegend=F) {
 	futile.logger::flog.debug("Figure: Energycosts Summed by delviery start time: retrieve data...", name="dexr.hl.costs")
 	data = data.frame()
 	for (dp in dexpas) {
@@ -113,7 +113,7 @@ hl_figure_energycosts_requested_comp_sumByStartT <- function(dexpas) {
 	if (nrow(data) > 0) {
 		futile.logger::flog.debug("Figure: Energycosts Summed by delviery start time: filter data...", name="dexr.hl.costs")
 		data <- dexpa$sim$filter$requests(dexpa, data)
-		output_figure_energycosts_requested_comp_sumByStartT(dexpas[[1]], data)
+		output_figure_energycosts_requested_comp_sumByStartT(dexpas[[1]], data, skiplegend=skiplegend)
 	}
 }
 #' Retrieves requests data from DB and creates figure of requested energy by delivery start time.

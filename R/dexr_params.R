@@ -110,10 +110,27 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$fig$splitfigs		<- FALSE
 	defdexpa$fig$plottitle		<- TRUE
 	defdexpa$fig$alpha			<- 0.7
-	defdexpa$fig$linewidth		<- 1
+	defdexpa$fig$linewidth		<- 0.5
 	defdexpa$fig$facetlabelsize	<- 12
 	defdexpa$fig$legend$ncols	<- 3
 	defdexpa$fig$labelsubs <- NULL
+	defdexpa$fig$skiptitles <- F
+	
+	defdexpa$fig$show <- list()
+	
+	defdexpa$fig$show$costs <- list()
+	defdexpa$fig$show$costs$summed_delivery <- T
+	defdexpa$fig$show$costs$costgini_gen_delivery <- T
+	defdexpa$fig$show$costs$costgini_load_delivery <- T
+	
+	defdexpa$fig$show$energy <- list()
+	defdexpa$fig$show$energy$summed_delivery <- T
+	defdexpa$fig$show$energy$residual_status_delivery <- T
+	
+	defdexpa$fig$show$requests <- list()
+	defdexpa$fig$show$requests$product_submission <- T
+	defdexpa$fig$show$requests$product_delivery <- T
+	defdexpa$fig$show$requests$status_submission <- T
 	
 	### Report Settings ###########################################################
 	defdexpa$analyse <- list()
