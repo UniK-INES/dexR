@@ -15,7 +15,7 @@ output_figure_energy_requested_byStatusByStartT <- function(dexpa, data, type="r
 	# TODO apply fix in output_figure_energy_requested_comp_sumByLoadGenByStartT to other functions!
 	data <- plyr::ddply(data, c("status", "start_time"), function(d) {
 				new = data.frame(
-					"energy" = sum(d[
+					"Energy" = sum(d[
 									if (type=="load") d$energy_requested>0
 									else if (type=="generation") d$energy_requested<0
 									else TRUE, "energy_requested"]),
@@ -24,12 +24,12 @@ output_figure_energy_requested_byStatusByStartT <- function(dexpa, data, type="r
 				new
 			})
 	
-	output_figure_bars(dexpa, data, y_column = "energy", title = "Requested energy by status and delivery start time",
+	output_figure_bars(dexpa, data, y_column = "Energy", title = "Requested energy by status and delivery start time",
 			fill_column = NULL, fill_legendtitle = NULL, fill_legenditemnames = NULL,
 			facet_ncol = 1, filename = "dex_energy_requested_byStatusByCT",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Requested energy"),
+					ggplot2::ylab("Requested energy (kWh)"),
 					if (skiplegend) ggplot2::theme(legend.position="none") else NULL
 			),  x_column = "start_time", group_column = "status", 
 			group_colors = dexpa$colours$statuses,  
@@ -46,17 +46,17 @@ output_figure_energy_requested_sumByStartT <- function(dexpa, data) {
 	# count requests
 	data <- plyr::ddply(data, c("start_time"), function(d) {
 				new = data.frame(
-						"energy" = sum(d[, "energy_requested"]),
+						"Energy" = sum(d[, "energy_requested"]),
 						"start_time" = d$start_time[1])
 				new
 			})
 	
-	output_figure_bars(dexpa, data, y_column = "energy", title = "Requested energy by delivery start time",
+	output_figure_bars(dexpa, data, y_column = "Energy", title = "Requested energy by delivery start time",
 			fill_column = NULL, fill_legendtitle = NULL, fill_legenditemnames = NULL,
 			facet_ncol = 1, filename = "dex_energy_requested_sumByCT",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Requested energy")
+					ggplot2::ylab("Requested energy (kWh)")
 			),  x_column = "start_time",
 			position = "stack", returnplot = FALSE)
 }
@@ -118,7 +118,7 @@ output_figure_energy_requested_sumByLoadGenByStartT <- function(dexpa, data) {
 			facet_ncol = 1, filename = "dex_energy_requested_comp_sumGenLoadByCTlines",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Requested energy"),
+					ggplot2::ylab("Requested energy (kWh)"),
 					ggplot2::scale_x_datetime(),
 					ggplot2::theme(
 							legend.position = "bottom"
@@ -136,7 +136,7 @@ output_figure_energy_requested_comp_byStatusByStartT <- function(dexpa, data, ty
 	# count requests
 	data <- plyr::ddply(data, c("id", "status", "start_time"), function(d) {
 				new = data.frame(
-						"energy" = sum(d[if (type=="load") d$energy_requested>0
+						"Energy" = sum(d[if (type=="load") d$energy_requested>0
 												else if (type=="generation") d$energy_requested<0
 												else TRUE, "energy_requested"]),
 						"status" = d$status[1],
@@ -145,7 +145,7 @@ output_figure_energy_requested_comp_byStatusByStartT <- function(dexpa, data, ty
 				new
 			})
 	data$status <- dexpa$naming$statuses[match(data$status, names(dexpa$naming$statuses))]
-	output_figure_bars(dexpa, data, y_column = "energy", title = "Requested energy of requests by status and delivery start time",
+	output_figure_bars(dexpa, data, y_column = "Energy", title = "Requested energy of requests by status and delivery start time",
 			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
 			facet_column = "status", facet_ncol = 1, filename = "dex_energy_requested_comp_byStatusByCT",
 			alpha=1.0, ggplotaddons = list(
@@ -153,7 +153,7 @@ output_figure_energy_requested_comp_byStatusByStartT <- function(dexpa, data, ty
 										legend.position = "bottom"
 								), 
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Requested energy")
+					ggplot2::ylab("Requested energy (kWh)")
 					
 			),  x_column = "start_time", group_column = "id", 
 			position = "dodge", returnplot = FALSE)
@@ -169,17 +169,17 @@ output_figure_energy_requested_comp_sumByStartT <- function(dexpa, data) {
 	# count requests
 	data <- plyr::ddply(data, c("id", "start_time"), function(d) {
 				new = data.frame(
-						"energy" = sum(d[, "energy_requested"]),
+						"Energy" = sum(d[, "energy_requested"]),
 						"start_time" = d$start_time[1],
 						"id" = d$id)
 				new
 			})
-	output_figure_bars(dexpa, data, y_column = "energy", title = "Requested energy of requests by delivery start time",
+	output_figure_bars(dexpa, data, y_column = "Energy", title = "Requested energy of requests by delivery start time",
 			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
 			facet_ncol = 1, filename = "dex_energy_requested_comp_sumByCT",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Requested energy"),
+					ggplot2::ylab("Requested energy (kWh)"),
 					ggplot2::theme(
 							legend.position = "bottom"
 					)
@@ -238,15 +238,15 @@ output_figure_energy_requested_comp_sumByLoadGenByStartT <- function(dexpa, data
 	data$Gen <- -data$Gen
 	
 	data <- reshape2::melt(data, id.vars=c("id", "start_time"), variable.name = "Type",
-			value.name = "energy")
+			value.name = "Energy")
 	
-	output_figure_lines(dexpa, data, y_column = "energy", title = "Requested energy of requests by generation/load and delivery start time",
+	output_figure_lines(dexpa, data, y_column = "Energy", title = "Requested energy of requests by generation/load and delivery start time",
 			colour_column = "id", colour_legendtitle = "Run ID",
 			linetype_column = "Type", linetype_legendtitle = "Type",
 			facet_ncol = 1, filename = "dex_energy_requested_comp_sumGenLoadByCTlines",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Requested energy"),
+					ggplot2::ylab("Requested energy (kWh)"),
 					ggplot2::scale_x_datetime(),
 					ggplot2::theme(
 							legend.position = "bottom"
@@ -278,7 +278,7 @@ output_figure_energy_requested_comp_sumGenByGenTypeStartT <- function(dexpa, dat
 										legend.position = "bottom"
 								),
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Requested energy"),
+					ggplot2::ylab("Requested energy (kWh)"),
 					ggplot2::scale_x_datetime(),
 					ggplot2::guides(colour = ggplot2::guide_legend(ncol=1))
 			),  x_column = "start_time", returnplot = FALSE)

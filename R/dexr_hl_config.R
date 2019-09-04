@@ -118,6 +118,9 @@ hl_config_clients2db <- function(dexpa,sourcedir = paste(dexpa$dirs$config, dexp
 	futile.logger::flog.info("Configure Market Backend clients (%s)...", combine_sourcedirfile(sourcedir, sourcefile), 
 			name = "dexr.hl.config.backend")
 	clients <- read.csv(file=combine_sourcedirfile(sourcedir, sourcefile))
+	clients$name <- adjust_client_id(dexpa, clients$name)
+	clients$name_emg <- adjust_client_id(dexpa, clients$name_emg)
+	
 	clients$id <- clients$user_id
 	
 	if(!("location" %in% colnames(clients))) {
@@ -142,7 +145,7 @@ hl_config_clients2db <- function(dexpa,sourcedir = paste(dexpa$dirs$config, dexp
 			"INSERT INTO oauth_client_details (client_id, client_secret, scope, authorized_grant_types,",
 			" web_server_redirect_uri, authorities, access_token_validity, refresh_token_validity,",
 			" additional_information, autoapprove) VALUES",
-			"('", clients[i, "name"], "', crypt('", clients[i, "password"], "',gen_salt('bf', 10)), 'read,write',",
+			"('", adjust_client_id(dexpa, clients[i, "name"]), "', crypt('", clients[i, "password"], "',gen_salt('bf', 10)), 'read,write',",
 			"'password,authorization_code,refresh_token', null, null, 36000, 36000, null, true);", sep=""))
 	}
 
@@ -154,4 +157,7 @@ hl_config_clients2db <- function(dexpa,sourcedir = paste(dexpa$dirs$config, dexp
 	DBI::dbDisconnect(con)
 	
 	return(nrow(clients))
+}
+adjust_client_id <- function(dexpa, clientid) {
+	return(sapply(clientid, paste, paste("_",dexpa$sim$nodeid,sep=""), sep=""))
 }

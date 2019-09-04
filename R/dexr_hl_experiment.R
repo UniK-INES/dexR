@@ -147,8 +147,14 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 				dec = ".", fill = TRUE, comment.char = "")
 	}
 	
-	# Check Runs.csv for requested ID:
-	idMatch <- match(dexpa$sim$id, paramConfigs$ID)
+	# Check Runs.csv for requested simulation ID and node set ID:
+	idMatch <- which(dexpa$sim$id == paramConfigs$ID)
+	
+	if(length(idMatch) > 1) {
+		# more than one Node Set ID per Simulation ID:
+		idMatch <- idMatch[match(dexpa$sim$nodesetid, paramConfigs[idMatch, "NodeSetId"])]
+	}
+	
 	if(is.na(idMatch)) {
 		futile.logger::flog.warn("ID %s not present in config table (%s)! Applying defaults in %s...", 
 				dexpa$sim$id, 
@@ -157,10 +163,11 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 				name = "dexr.hl.experiment.runemg")
 	}
 
+	iddirpart <- if(!is.na(dexpa$sim$nodesetid)) paste(dexpa$sim$id, "_", dexpa$sim$nodesetid, sep="") else dexpa$sim$id
 	if (!is.na(idMatch)) {
 		args = paste(' -cp "',
 				dexpa$files$emgconfigtool, '" de.unik.ines.enavi.ctool.EmgConfigManager',
-				' -i ', dexpa$sim$id,
+				' -i ', iddirpart,
 				' -o "', dexpa$dirs$config, '"',
 				' -t "', dexpa$dirs$freemarkertemplate, '"',
 				' -c "', paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'clients']), sep=''), '"',
@@ -185,7 +192,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 	} else {
 		args = paste(' -cp "',
 				dexpa$files$emgconfigtool, '" de.unik.ines.enavi.ctool.EmgConfigManager',
-				' -i ', dexpa$sim$id,
+				' -i ', iddirpart,
 				' -o "', dexpa$dirs$config, '"',
 				' -t "', dexpa$dirs$freemarkertemplate, '"',
 				' -c "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_EnaviClient_', dexpa$sim$id, '.csv', sep=''), '"',
@@ -223,9 +230,11 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 #' @export
 hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pauseafterxmlcreation = F) {
 	
-	hl_experiment_configemg(dexpa, outfilesys= if (is.null(dexpa$emg$emgconfigoutput)) "" else 
-						paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$emgconfigoutput, ".log", sep=""))
-
+	if (!dir.exists(paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", dexpa$sim$nodesetid, sep=""))) {
+		hl_experiment_configemg(dexpa, outfilesys= if (is.null(dexpa$emg$emgconfigoutput)) "" else 
+							paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$emgconfigoutput, ".log", sep=""))
+	}
+	
 	if (pauseafterxmlcreation) {
 		decision <- svDialogs::dlg_message(paste("Press 'OK' when ready to run!", sep= ""), "okcancel")$res
 		if (decision == "cancel") {
@@ -407,11 +416,12 @@ hl_write_runinfos <- function(dexpa, basetime, offset, infoData) {
 #' @author Sascha Holzhauer
 #' @export
 hl_closeexperiment <- function(dexpa, outputfile = "", basetime, offset = round(basetime - as.numeric(Sys.time())*1000), 
-		infoData=NULL, nodeids) {
+		infoData=NULL, nodeids = c("")) {
 	
 	for (nodeid in nodeids) {
 		dexpa$emg$copyrundir = F
 		dexpa$emg$port = emggetport(dexpa, nodeid)
+		dexpa$emg$httpport = emggethttpport(dexpa, nodeid)
 		hl_experiment_stopemg(dexpa)
 	}
 	
@@ -461,13 +471,38 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset, startServer=F)
 	
-	# for each EMG instance:
-	nodeids = strsplit(paste(input_csv_configparam(dexpa)[,"Nodes"], collapse=";"), ';', fixed=T)[[1]]
-	if (nodeids == "NA") nodeids = c("0")
+	allnodeids = c()
+	nodesetids = dexR::input_csv_configparam(dexpa)[,"NodeSetId"]
+	
+	if (length(nodesetids)==0) {
+		nodesetids = c("A")
+	}
+	for (nodesetid in nodesetids) {
+		# nodesetid = nodesetids[1]
+		nodeids = strsplit(dexR::input_csv_configparam(dexpa)[,"Nodes"], ';', fixed=T)[[1]]
+		allnodeids = c(allnodeids, nodeids)
+
+		# make sure nodeids are not twice in an experiment configuration:
+		if (length(unique(allnodeids)) != length(allnodeids)) {
+			R.oo::throw.default("Duplicate node IDs in experiment configuration!")
+		}
 		
-	for (nodeid in nodeids) {
-		dexpa$sim$nodeid = nodeid
-		hl_experiment_runemg(dexpa, outfileemg = outfileemg, outfilesys = outputfile, pauseafterxmlcreation = pauseafterxmlcreation)
+		# remove NodeSet-config-directory:
+		futile.logger::flog.info("Remove config directory %s...",
+				paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", nodesetid, sep=""),
+				name="dexr.hl.experiment")
+		unlink(paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", nodesetid, sep=""), recursive = TRUE, force = FALSE)
+		
+		if (nodeids == "NA") nodeids = c("")
+		
+		for (nodeid in nodeids) {
+			# nodeid = nodeids[1]
+			dexpa$sim$nodesetid = nodesetid
+			dexpa$sim$nodeid = nodeid
+			dexpa$emg$port = emggetport(dexpa, nodeid)
+			dexpa$emg$httpport = emggethttpport(dexpa, nodeid)
+			hl_experiment_runemg(dexpa, outfileemg = outfileemg, outfilesys = outputfile, pauseafterxmlcreation = pauseafterxmlcreation)
+		}
 	}
 	
 	message = server_start(dexpa)
