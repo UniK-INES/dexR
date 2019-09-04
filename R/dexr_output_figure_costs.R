@@ -13,7 +13,7 @@ output_figure_energycosts_requested_giniByStartT <- function(dexpa, data) {
 			facet_ncol = 1, filename = "dex_energycosts_requested_GiniByDT",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Energy/costs/Gini coefficient"),
+					ggplot2::ylab("Energy (kWh) / costs (EUR) / Gini coefficient"),
 					ggplot2::theme(
 							legend.position = "bottom"
 					)
@@ -37,7 +37,7 @@ output_figure_energycosts_requested_comp_giniByStartT <- function(dexpa, data, s
 			facet_ncol = 1, filename = "dex_energycosts_requested_comp_GiniByDT",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Energy/costs/Gini coefficient"),
+					ggplot2::ylab("Energy (kWh) / costs (EUR) / Gini coefficient"),
 					if (skiplegend) ggplot2::theme(legend.position="none") else list(ggplot2::theme(
 												legend.position = "bottom"
 										), ggplot2::guides(colour = ggplot2::guide_legend(ncol=1)))
@@ -96,7 +96,7 @@ output_figure_energycosts_requested_sumByStartT <- function(dexpa, data) {
 			facet_ncol = 1, filename = "dex_energycosts_requested_sumByCT",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Requested energy/costs"),
+					ggplot2::ylab("Requested energy (kWh) / costs (EUR)"),
 					ggplot2::theme(
 							legend.position = "bottom"
 					)
@@ -115,14 +115,14 @@ output_figure_energycosts_requested_comp_sumByStartT <- function(dexpa, data, sk
 	futile.logger::flog.debug("Figure: Energycosts Summed by delviery start time: sum costs...", name="dexr.hl.costs")
 	data <- plyr::ddply(data, c("id", "start_time"), function(d) {
 				new = data.frame(
-						"energy" = sum(d[, "energy_requested"]),
-						"costs" = sum(d[, "price_cleared"]),
-						"start_time" = d$start_time[1],
+						"Energy" = sum(d[, "energy_requested"]),
+						"Costs" = sum(d[, "price_cleared"]),
+						"Start_time" = d$start_time[1],
 						"id" = d$id)
 				new
 			})
 	futile.logger::flog.debug("Figure: Energycosts Summed by delviery start time: reshape data...", name="dexr.hl.costs")
-	data <- reshape2::melt(data, id.vars=c("id", "start_time"), variable.name = "Type",
+	data <- reshape2::melt(data, id.vars=c("id", "Start_time"), variable.name = "Type",
 			value.name = "values")
 	
 	futile.logger::flog.debug("Figure: Energycosts Summed by delviery start time: plot figure...", name="dexr.hl.costs")
@@ -131,11 +131,11 @@ output_figure_energycosts_requested_comp_sumByStartT <- function(dexpa, data, sk
 			facet_ncol = 1, filename = "dex_energycosts_requested_comp_sumByCT",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Requested energy/Accepted costs"),
+					ggplot2::ylab("Requested energy (kWh) / Accepted costs (EUR)"),
 					if (skiplegend) ggplot2::theme(legend.position="none") else list(ggplot2::theme(
 												legend.position = "bottom"
 										)) 
-			),  x_column = "start_time", 
+			),  x_column = "Start_time", 
 			returnplot = FALSE)
 }
 #' Output figure: Comparison of average costs of requested energy per type and per delivery start time.
@@ -168,7 +168,7 @@ output_figure_energycosts_requested_comp_avgByTypeStartT <- function(dexpa, data
 			facet_ncol = 1, filename = "dex_energyprices_requested_comp_avgByTypeDT",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Average price"),
+					ggplot2::ylab("Average price (EUR)"),
 					if (skiplegend) ggplot2::theme(legend.position="none") else list(ggplot2::theme(
 										legend.position = "bottom"
 								)), 

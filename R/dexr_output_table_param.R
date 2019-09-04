@@ -34,7 +34,7 @@ output_table_param_marketinfo <- function(dexpa, format="markdown", caption="Mar
 	timing <- cbind(input_db_param_marketinfo(dexpa)[,c("uid")],
 			input_csv_runinfos(dexpa)[,c("TF", "Basetime", "Offset", "Duration")],
 			input_db_param_marketinfo(dexpa)[,-c(1)])
-	
+
 	#timing$Basetime <- paste(substring(timing$Basetime, 1,2), substring(timing$Basetime, 4), sep="")
 	#timing$Basetime <- format(strptime(gsub("CEST ","",as.character(timing$Basetime)), tz="CEST", format = "%a %b %e %H:%M:%S %Y"), format = "%Y-%m-%d %H:%M:%S")
 	timing$Basetime <- format(strptime(timing$Basetime, tz="CEST", format = "%F %T"), format = "%y-%m-%d %H:%M")

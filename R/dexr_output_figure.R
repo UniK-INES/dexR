@@ -74,7 +74,7 @@ output_figure_bars <- function(dexpa, data, y_column, title = NULL,
 			{if (!is.null(title) && title != "") ggplot2::labs(title = title) else NULL} +
 			(if (!is.null(fill_column) && x_column == fill_column) ggplot2::scale_x_discrete(breaks=NULL) else NULL) +
 			ggplotaddons +
-			ggplot2::theme(plot.margin = grid::unit(c(0.5,0.9,0.5,0.3), "cm")) 
+			ggplot2::theme(plot.margin = grid::unit(c(1.0,0.9,0.5,0.3), "cm")) 
 	print(p1)
 	if (!is.null(filename)) {
 		dexpa$fig$close()

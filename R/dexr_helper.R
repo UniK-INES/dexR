@@ -185,6 +185,17 @@ demo_prepare_db4figures <- function() {
 #' 
 #' @author Sascha Holzhauer
 #' @export
+emggethttpport <- function(dexpa, nodeid) {
+	return(dexpa$emg$httpstartport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) + as.numeric(nodeid) + 
+					dexpa$emg$httpportoffset)
+}
+#' Determine EMG port in multi-node (and other) setting
+#' @param dexpa 
+#' @param nodeid 
+#' @return EMG port for specific node ID
+#' 
+#' @author Sascha Holzhauer
+#' @export
 emggetport <- function(dexpa, nodeid) {
 	return(dexpa$emg$startport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) + as.numeric(nodeid) + 
 					dexpa$emg$portoffset)
@@ -236,6 +247,22 @@ requests_identify_type <- function(data, dataexp='df[r, if(df$status==2) "energy
 				result
 			})
 }
+#' Check differences in market information
+#' @param dexpas 
+#' @return true if market information differ between passed dexpas
+#' 
+#' @author Sascha Holzhauer
+#' @export
+param_marketinfodiffer <- function(dexpas) {
+	# dexpas = create_dexpas(ids 
+	data <- data.frame()
+	for (dp in dexpas) {
+		data <- rbind(data, cbind(input_db_param_marketinfo(dp)[,c("uid")],
+			input_csv_runinfos(dp)[,c("TF", "Basetime", "Offset", "Duration")],
+			input_db_param_marketinfo(dp)[,-c(1)]))
+	}
+	return(nrow(unique(data))>1)
+}
 #' Check differences in market product configuration
 #' @param dexpas 
 #' @return true if market product configurations differ between passed dexpas
@@ -244,14 +271,15 @@ requests_identify_type <- function(data, dataexp='df[r, if(df$status==2) "energy
 #' @export
 param_marketproductsdiffer <- function(dexpas) {
 	tocomp = ""
-	for (dp in dexpas)
+	for (dp in dexpas) {
 		paramConfigs <- dexR::input_csv_configparam(dp)
 		if (tocomp == "") {
 			tocomp = paramConfigs["products"]
 		} else {
 			if (tocomp != paramConfigs["products"]) {
 				return(TRUE)
-		} 
+			} 
+		}
 	}
 	return(FALSE)
 }
@@ -271,7 +299,9 @@ param_clientsdiffer <- function(dexpas) {
 	tocompstorages = ""
 	tocomprequestconfigs = ""
 	
-	for (dp in dexpas)
+	for (dp in dexpas) {
+		# dp = dexpas[[1]]
+		# dp = dexpas[[3]]
 		paramConfigs <- dexR::input_csv_configparam(dp)
 		if (tocompclients == "") {
 			tocompclients = paramConfigs["clients"]
@@ -292,6 +322,7 @@ param_clientsdiffer <- function(dexpas) {
 				tocompstorages != paramConfigs["devicesStorage"] ||
 				tocomprequestconfigs != paramConfigs["requestConfig"]) {
 				return(TRUE)
+			}
 		} 
 	}
 	return(FALSE)
