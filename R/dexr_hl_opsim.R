@@ -118,15 +118,19 @@ hl_opsim_startmarket <- function(dexpa, basetime = as.numeric(round(strptime("30
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_opsim <- function(dexpa, startsservice = T, startnetsim = T, emptydb = T, basetime = as.numeric(round(strptime("30/09/19 12:00", "%d/%m/%y %H:%M"),"mins"))*1000) {
-	dexR::hl_opsim_runmanager(dexpa)
-
-	decision <- svDialogs::dlg_message("Press 'OK' when Control Manager ready!", "okcancel")$res
-	if (decision == "cancel") {
-		futile.logger::flog.warn("Program canceled.", 
-				name = "dexr.hl.opsim")
-		stop("Program canceled.")
+hl_opsim <- function(dexpa, startmanager = T, startsservice = T, startnetsim = T, emptydb = T, basetime = as.numeric(round(strptime("30/09/19 12:00", "%d/%m/%y %H:%M"),"mins"))*1000) {
+	if (startmanager) {
+		dexR::hl_opsim_runmanager(dexpa)
+		
+		decision <- svDialogs::dlg_message("Press 'OK' when Control Manager ready!", "okcancel")$res
+		if (decision == "cancel") {
+			futile.logger::flog.warn("Program canceled.", 
+					name = "dexr.hl.opsim")
+			stop("Program canceled.")
+		}
 	}
+	
+
 	
 	if (startsservice) {
 		dexR::hl_opsim_runscheduleservice(dexpa)
