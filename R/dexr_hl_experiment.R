@@ -493,7 +493,7 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 				name="dexr.hl.experiment")
 		unlink(paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", nodesetid, sep=""), recursive = TRUE, force = FALSE)
 		
-		if (nodeids == "NA") nodeids = c("")
+		if (is.na(nodeids)) nodeids = c("")
 		
 		for (nodeid in nodeids) {
 			# nodeid = nodeids[1]
