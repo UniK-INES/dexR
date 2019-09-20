@@ -78,7 +78,7 @@ checkandloadcsvfile <- function(dexpa, configfilename) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-input_csv_configparam <- function(dexpa, columns=NULL) {
+input_csv_configparam <- function(dexpa, columns=NULL, checkNodeSetId = F) {
 	if (tools::file_ext(dexpa$files$paramconfigs)=="ods") {
 		futile.logger::flog.info("Reading config ODS file %s", dexpa$files$paramconfigs, name = "dexr.hl.experiment")
 		paramConfigs <- readODS::read_ods(dexpa$files$paramconfigs, sheet = 1)
@@ -89,7 +89,13 @@ input_csv_configparam <- function(dexpa, columns=NULL) {
 	}
 	
 	# Check Runs.csv for requested ID:
-	idMatches <- which(paramConfigs$ID %in% dexpa$sim$id)
+	if (checkNodeSetId && !is.null(dexpa$sim$nodesetids)) {
+		idMatches <- which(paramConfigs$ID %in% dexpa$sim$id & 
+						if (is.na(dexpa$sim$notesetid)) is.na(paramConfigs$NodeSetId) else paramConfigs$NodeSetId == dexpa$sim$notesetid)
+	} else {
+		idMatches <- which(paramConfigs$ID %in% dexpa$sim$id)
+	}
+
 	if(length(idMatches)==0) {
 		futile.logger::flog.warn("ID %s not present in config table (%s)!", dexpa$sim$id, dexpa$files$paramconfigs, 
 				name = "dexr.hl.experiment")
