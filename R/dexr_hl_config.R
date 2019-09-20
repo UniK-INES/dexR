@@ -111,22 +111,35 @@ hl_config_marketProducts2db <- function(dexpa, sourcedir=paste(dexpa$dirs$config
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_config_clients2db <- function(dexpa,sourcedir = paste(dexpa$dirs$config, dexpa$sim$id, sep="/"), 
-		sourcefile=paste("DEX_Param_EnaviClient_", dexpa$sim$id, ".csv", sep="")) {
+hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dexpa$sim$id, sep="/"), paramConfigs) {
 	
+	allclients = data.frame()
+	for (i in 1:nrow(paramConfigs)) {
+		
+		sourcefile = if(!is.na(paramConfigs[i, "clients"])) paramConfigs[i, "clients"] else 
+					paste("DEX_Param_EnaviClient_", dexpa$sim$id, ".csv", sep="")
+		
+		futile.logger::flog.info("Configure Market Backend clients (%s)...", combine_sourcedirfile(sourcedir, sourcefile), 
+				name = "dexr.hl.config.backend")
 	
-	futile.logger::flog.info("Configure Market Backend clients (%s)...", combine_sourcedirfile(sourcedir, sourcefile), 
-			name = "dexr.hl.config.backend")
-	clients <- read.csv(file=combine_sourcedirfile(sourcedir, sourcefile))
-	clients$name <- adjust_client_id(dexpa, clients$name)
-	clients$name_emg <- adjust_client_id(dexpa, clients$name_emg)
-	
-	clients$id <- clients$user_id
-	
-	if(!("location" %in% colnames(clients))) {
-		clients$location = "Tranformer01"
+		rawclients <- read.csv(file=combine_sourcedirfile(sourcedir, sourcefile))
+		
+		for (nodeid in strsplit(paramConfigs[i, "Nodes"], ";")[[1]]) {
+			clients = rawclients
+			dexpa$sim$nodeid <- nodeid
+			clients$name <- adjust_client_id(dexpa, clients$name)
+			clients$name_emg <- adjust_client_id(dexpa, clients$name_emg)
+		
+			clients$user_id = max(clients$user_id) * (nodeid - 1) + clients$user_id
+			clients$id <- clients$user_id
+		
+			if(!("location" %in% colnames(clients))) {
+				clients$location = "Tranformer01"
+			}
+			allclients = rbind(allclients, clients)
+		}
 	}
-	
+		
 	con <- input_db_getconnection(dexpa)
 	
 	colnames_clients = DBI::dbGetQuery(con, paste(
@@ -134,18 +147,18 @@ hl_config_clients2db <- function(dexpa,sourcedir = paste(dexpa$dirs$config, dexp
 					dexpa$db$tablenames$clients,"';", sep=""))
 	
 	RPostgreSQL::dbWriteTable(con, dexpa$db$tablenames$clients, 
-			value=clients[,colnames_clients$column_name], append=T, row.names=F)
+			value=allclients[,colnames_clients$column_name], append=T, row.names=F)
 	# encrypt passwords:
-	for (i in 1:nrow(clients)) {
+	for (i in 1:nrow(allclients)) {
 		DBI::dbGetQuery(con, paste(
-			"UPDATE user_account SET password = crypt('", clients[i, "password"],"',gen_salt('bf', 10)) WHERE id = '", 
-					clients[i, "id"],"';", sep=""))
+			"UPDATE user_account SET password = crypt('", allclients[i, "password"],"',gen_salt('bf', 10)) WHERE id = '", 
+			allclients[i, "id"],"';", sep=""))
 
 		DBI::dbGetQuery(con, paste(
 			"INSERT INTO oauth_client_details (client_id, client_secret, scope, authorized_grant_types,",
 			" web_server_redirect_uri, authorities, access_token_validity, refresh_token_validity,",
 			" additional_information, autoapprove) VALUES",
-			"('", adjust_client_id(dexpa, clients[i, "name"]), "', crypt('", clients[i, "password"], "',gen_salt('bf', 10)), 'read,write',",
+			"('", adjust_client_id(dexpa, allclients[i, "name"]), "', crypt('", allclients[i, "password"], "',gen_salt('bf', 10)), 'read,write',",
 			"'password,authorization_code,refresh_token', null, null, 36000, 36000, null, true);", sep=""))
 	}
 
@@ -153,11 +166,17 @@ hl_config_clients2db <- function(dexpa,sourcedir = paste(dexpa$dirs$config, dexp
 					"select column_name from information_schema.columns where table_name= '", 
 					dexpa$db$tablenames$roles,"';", sep=""))
 	RPostgreSQL::dbWriteTable(con, dexpa$db$tablenames$roles, 
-			value=clients[,colnames_roles$column_name], append=T, row.names=F)
+			value=allclients[,colnames_roles$column_name], append=T, row.names=F)
 	DBI::dbDisconnect(con)
 	
-	return(nrow(clients))
+	return(nrow(allclients))
 }
 adjust_client_id <- function(dexpa, clientid) {
-	return(sapply(clientid, paste, paste("_",dexpa$sim$nodeid,sep=""), sep=""))
+	if (dexpa$sim$multiplenodes) {
+		clientids = paste("n", dexpa$sim$nodeid, "_", clientid, sep="")
+	}
+	else {
+		clientids = clientid
+	}
+	return(clientids)
 }

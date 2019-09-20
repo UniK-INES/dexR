@@ -16,7 +16,9 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$sim$version			<- "version"
 	defdexpa$sim$id				<- c("NN")
 	defdexpa$sim$nodesetid <- NA
+	defdexpa$sim$nodesetids <- NA
 	defdexpa$sim$nodeid   <- 0
+	defdexpa$sim$multiplenodes <- FALSE
 	defdexpa$sim$duration			<- 2*60*60             # in sec
 	defdexpa$sim$timefactor			<- 60.0
 

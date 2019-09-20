@@ -21,6 +21,9 @@ hl_opsim_runmanager <- function(dexpa, outfileopsim = paste(dexpa$dirs$output$lo
 			name = "dexr.hl.opsim.control")
 	
 	setwd(dexpa$opsim$control$rundir)
+	
+	shbasic::sh.ensurePath(outfileopsim, stripFilename = T)
+	
 	java <- if (is.na(dexpa$opsim$control$jre)) "java" else paste(dexpa$opsim$control$jre, "bin", "java", sep="/")
 	
 	system2(wait=FALSE, java, 
@@ -52,15 +55,20 @@ hl_opsim_runscheduleservice <- function(dexpa, outfilesservice = paste(dexpa$dir
 	
 	setwd(dexpa$opsim$sservice$rundir)
 	
+	shbasic::sh.ensurePath(outfilesservice, stripFilename = T)
 	
 	java <- if (is.na(dexpa$opsim$sservice$jre)) "java" else paste(dexpa$opsim$sservice$jre, "bin", "java", sep="/")
+	args <- paste(dexpa$opsim$sservice$args, ' -jar "', dexpa$opsim$sservice$jar, '"', sep="")
+	# args <- c(dexpa$opsim$sservice$args, paste(' -jar', dexpa$opsim$sservice$jar))
+	
+	#proc <- processx::process$new(java, args, stdout = outfilesservice, stderr=outfilesservice)
+	#proc <- processx::process$new("java", "--jar /home/sascha/git/enavi/scheduleService/target/scheduleService-1.0.0.jar", stdout = outfilesservice, stderr=outfilesservice)
 	
 	system2(wait=FALSE, java, 
-			args = paste(dexpa$opsim$sservice$args, ' -jar "',
-					dexpa$opsim$sservice$jar, '"', sep=""),
+			args = args,
 			stdout=outfilesservice, stderr=outfilesservice)
 	
-
+	#return(proc)
 }
 #' Run panda power net simulation in python
 #' @param dexpa 
@@ -84,6 +92,8 @@ hl_opsim_runnetsim <- function(dexpa, outfilenetsim = paste(dexpa$dirs$output$lo
 	
 	setwd(dexpa$opsim$netsim$rundir)
 	python <- if (is.na(dexpa$opsim$netsim$python)) "python" else dexpa$opsim$netsim$python
+	
+	shbasic::sh.ensurePath(outfilenetsim, stripFilename = T)
 	
 	# PYTHONPATH??
 	Sys.setenv("PYTHONPATH"=dexpa$opsim$netsim$pythonpath)
@@ -133,6 +143,7 @@ hl_opsim <- function(dexpa, startmanager = T, startsservice = T, startnetsim = T
 
 	
 	if (startsservice) {
+		# proc_sservice = dexR::hl_opsim_runscheduleservice(dexpa)
 		dexR::hl_opsim_runscheduleservice(dexpa)
 	}
 	
@@ -171,6 +182,6 @@ hl_opsim <- function(dexpa, startmanager = T, startsservice = T, startnetsim = T
 	}
 	
 	if (startsservice) {
-	## TODO shut down Schedule Service	
+		#proc_sservice.kill()
 	}
 }

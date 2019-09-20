@@ -29,17 +29,15 @@ hl_experiment_runbackend <- function(dexpa, outfilesys = "", basetime = as.numer
 		R.oo::throw.default("Starting market backend server NOT successful!")
 	}
 	
-	paramConfigs <- input_csv_configparam(dexpa)
+	paramConfigs <- dexR::input_csv_configparam(dexpa)
 	
 	hl_config_marketProducts2db(dexpa, 
 			firstDeliveryPeriodStart = as.POSIXlt(basetime/1000, origin = "1970-01-01"),
-			sourcefile = if(nrow(paramConfigs)>0) paramConfigs["products"] else 
+			sourcefile = if(nrow(paramConfigs)>0) unique(paramConfigs["products"]) else 
 						paste("DEX_Param_MarketProducts_", dexpa$sim$id, ".csv", sep=""))
 	
 	# Insert client data:
-	infoData$numClients <- hl_config_clients2db(dexpa,
-			sourcefile = if(nrow(paramConfigs)>0) paramConfigs["clients"] else 
-						paste("DEX_Param_EnaviClient_", dexpa$sim$id, ".csv", sep=""))
+	infoData$numClients <- hl_config_clients2db(dexpa, paramConfigs = paramConfigs)
 	
 	if (startServer) {
 		# Start backend server:
@@ -164,10 +162,13 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 	}
 
 	iddirpart <- if(!is.na(dexpa$sim$nodesetid)) paste(dexpa$sim$id, "_", dexpa$sim$nodesetid, sep="") else dexpa$sim$id
+	clientprefix <- if(!is.na(dexpa$sim$nodeid)) paste("n", dexpa$sim$nodeid, "_", sep="") else ""
+			
 	if (!is.na(idMatch)) {
 		args = paste(' -cp "',
 				dexpa$files$emgconfigtool, '" de.unik.ines.enavi.ctool.EmgConfigManager',
-				' -i ', iddirpart,
+				' -i "', iddirpart, '"',
+				' -cf "',clientprefix, '"',
 				' -o "', dexpa$dirs$config, '"',
 				' -t "', dexpa$dirs$freemarkertemplate, '"',
 				' -c "', paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'clients']), sep=''), '"',
@@ -192,7 +193,8 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 	} else {
 		args = paste(' -cp "',
 				dexpa$files$emgconfigtool, '" de.unik.ines.enavi.ctool.EmgConfigManager',
-				' -i ', iddirpart,
+				' -i "', iddirpart, '"',
+				' -cp "',clientprefix, '"',
 				' -o "', dexpa$dirs$config, '"',
 				' -t "', dexpa$dirs$freemarkertemplate, '"',
 				' -c "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_EnaviClient_', dexpa$sim$id, '.csv', sep=''), '"',
@@ -218,7 +220,8 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 		
 	# copy static XML files:
 	for (f in dexpa$xml$staticfiles) {
-		file.copy(from = paste(dexpa$dirs$xmltemplatesstatic, f, sep="/"), to = paste(dexpa$dirs$config, "/", dexpa$sim$id, "/", sep=""),
+		file.copy(from = paste(dexpa$dirs$xmltemplatesstatic, f, sep="/"), to = paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", 
+						dexpa$sim$nodesetid, "/", sep=""),
 				overwrite = TRUE)
 	}
 }
@@ -255,15 +258,16 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 	
 	
 	# copy rundir to node locally for every instance:
-	if (dexpa$emg$copyrundir) {
+	if (dexpa$emg$copyrundir || dexpa$sim$multiplenodes) {
+		newrundir = paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, dexpa$sim$nodesetid, dexpa$sim$nodeid, sep="_")
 		futile.logger::flog.debug("Copying EMG rundir from %s to %s...",
 				dexpa$dirs$emgrundir,
-				paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"),
+				newrundir,
 				name = "dexr.hl.experiment.emg")
-		shbasic::sh.ensurePath(paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"))
-		file.copy(from=dexpa$dirs$emgrundir, to=paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, sep="_"), 
+		shbasic::sh.ensurePath(newrundir)
+		file.copy(from=dexpa$dirs$emgrundir, to=newrundir, 
 				overwrite = TRUE, recursive = TRUE, copy.mode = TRUE)
-		dexpa$dirs$emgrundir = paste(dexpa$dirs$emgnoderundir, "_", dexpa$sim$id, "/rundir-enavi", sep="")
+		dexpa$dirs$emgrundir = paste(newrundir, "/rundir-enavi", sep="")
 	}
 	
 	#Sys.setenv(VMOPTS = paste("-Dorg.ogema.app.resadmin.replay_oncleanstart_path=", dexpa$dirs$config, dexpa$sim$id, sep=""))
@@ -273,7 +277,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 
 	args = paste(' -cp ',
 			paste('"', dexpa$files$emgconfigtool, '"', sep=""), "de.unik.ines.enavi.ctool.RunEmg", 
-			paste('"', dexpa$dirs$config, "/", dexpa$sim$id, '"', sep=""),
+			paste('"', dexpa$dirs$config, "/", dexpa$sim$id, "_", dexpa$sim$nodesetid, '"', sep=""),
 			dexpa$emg$rseed,
 			paste('"', dexpa$dirs$emgrundir, '"', sep=""),
 			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit, sep=""),
@@ -282,7 +286,8 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 			dexpa$emg$propertiesfile,
 			paste('"',dexpa$emg$startoptions,'"', sep=""))
 	
-	futile.logger::flog.debug("Arguments when calling RunEMG: %s", args, name = "dexr.hl.experiment.emg")
+	futile.logger::flog.debug("Arguments when calling RunEMG: %s. Output to %s.", args, outfileemg,
+			name = "dexr.hl.experiment.emg")
 	
 	system2(wait=FALSE, "java", args,
 			stdout=outfileemg, stderr=outfileemg)
@@ -327,7 +332,7 @@ hl_experiment_awaitemgstartup <- function(dexpa, waittime = dexpa$emg$emgstartup
 #' @author Sascha Holzhauer
 #' @export
 hl_experiment_stopemg <- function(dexpa) {
-	futile.logger::flog.info("Stopping EMG...", name = "dexr.hl.experiment")
+	futile.logger::flog.info("Stopping EMG at %s:%s/%s...", dexpa$emg$url, dexpa$emg$port, dexpa$emg$api$shutdown, name = "dexr.hl.experiment")
 	try(httr::POST(paste(dexpa$emg$url, ":", dexpa$emg$port, "/", dexpa$emg$api$shutdown,sep=""), 
 					httr::config(ssl_verifypeer = 0)))
 	futile.logger::flog.info("Emg stopped.", name = "dexr.hl.experiment")
@@ -419,6 +424,7 @@ hl_closeexperiment <- function(dexpa, outputfile = "", basetime, offset = round(
 		infoData=NULL, nodeids = c("")) {
 	
 	for (nodeid in nodeids) {
+		futile.logger::flog.info("Stopping EMG for node ID %s...", nodeid, name="dexr.hl.experiment.close")
 		dexpa$emg$copyrundir = F
 		dexpa$emg$port = emggetport(dexpa, nodeid)
 		dexpa$emg$httpport = emggethttpport(dexpa, nodeid)
@@ -469,39 +475,60 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	dexR::hl_experiment_ensureFileLogging(dexpa, outputfile)
 	
-	infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset, startServer=F)
-	
+	# whether there are multiple nodes needs to be checked before market backend configuration (client names):
 	allnodeids = c()
 	nodesetids = dexR::input_csv_configparam(dexpa)[,"NodeSetId"]
+	dexpa$sim$nodesetids = nodesetids
 	
 	if (length(nodesetids)==0) {
-		nodesetids = c("A")
+		nodesetids = c(NA)
 	}
-	for (nodesetid in nodesetids) {
-		# nodesetid = nodesetids[1]
-		nodeids = strsplit(dexR::input_csv_configparam(dexpa)[,"Nodes"], ';', fixed=T)[[1]]
+	
+	for (i in 1:length(nodesetids)) {
+		# i = 1
+		futile.logger::flog.info("Process node set ID %s...", nodesetids[i], name="dexr.hl.experiment")
+		dexpa$sim$notesetid <- nodesetids[i]
+		nodeids = strsplit(dexR::input_csv_configparam(dexpa, checkNodeSetId = T)[,"Nodes"], ';', fixed=T)[[1]]
 		allnodeids = c(allnodeids, nodeids)
-
+		
 		# make sure nodeids are not twice in an experiment configuration:
 		if (length(unique(allnodeids)) != length(allnodeids)) {
-			R.oo::throw.default("Duplicate node IDs in experiment configuration!")
+			R.oo::throw.default("Duplicate node IDs in experiment configuration: ", paste(allnodeids, collapse="/"), "!")
 		}
+	}
+	
+	dexpa$sim$multiplenodes = length(nodesetids) > 1 || (!is.na(nodeids) && length(nodeids) > 1)
+	
+	infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset, startServer=F)
+	
+	
+	for (nodesetid in nodesetids) {
+		# nodesetid = nodesetids[2]
+		dexpa$sim$notesetid <- nodesetid
+		nodeids = strsplit(dexR::input_csv_configparam(dexpa, checkNodeSetId = T)[,"Nodes"], ';', fixed=T)[[1]]
 		
 		# remove NodeSet-config-directory:
-		futile.logger::flog.info("Remove config directory %s...",
-				paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", nodesetid, sep=""),
+		futile.logger::flog.info("NotSetId %s: Remove config directory %s...",
+				as.character(nodesetid),
+				paste(dexpa$dirs$config, "/", dexpa$sim$id,  if (nodesetid != "") "_", nodesetid, sep=""),
 				name="dexr.hl.experiment")
-		unlink(paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", nodesetid, sep=""), recursive = TRUE, force = FALSE)
+		unlink(paste(dexpa$dirs$config, "/", dexpa$sim$id, if (nodesetid != "") "_", nodesetid, sep=""), recursive = TRUE, force = FALSE)
 		
 		if (is.na(nodeids)) nodeids = c("")
 		
 		for (nodeid in nodeids) {
 			# nodeid = nodeids[1]
-			dexpa$sim$nodesetid = nodesetid
-			dexpa$sim$nodeid = nodeid
-			dexpa$emg$port = emggetport(dexpa, nodeid)
-			dexpa$emg$httpport = emggethttpport(dexpa, nodeid)
-			hl_experiment_runemg(dexpa, outfileemg = outfileemg, outfilesys = outputfile, pauseafterxmlcreation = pauseafterxmlcreation)
+			dexpan = dexpa
+			dexpan$sim$nodesetid = nodesetid
+			dexpan$sim$nodeid = nodeid
+			dexpan$emg$port = dexR::emggetport(dexpa, nodeid)
+			dexpan$emg$httpport = dexR::emggethttpport(dexpa, nodeid)
+			dexpan$emg$emgconfigoutput = if(is.null(dexpa$emg$emgconfigoutput)) "" else paste(dexpa$emg$emgconfigoutput, 
+								if (!is.na(nodesetid)) nodesetid, sep="_")
+			hl_experiment_runemg(dexpan, 
+					outfileemg = paste(tools::file_path_sans_ext(outfileemg), if (!is.na(nodesetid))  "_n", if (!is.na(nodesetid)) nodesetid, 
+							if (nodeid != "") "-", nodeid, ".log", sep=""),
+					pauseafterxmlcreation = pauseafterxmlcreation)
 		}
 	}
 	
@@ -516,8 +543,9 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	if (shutdown) {
 		Sys.sleep((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor)
-		dexR::hl_closeexperiment(dexpa, outputfile = outputfile, basetime = basetime, offset = offset, infoData = infoData, nodeids = nodeids)
+		dexR::hl_closeexperiment(dexpa, outputfile = outputfile, basetime = basetime, offset = offset, infoData = infoData, nodeids = allnodeids)
 	}
+	return(allnodeids)
 }
 #' Runs experiments and create the required config folder (for cluster execution)
 #' 
