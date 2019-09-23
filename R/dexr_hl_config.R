@@ -124,6 +124,8 @@ hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dex
 	
 		rawclients <- read.csv(file=combine_sourcedirfile(sourcedir, sourcefile))
 		
+		futile.logger::flog.debug("Node-IDs in Param Config: %s", paramConfigs[i, "Nodes"], name="dexr.hl.config.clients")
+		
 		for (nodeid in strsplit(paramConfigs[i, "Nodes"], ";")[[1]]) {
 			clients = rawclients
 			dexpa$sim$nodeid <- nodeid
