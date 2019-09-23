@@ -128,11 +128,11 @@ hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dex
 		
 		for (nodeid in strsplit(paramConfigs[i, "Nodes"], ";")[[1]]) {
 			clients = rawclients
-			dexpa$sim$nodeid <- nodeid
+			dexpa$sim$nodeid <- as.numeric(nodeid)
 			clients$name <- adjust_client_id(dexpa, clients$name)
 			clients$name_emg <- adjust_client_id(dexpa, clients$name_emg)
 		
-			clients$user_id = max(clients$user_id) * (nodeid - 1) + clients$user_id
+			clients$user_id = max(clients$user_id) * (dexpa$sim$nodeid - 1) + clients$user_id
 			clients$id <- clients$user_id
 		
 			if(!("location" %in% colnames(clients))) {
