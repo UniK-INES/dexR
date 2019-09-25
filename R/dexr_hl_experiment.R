@@ -258,7 +258,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 	
 	
 	# copy rundir to node locally for every instance:
-	if (dexpa$emg$copyrundir || dexpa$sim$multiplenodes) {
+	if (!dexpa$sim$raspic && (dexpa$emg$copyrundir || dexpa$sim$multiplenodes)) {
 		newrundir = paste(dexpa$dirs$emgnoderundir, dexpa$sim$id, dexpa$sim$nodesetid, dexpa$sim$nodeid, sep="_")
 		futile.logger::flog.debug("Copying EMG rundir from %s to %s...",
 				dexpa$dirs$emgrundir,
@@ -275,6 +275,9 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 	#system2(wait=FALSE, "bash", args = paste(
 	#	"./start.sh -clean --properties config/sh_ogema.properties", sep=""))	
 
+	if (dexpa$sim$raspic) {
+		dexR::hl-raspic_transferemgconfig(dexpa)
+	} else {}
 	args = paste(' -cp ',
 			paste('"', dexpa$files$emgconfigtool, '"', sep=""), "de.unik.ines.enavi.ctool.RunEmg", 
 			paste('"', dexpa$dirs$config, "/", dexpa$sim$id, "_", dexpa$sim$nodesetid, '"', sep=""),
@@ -456,12 +459,12 @@ hl_closeexperiment <- function(dexpa, outputfile = "", basetime, offset = round(
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round(Sys.time(),"mins"))*1000,
+hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))*1000,
 		offset = round(basetime - as.numeric(Sys.time())*1000),
 		outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, ".log", sep=""),
 		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep=""),
 		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep=""),
-		outfile, shutdown = T, createdb = F, pauseafterxmlcreation = F) {
+		outfile, runmarket = T, shutdown = T, createdb = F, pauseafterxmlcreation = F) {
 	
 	futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
 			name="dexr.hl.experiment")
@@ -499,8 +502,9 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 	
 	dexpa$sim$multiplenodes = length(nodesetids) > 1 || (!is.na(nodeids) && length(nodeids) > 1)
 	
-	infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset, startServer=F)
-	
+	if (runmarket) {
+		infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset, startServer=F)
+	}
 	
 	for (nodesetid in nodesetids) {
 		# nodesetid = nodesetids[2]
@@ -516,19 +520,26 @@ hl_experiment <- function(dexpa, shutdownmarket = F, basetime = as.numeric(round
 		
 		if (is.na(nodeids)) nodeids = c("")
 		
-		for (nodeid in nodeids) {
-			# nodeid = nodeids[1]
-			dexpan = dexpa
-			dexpan$sim$nodesetid = nodesetid
-			dexpan$sim$nodeid = nodeid
-			dexpan$emg$port = dexR::emggetport(dexpa, nodeid)
-			dexpan$emg$httpport = dexR::emggethttpport(dexpa, nodeid)
-			dexpan$emg$emgconfigoutput = if(is.null(dexpa$emg$emgconfigoutput)) "" else paste(dexpa$emg$emgconfigoutput, 
-								if (!is.na(nodesetid)) nodesetid, sep="_")
-			hl_experiment_runemg(dexpan, 
-					outfileemg = paste(tools::file_path_sans_ext(outfileemg), if (!is.na(nodesetid))  "_n", if (!is.na(nodesetid)) nodesetid, 
-							if (nodeid != "") "-", nodeid, ".log", sep=""),
-					pauseafterxmlcreation = pauseafterxmlcreation)
+		if (dexpa$sim$raspic) {
+			session <- dexR::hl_raspic_transferemgconfig(dexpa)
+			dexR::hl_raspic_runemg(dexpa, session)
+			dexR::hl_raspic_closesession(dexpa, session)
+		} else {
+		
+			for (nodeid in nodeids) {
+				# nodeid = nodeids[1]
+				dexpan = dexpa
+				dexpan$sim$nodesetid = nodesetid
+				dexpan$sim$nodeid = nodeid
+				dexpan$emg$port = dexR::emggetport(dexpa, nodeid)
+				dexpan$emg$httpport = dexR::emggethttpport(dexpa, nodeid)
+				dexpan$emg$emgconfigoutput = if(is.null(dexpa$emg$emgconfigoutput)) "" else paste(dexpa$emg$emgconfigoutput, 
+									if (!is.na(nodesetid)) nodesetid, sep="_")
+				hl_experiment_runemg(dexpan, 
+						outfileemg = paste(tools::file_path_sans_ext(outfileemg), if (!is.na(nodesetid))  "_n", if (!is.na(nodesetid)) nodesetid, 
+								if (nodeid != "") "-", nodeid, ".log", sep=""),
+						pauseafterxmlcreation = pauseafterxmlcreation)
+			}
 		}
 	}
 	
@@ -567,6 +578,8 @@ hl_experiment_cluster <- function(dexpa, basetime = as.numeric(round(Sys.time(),
 		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep=""),
 		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep="")) {
 	
+	dexpa$sim$raspic = T
+	
 	shbasic::sh.ensurePath(paste(dexpa$dirs$config, dexpa$sim$id,sep="/"))
 	
 	dexpa$db$dbname		= dexpa$sim$id
@@ -581,7 +594,7 @@ hl_experiment_cluster <- function(dexpa, basetime = as.numeric(round(Sys.time(),
 	
 	dexR::input_db_createdb(dexpa)
 	
-	dexR::hl_experiment(dexpa=dexpa, shutdownmarket = T, basetime = basetime, offset = offset, 
+	dexR::hl_experiment(dexpa=dexpa, shutdown = T, basetime = basetime, offset = offset, 
 			outputfile = outputfile, outfilemarket = outfilemarket, outfileemg = outfileemg)
 	
 	dexR::input_db_dropdb(dexpa)
