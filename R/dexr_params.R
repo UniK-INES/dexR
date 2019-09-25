@@ -21,6 +21,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$sim$multiplenodes <- FALSE
 	defdexpa$sim$duration			<- 2*60*60             # in sec
 	defdexpa$sim$timefactor			<- 60.0
+	
+	defdexpa$sim$raspic = F
 
 	defdexpa$sim$firstdeliverystart		<- list()
 	defdexpa$sim$firstdeliverystart$delay	<- 0
@@ -212,6 +214,12 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$emg$restarttime	<- 40
 
 	defdexpa$emg$startoptions	<- "-clean -uro"
+	
+	### Raspberry Pi Cluster Settings #############################################
+	defdexpa$raspic$user <- "outsider"
+	defdexpa$raspic$server <- "192.168.1.111"
+	defdexpa$raspic$serverconfigpath <- "/pxe/meta/simulation/"
+	defdexpa$raspic$runemgcommand <- "/pxe/meta/sim_to_nodes"
 	
 	### OpSim Settings ############################################################
 	defdexpa$opsim = list()
