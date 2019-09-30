@@ -259,7 +259,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 	
 	# copy rundir to node locally for every instance:
 	if (!dexpa$sim$raspic && (dexpa$emg$copyrundir || dexpa$sim$multiplenodes)) {
-		newrundir = paste(dexpa$dirs$emgnoderundir, "/", dexpa$sim$id, "_", dexpa$sim$nodesetid, "_", dexpa$sim$nodeid, sep="")
+		newrundir = paste(dexpa$dirs$emgnoderundir, "/", dexpa$sim$id, "_", dexpa$sim$nodesetid, "_", dexpa$sim$nodeid, "/", sep="")
 		futile.logger::flog.debug("Copying EMG rundir from %s to %s...",
 				dexpa$dirs$emgrundir,
 				newrundir,
