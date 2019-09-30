@@ -18,6 +18,8 @@ hl_raspic <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))*100
 		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep=""),
 		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep="")) {
 	
+	dexpa$sim$raspic = T
+	
 	shbasic::sh.ensurePath(paste(dexpa$dirs$config, dexpa$sim$id,sep="/"))
 	
 	dexpa$db$dbname		= dexpa$sim$id
