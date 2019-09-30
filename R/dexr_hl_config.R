@@ -126,9 +126,10 @@ hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dex
 		
 		futile.logger::flog.debug("Node-IDs in Param Config: %s", paramConfigs[i, "Nodes"], name="dexr.hl.config.clients")
 		
+		if (is.na(paramConfigs[i, "Nodes"])) paramConfigs[i, "Nodes"] <- 1
 		for (nodeid in strsplit(paramConfigs[i, "Nodes"], ";")[[1]]) {
 			clients = rawclients
-			dexpa$sim$nodeid <- as.numeric(nodeid)
+			dexpa$sim$nodeid <- if(!is.na(as.numeric(nodeid))) as.numeric(nodeid) else 1
 			clients$name <- adjust_client_id(dexpa, clients$name)
 			clients$name_emg <- adjust_client_id(dexpa, clients$name_emg)
 		
@@ -172,6 +173,18 @@ hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dex
 	DBI::dbDisconnect(con)
 	
 	return(nrow(allclients))
+}
+#' Deletes users from PostreDB (except admin, enavi, inspector)
+#' 
+#' @param dexpa 
+#' @return 
+#' 
+#' @author Sascha Holzhauer
+#' @export
+hl_config_clearclients <- function(dexpa) {
+	con <- input_db_getconnection(dexpa)
+	DBI::dbGetQuery(con, "DELETE FROM users_roles WHERE user_id > 3; DELETE FROM user_account WHERE id > 3")
+	DBI::dbDisconnect(con)
 }
 adjust_client_id <- function(dexpa, clientid) {
 	if (dexpa$sim$multiplenodes) {
