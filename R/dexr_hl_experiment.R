@@ -276,7 +276,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 	#	"./start.sh -clean --properties config/sh_ogema.properties", sep=""))	
 
 	if (dexpa$sim$raspic) {
-		dexR::hl-raspic_transferemgconfig(dexpa)
+		dexR::hl_raspic_transferemgconfig(dexpa)
 	} else {}
 	args = paste(' -cp ',
 			paste('"', dexpa$files$emgconfigtool, '"', sep=""), "de.unik.ines.enavi.ctool.RunEmg", 
@@ -577,8 +577,6 @@ hl_experiment_cluster <- function(dexpa, basetime = as.numeric(round(Sys.time(),
 		outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, ".log", sep=""), 
 		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep=""),
 		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep="")) {
-	
-	dexpa$sim$raspic = T
 	
 	shbasic::sh.ensurePath(paste(dexpa$dirs$config, dexpa$sim$id,sep="/"))
 	
