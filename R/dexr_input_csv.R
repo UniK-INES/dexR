@@ -6,62 +6,73 @@
 #' @export
 input_csv_clientdata <- function(dexpa) {
 
+	result <- data.frame()
+	
 	paramConfigs <- dexR::input_csv_configparam(dexpa, columns=NULL)
+	
+	if (dexR::param_clientsdiffer(c(setNames(list(dexpa), dexpa$sim$id)))) {	
+		rows = c(1)
+	} else {
+		rows = 1:nrow(paramConfigs)
+	}
+	
+	for (i in rows) {
+		clients <- checkandloadcsvfile(dexpa, paramConfigs[i, "clients"])
+	
+		loads <- checkandloadcsvfile(dexpa, paramConfigs[i, "loads"])
 		
-	clients <- checkandloadcsvfile(dexpa, paramConfigs["clients"])
-
-	loads <- checkandloadcsvfile(dexpa, paramConfigs["loads"])
-	
-	loadProfiles <- checkandloadcsvfile(dexpa, paramConfigs["loadProfiles"])
-	
-	generations <- checkandloadcsvfile(dexpa, paramConfigs["generations"])
-	
-	pvplants <- checkandloadcsvfile(dexpa, paramConfigs["pvplants"])
-	
-	windplants <- checkandloadcsvfile(dexpa, paramConfigs["windplants"])
-	
-	storages <- checkandloadcsvfile(dexpa, paramConfigs["devicesStorage"])
-	
-	# connect storages with clients via RequestConfig:
-	requestConfigs <- checkandloadcsvfile(dexpa, paramConfigs["requestConfig"])
-	
-	data <- merge(clients, loads, by.x="name_emg", by.y="client", all=T)
-	colnames(data)[colnames(data)=="name.y"] <- "nameLoad"
-	data <- merge(data, loadProfiles, by.x="building", by.y="powerSensor", all=T)
-	
-	colnames(generations)[match( 
-						c("name", "averagePrice", "priceFluctuation", "averagePriceOffer", "priceOfferFluctuation"), 
-						colnames(generations))] <- c("nameGen", "averagePriceGen","priceFluctuationGen",
-						"averagePriceOfferGen", "priceOfferFluctuationGen")
-	# TODO storage
-	
-	data <- merge(data, generations, by.x="name_emg", by.y="client", all=T)
-	data <- merge(data, pvplants, by.x="device", by.y="name", all=T)
-	colnames(data)[colnames(data)=="name"] <- "namePV"
-	colnames(data)[colnames(data)=="efficiency"] <- "efficiencyPV"
-	colnames(data)[colnames(data)=="simulationUpdateFrequency"] <- "simulationUpdateFrequencyPV"
-	colnames(data)[colnames(data)=="simulationProvider"] <- "simulationProviderPV"
-	colnames(data)[colnames(data)=="reading"] <- "readingPV"
-	colnames(data)[colnames(data)=="simulationForecastUpdateFrequency"] <- "simulationForecastUpdateFrequencyPV"
-	
-	data <- merge(data, windplants, by.x="device", by.y="name", all=T)
-	colnames(data)[colnames(data)=="name"] <- "nameWind"
-	colnames(data)[colnames(data)=="efficiency"] <- "efficiencyWind"
-	colnames(data)[colnames(data)=="simulationUpdateFrequency"] <- "simulationUpdateFrequencyWind"
-	colnames(data)[colnames(data)=="simulationProvider"] <- "simulationProviderWind"
-	colnames(data)[colnames(data)=="reading"] <- "readingWind"
-	colnames(data)[colnames(data)=="simulationForecastUpdateFrequency"] <- "simulationForecastUpdateFrequencyWind"
-	
-	data <- merge(data, requestConfigs, by.x="name_emg", by.y="client", all=T)
-	colnames(data)[colnames(data)=="name"] <- "requestConfig"
-	
-	data <- merge(data, storages, by.x="storage", by.y="name", all=T)
-	colnames(data)[colnames(data)=="name"] <- "nameStorage"
-	colnames(data)[colnames(data)=="reading"] <- "readingStorage"
-	
-	data <- data[, c("name_emg", "price_fluctuation", "price_average", "annualConsumption", 
-					"profileType", "rotorArea", "panelArea", "ratedEnergy_upperLimit")]
-	data
+		loadProfiles <- checkandloadcsvfile(dexpa, paramConfigs[i, "loadProfiles"])
+		
+		generations <- checkandloadcsvfile(dexpa, paramConfigs[i, "generations"])
+		
+		pvplants <- checkandloadcsvfile(dexpa, paramConfigs[i, "pvplants"])
+		
+		windplants <- checkandloadcsvfile(dexpa, paramConfigs[i, "windplants"])
+		
+		storages <- checkandloadcsvfile(dexpa, paramConfigs[i, "devicesStorage"])
+		
+		# connect storages with clients via RequestConfig:
+		requestConfigs <- checkandloadcsvfile(dexpa, paramConfigs[i, "requestConfig"])
+		
+		data <- merge(clients, loads, by.x="name_emg", by.y="client", all=T)
+		colnames(data)[colnames(data)=="name.y"] <- "nameLoad"
+		data <- merge(data, loadProfiles, by.x="building", by.y="powerSensor", all=T)
+		
+		colnames(generations)[match( 
+							c("name", "averagePrice", "priceFluctuation", "averagePriceOffer", "priceOfferFluctuation"), 
+							colnames(generations))] <- c("nameGen", "averagePriceGen","priceFluctuationGen",
+							"averagePriceOfferGen", "priceOfferFluctuationGen")
+		# TODO storage
+		
+		data <- merge(data, generations, by.x="name_emg", by.y="client", all=T)
+		data <- merge(data, pvplants, by.x="device", by.y="name", all=T)
+		colnames(data)[colnames(data)=="name"] <- "namePV"
+		colnames(data)[colnames(data)=="efficiency"] <- "efficiencyPV"
+		colnames(data)[colnames(data)=="simulationUpdateFrequency"] <- "simulationUpdateFrequencyPV"
+		colnames(data)[colnames(data)=="simulationProvider"] <- "simulationProviderPV"
+		colnames(data)[colnames(data)=="reading"] <- "readingPV"
+		colnames(data)[colnames(data)=="simulationForecastUpdateFrequency"] <- "simulationForecastUpdateFrequencyPV"
+		
+		data <- merge(data, windplants, by.x="device", by.y="name", all=T)
+		colnames(data)[colnames(data)=="name"] <- "nameWind"
+		colnames(data)[colnames(data)=="efficiency"] <- "efficiencyWind"
+		colnames(data)[colnames(data)=="simulationUpdateFrequency"] <- "simulationUpdateFrequencyWind"
+		colnames(data)[colnames(data)=="simulationProvider"] <- "simulationProviderWind"
+		colnames(data)[colnames(data)=="reading"] <- "readingWind"
+		colnames(data)[colnames(data)=="simulationForecastUpdateFrequency"] <- "simulationForecastUpdateFrequencyWind"
+		
+		data <- merge(data, requestConfigs, by.x="name_emg", by.y="client", all=T)
+		colnames(data)[colnames(data)=="name"] <- "requestConfig"
+		
+		data <- merge(data, storages, by.x="storage", by.y="name", all=T)
+		colnames(data)[colnames(data)=="name"] <- "nameStorage"
+		colnames(data)[colnames(data)=="reading"] <- "readingStorage"
+		
+		data <- data[, c("name_emg", "price_fluctuation", "price_average", "annualConsumption", 
+						"profileType", "rotorArea", "panelArea", "ratedEnergy_upperLimit")]
+		result = rbind(result, data)
+	}
+	return(result)
 }
 checkandloadcsvfile <- function(dexpa, configfilename) {
 	filename = combine_sourcedirfile(paste(dexpa$dirs$config, dexpa$sim$id, sep="/"), configfilename)
@@ -89,7 +100,7 @@ input_csv_configparam <- function(dexpa, columns=NULL, checkNodeSetId = F) {
 	}
 	
 	# Check Runs.csv for requested ID:
-	if (checkNodeSetId && !is.null(dexpa$sim$nodesetids)) {
+	if (checkNodeSetId && !is.null(dexpa$sim$nodesetid)) {
 		idMatches <- which(paramConfigs$ID %in% dexpa$sim$id & 
 						if (is.na(dexpa$sim$notesetid)) is.na(paramConfigs$NodeSetId) else paramConfigs$NodeSetId == dexpa$sim$notesetid)
 	} else {

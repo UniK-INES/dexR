@@ -233,7 +233,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 #' @export
 hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pauseafterxmlcreation = F) {
 	
-	if (!dir.exists(paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", dexpa$sim$nodesetid, sep=""))) {
+	if (!dir.exists(paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", dexpa$sim$nodeid, sep=""))) {
 		hl_experiment_configemg(dexpa, outfilesys= if (is.null(dexpa$emg$emgconfigoutput)) "" else 
 							paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$emgconfigoutput, ".log", sep=""))
 	}
@@ -280,7 +280,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 	} else {}
 	args = paste(' -cp ',
 			paste('"', dexpa$files$emgconfigtool, '"', sep=""), "de.unik.ines.enavi.ctool.RunEmg", 
-			paste('"', dexpa$dirs$config, "/", dexpa$sim$id, "_", dexpa$sim$nodesetid, '"', sep=""),
+			paste('"', dexpa$dirs$config, "/", dexpa$sim$id, "_", dexpa$sim$nodeid, '"', sep=""),
 			dexpa$emg$rseed,
 			paste('"', dexpa$dirs$emgrundir, '"', sep=""),
 			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit, sep=""),
@@ -534,7 +534,7 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 				dexpan$emg$port = dexR::emggetport(dexpa, nodeid)
 				dexpan$emg$httpport = dexR::emggethttpport(dexpa, nodeid)
 				dexpan$emg$emgconfigoutput = if(is.null(dexpa$emg$emgconfigoutput)) "" else paste(dexpa$emg$emgconfigoutput, 
-									if (!is.na(nodesetid)) nodesetid, sep="_")
+									if (!is.na(nodeid)) nodeid, sep="_")
 				hl_experiment_runemg(dexpan, 
 						outfileemg = paste(tools::file_path_sans_ext(outfileemg), if (!is.na(nodesetid))  "_n", if (!is.na(nodesetid)) nodesetid, 
 								if (nodeid != "") "-", nodeid, ".log", sep=""),
