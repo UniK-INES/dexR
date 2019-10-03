@@ -303,27 +303,29 @@ param_clientsdiffer <- function(dexpas) {
 		# dp = dexpas[[1]]
 		# dp = dexpas[[3]]
 		paramConfigs <- dexR::input_csv_configparam(dp)
-		if (tocompclients == "") {
-			tocompclients = paramConfigs["clients"]
-			tocomploads = paramConfigs["loads"]
-			tocomploadprofiles = paramConfigs["loadProfiles"]
-			tocompgenerations = paramConfigs["generations"]
-			tocomppvplant = paramConfigs["pvplants"]
-			tocompwindplants = paramConfigs["windplants"]
-			tocompstorages = paramConfigs["devicesStorage"]
-			tocomprequestconfigs = paramConfigs["requestConfig"]
-		} else {
-			if (tocompclients != paramConfigs["clients"] || 
-				tocomploads != paramConfigs["loads"] ||
-				tocomploadprofiles != paramConfigs["loadProfiles"] ||
-				tocompgenerations != paramConfigs["generations"] ||
-				tocomppvplant != paramConfigs["pvplants"] ||
-				tocompwindplants != paramConfigs["windplants"] ||
-				tocompstorages != paramConfigs["devicesStorage"] ||
-				tocomprequestconfigs != paramConfigs["requestConfig"]) {
-				return(TRUE)
-			}
-		} 
+		for (i in 1:nrow(paramConfigs)) {
+			if (tocompclients == "") {
+				tocompclients = paramConfigs[i, "clients"]
+				tocomploads = paramConfigs[i, "loads"]
+				tocomploadprofiles = paramConfigs[i, "loadProfiles"]
+				tocompgenerations = paramConfigs[i, "generations"]
+				tocomppvplant = paramConfigs[i, "pvplants"]
+				tocompwindplants = paramConfigs[i, "windplants"]
+				tocompstorages = paramConfigs[i, "devicesStorage"]
+				tocomprequestconfigs = paramConfigs[i, "requestConfig"]
+			} else {
+				if (tocompclients != paramConfigs[i, "clients"] || 
+					tocomploads != paramConfigs[i, "loads"] ||
+					tocomploadprofiles != paramConfigs[i, "loadProfiles"] ||
+					tocompgenerations != paramConfigs[i, "generations"] ||
+					tocomppvplant != paramConfigs[i, "pvplants"] ||
+					tocompwindplants != paramConfigs[i, "windplants"] ||
+					tocompstorages != paramConfigs[i, "devicesStorage"] ||
+					tocomprequestconfigs != paramConfigs[i, "requestConfig"]) {
+					return(TRUE)
+				}
+			} 
+		}
 	}
 	return(FALSE)
 }
