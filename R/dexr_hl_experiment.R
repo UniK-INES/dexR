@@ -509,18 +509,11 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 	for (nodesetid in nodesetids) {
 		# nodesetid = nodesetids[2]
 		dexpa$sim$notesetid <- nodesetid
-		nodeids = strsplit(dexR::input_csv_configparam(dexpa, checkNodeSetId = T)[,"Nodes"], ';', fixed=T)[[1]]
-		
-		# remove NodeSet-config-directory:
-		futile.logger::flog.info("NotSetId %s: Remove config directory %s...",
-				as.character(nodesetid),
-				paste(dexpa$dirs$config, "/", dexpa$sim$id,  if (nodeid != "") "_", nodeid, sep=""),
-				name="dexr.hl.experiment")
-		unlink(paste(dexpa$dirs$config, "/", dexpa$sim$id, if (nodeid != "") "_", nodeid, sep=""), recursive = TRUE, force = FALSE)
-		
+		nodeids = strsplit(dexR::input_csv_configparam(dexpa, checkNodeSetId = T)[,"Nodes"], ';', fixed=T)[[1]]	
 		if (is.na(nodeids)) nodeids = c("")
 		
 		if (dexpa$sim$raspic) {
+			# TODO change to separate EMG config per node!
 			session <- dexR::hl_raspic_transferemgconfig(dexpa)
 			dexR::hl_raspic_runemg(dexpa, session)
 			dexR::hl_raspic_closesession(dexpa, session)
@@ -535,6 +528,15 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 				dexpan$emg$httpport = dexR::emggethttpport(dexpa, nodeid)
 				dexpan$emg$emgconfigoutput = if(is.null(dexpa$emg$emgconfigoutput)) "" else paste(dexpa$emg$emgconfigoutput, 
 									if (!is.na(nodeid)) nodeid, sep="_")
+				
+				# remove NodeSet-config-directory:
+				futile.logger::flog.info("NotSetId %s: Remove config directory %s...",
+						as.character(nodesetid),
+						paste(dexpa$dirs$config, "/", dexpa$sim$id,  if (nodeid != "") "_", nodeid, sep=""),
+						name="dexr.hl.experiment")
+				unlink(paste(dexpa$dirs$config, "/", dexpa$sim$id, if (nodeid != "") "_", nodeid, sep=""), recursive = TRUE, 
+						force = FALSE)
+				
 				hl_experiment_runemg(dexpan, 
 						outfileemg = paste(tools::file_path_sans_ext(outfileemg), if (!is.na(nodesetid))  "_n", if (!is.na(nodesetid)) nodesetid, 
 								if (nodeid != "") "-", nodeid, ".log", sep=""),
