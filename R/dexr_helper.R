@@ -186,7 +186,7 @@ demo_prepare_db4figures <- function() {
 #' @author Sascha Holzhauer
 #' @export
 emggethttpport <- function(dexpa, nodeid) {
-	return(dexpa$emg$httpstartport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) - 1 + if (nodeid == "") 0 else as.numeric(nodeid) + 
+	return(dexpa$emg$httpstartport + (as.numeric(dexpa$sim$runnumber) -1) * length(dexpa$sim$nodeids) + if (nodeid == "") 0 else as.numeric(nodeid) + 
 					dexpa$emg$httpportoffset)
 }
 #' Determine EMG port in multi-node (and other) setting
@@ -197,8 +197,8 @@ emggethttpport <- function(dexpa, nodeid) {
 #' @author Sascha Holzhauer
 #' @export
 emggetport <- function(dexpa, nodeid) {
-	return(dexpa$emg$startport +  as.numeric(strsplit(dexpa$sim$id, "-")[[1]][2]) - 1 + if (nodeid == "") 0 else as.numeric(nodeid) + 
-					dexpa$emg$portoffset)
+	return(dexpa$emg$startport +   (as.numeric(dexpa$sim$runnumber) -1) * length(dexpa$sim$nodeids) + if (nodeid == "") 0 else 
+						as.numeric(nodeid) + dexpa$emg$portoffset)
 }
 requests_identify_type <- function(data, dataexp='df[r, if(df$status==2) "energy_accepted" else "energy_requested"]') {
 	data <- plyr::ddply(data, c("id"), function(df) {

@@ -104,7 +104,7 @@ hl_opsim_runnetsim <- function(dexpa, outfilenetsim = paste(dexpa$dirs$output$lo
 #' Start market backend server (creating database, not shutting down).
 #' 
 #' @param dexpa 
-#' @return 
+#' @return
 #' 
 #' @author Sascha Holzhauer
 #' @export
