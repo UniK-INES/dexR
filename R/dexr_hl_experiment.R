@@ -161,7 +161,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 				name = "dexr.hl.experiment.runemg")
 	}
 
-	iddirpart <- if(!is.na(dexpa$sim$nodesetid)) paste(dexpa$sim$id, "_", dexpa$sim$nodesetid, sep="") else dexpa$sim$id
+	iddirpart <- if(!is.na(dexpa$sim$nodeid)) paste(dexpa$sim$id, "_", dexpa$sim$nodeid, sep="") else dexpa$sim$id
 	clientprefix <- if(!is.na(dexpa$sim$nodeid)) paste("n", dexpa$sim$nodeid, "_", sep="") else ""
 			
 	if (!is.na(idMatch)) {
@@ -514,9 +514,9 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 		# remove NodeSet-config-directory:
 		futile.logger::flog.info("NotSetId %s: Remove config directory %s...",
 				as.character(nodesetid),
-				paste(dexpa$dirs$config, "/", dexpa$sim$id,  if (nodesetid != "") "_", nodesetid, sep=""),
+				paste(dexpa$dirs$config, "/", dexpa$sim$id,  if (nodeid != "") "_", nodeid, sep=""),
 				name="dexr.hl.experiment")
-		unlink(paste(dexpa$dirs$config, "/", dexpa$sim$id, if (nodesetid != "") "_", nodesetid, sep=""), recursive = TRUE, force = FALSE)
+		unlink(paste(dexpa$dirs$config, "/", dexpa$sim$id, if (nodeid != "") "_", nodeid, sep=""), recursive = TRUE, force = FALSE)
 		
 		if (is.na(nodeids)) nodeids = c("")
 		
