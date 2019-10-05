@@ -582,14 +582,17 @@ hl_experiment_cluster <- function(dexpa, basetime = as.numeric(round(Sys.time(),
 	
 	shbasic::sh.ensurePath(paste(dexpa$dirs$config, dexpa$sim$id,sep="/"))
 	
+	numnodeids = length(strsplit(paste(dexR::input_csv_configparam(dexpa)[,"Nodes"], collapse=";"), ';', fixed=T)[[1]])
+	numnodeids = ceiling(numnodeids / 10)*10
+	
 	dexpa$db$dbname		= dexpa$sim$id
-	dexpa$server$port 	= dexpa$server$startport +   as.numeric(dexpa$sim$runnumber) + dexpa$server$portoffset
+	dexpa$server$port 	= dexpa$server$startport + (as.numeric(dexpa$sim$runnumber)-1)*numnodeids + dexpa$server$portoffset
 	futile.logger::flog.debug("Set dexpa$server$port to: %d", dexpa$server$port, name="dexr.hl.experiment.cluster")
 	
-	dexpa$emg$port 		= dexpa$emg$startport +  as.numeric(dexpa$sim$runnumber) + dexpa$emg$portoffset
+	dexpa$emg$port 		= dexpa$emg$startport +  (as.numeric(dexpa$sim$runnumber)-1)*numnodeids + dexpa$emg$portoffset
 	futile.logger::flog.debug("Set dexpa$emg$port to: %d", dexpa$emg$port, name="dexr.hl.experiment.cluster")
 	
-	dexpa$emg$httpport 		= dexpa$emg$httpstartport +   as.numeric(dexpa$sim$runnumber) + dexpa$emg$httpportoffset
+	dexpa$emg$httpport 		= dexpa$emg$httpstartport + (as.numeric(dexpa$sim$runnumber)-1)*numnodeids + dexpa$emg$httpportoffset
 	futile.logger::flog.debug("Set dexpa$emg$httpport to: %d", dexpa$emg$httpport, name="dexr.hl.experiment.cluster")
 	
 	dexR::input_db_createdb(dexpa)
