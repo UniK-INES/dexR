@@ -1,6 +1,7 @@
 #' Calculate aggregate figures of traded energy.
 #' @param dexpa 
 #' @param cinfos 
+#' @param requestdata
 #' @return markdown table
 #' 
 #' @author Sascha Holzhauer
@@ -87,5 +88,36 @@ output_statistics_comp_costs <- function(dexpa, cinfos, requestdata) {
 						"Requested price (bids/demand)",
 						"Accepted price (asks/supply)",
 						"Accepted price (bids/demand)"))
+	}
+}
+#' Calculate aggregate figures of number of clients.
+#' @param dexpa 
+#' @param requestdata 
+#' @return markdown table
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_statistics_comp_numclients <- function(dexpa, requestdata) {
+	
+	requestdata <- dplyr::filter(requestdata, status %in% c(1,2,3))
+	requestTable <- plyr::ddply(requestdata, c("id"), function(data) {
+				# data <- requestdata[requestdata$id == "enavi_08-01",]
+				result <- data.frame(
+						id = unique(data$id),
+						numclients = length(unique(data$username)))
+				result
+			})
+	
+	if (nrow(requestTable) == 0) {
+		futile.logger::flog.warn("Request data has no rows!", 
+				"dexr.output.stats.comp.clients")
+	} else if (nrow(cinfosTable) == 0) {
+		futile.logger::flog.warn("Clearing information has no rows!", 
+				"dexr.output.stats.comp.clients")
+	} else {
+		knitr::kable(requestTable, format="markdown", caption="Aggregated client information",
+				digits = 3,
+				col.names = c(	"ID",
+						"Number of clients"))
 	}
 }

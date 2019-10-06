@@ -187,7 +187,7 @@ hl_config_clearclients <- function(dexpa) {
 	DBI::dbDisconnect(con)
 }
 adjust_client_id <- function(dexpa, clientid) {
-	if (dexpa$sim$multiplenodes) {
+	if (length(dexpa$sim$nodeids) > 1) {
 		clientids = paste("n", dexpa$sim$nodeid, "_", clientid, sep="")
 	}
 	else {
