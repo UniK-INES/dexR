@@ -258,7 +258,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 	
 	
 	# copy rundir to node locally for every instance:
-	if (!dexpa$sim$raspic && (dexpa$emg$copyrundir || dexpa$sim$multiplenodes)) {
+	if (!dexpa$sim$raspic && (dexpa$emg$copyrundir || length(dexpa$sim$nodeids) > 1)) {
 		newrundir = paste(dexpa$dirs$emgnoderundir, "/", dexpa$sim$id, "_", dexpa$sim$nodesetid, "_", dexpa$sim$nodeid, "/", sep="")
 		futile.logger::flog.debug("Copying EMG rundir from %s to %s...",
 				dexpa$dirs$emgrundir,
@@ -479,7 +479,6 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 	dexR::hl_experiment_ensureFileLogging(dexpa, outputfile)
 	
 	# whether there are multiple nodes needs to be checked before market backend configuration (client names):
-	allnodeids = c()
 	nodesetids = dexR::input_csv_configparam(dexpa)[,"NodeSetId"]
 	dexpa$sim$nodesetids = nodesetids
 	
@@ -487,20 +486,11 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 		nodesetids = c(NA)
 	}
 	
-	for (i in 1:length(nodesetids)) {
-		# i = 1
-		futile.logger::flog.info("Process node set ID %s...", nodesetids[i], name="dexr.hl.experiment")
-		dexpa$sim$notesetid <- nodesetids[i]
-		nodeids = strsplit(dexR::input_csv_configparam(dexpa, checkNodeSetId = T)[,"Nodes"], ';', fixed=T)[[1]]
-		allnodeids = c(allnodeids, nodeids)
-		
-		# make sure nodeids are not twice in an experiment configuration:
-		if (length(unique(allnodeids)) != length(allnodeids)) {
-			R.oo::throw.default("Duplicate node IDs in experiment configuration: ", paste(allnodeids, collapse="/"), "!")
-		}
+	dexpa$sim$nodeids <- strsplit(paste(dexR::input_csv_configparam(dexpa)[,"Nodes"], collapse=";"), ';', fixed=T)[[1]]
+	# make sure nodeids are not twice in an experiment configuration:
+	if (length(unique(dexpa$sim$nodeids)) != length(dexpa$sim$nodeids)) {
+		R.oo::throw.default("Duplicate node IDs in experiment configuration: ", paste(dexpa$sim$nodeids, collapse="/"), "!")
 	}
-	
-	dexpa$sim$multiplenodes = length(nodesetids) > 1 || (!is.na(nodeids) && length(nodeids) > 1)
 	
 	if (runmarket) {
 		infoData <- hl_experiment_runbackend(dexpa, outfilesys = outfilemarket, basetime = basetime, offset = offset, startServer=F)
@@ -558,7 +548,7 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 		Sys.sleep((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor)
 		dexR::hl_closeexperiment(dexpa, outputfile = outputfile, basetime = basetime, offset = offset, infoData = infoData, nodeids = allnodeids)
 	}
-	return(allnodeids)
+	return(dexpa$sim$nodeids)
 }
 #' Runs experiments and create the required config folder (for cluster execution)
 #' 
@@ -589,11 +579,11 @@ hl_experiment_cluster <- function(dexpa, basetime = as.numeric(round(Sys.time(),
 	dexpa$server$port 	= dexpa$server$startport + (as.numeric(dexpa$sim$runnumber)-1)*numnodeids + dexpa$server$portoffset
 	futile.logger::flog.debug("Set dexpa$server$port to: %d", dexpa$server$port, name="dexr.hl.experiment.cluster")
 	
-	dexpa$emg$port 		= dexpa$emg$startport +  (as.numeric(dexpa$sim$runnumber)-1)*numnodeids + dexpa$emg$portoffset
-	futile.logger::flog.debug("Set dexpa$emg$port to: %d", dexpa$emg$port, name="dexr.hl.experiment.cluster")
-	
-	dexpa$emg$httpport 		= dexpa$emg$httpstartport + (as.numeric(dexpa$sim$runnumber)-1)*numnodeids + dexpa$emg$httpportoffset
-	futile.logger::flog.debug("Set dexpa$emg$httpport to: %d", dexpa$emg$httpport, name="dexr.hl.experiment.cluster")
+#	dexpa$emg$port 		= dexpa$emg$startport +  (as.numeric(dexpa$sim$runnumber)-1)*numnodeids + dexpa$emg$portoffset
+#	futile.logger::flog.debug("Set dexpa$emg$port to: %d", dexpa$emg$port, name="dexr.hl.experiment.cluster")
+#	
+#	dexpa$emg$httpport 		= dexpa$emg$httpstartport + (as.numeric(dexpa$sim$runnumber)-1)*numnodeids + dexpa$emg$httpportoffset
+#	futile.logger::flog.debug("Set dexpa$emg$httpport to: %d", dexpa$emg$httpport, name="dexr.hl.experiment.cluster")
 	
 	dexR::input_db_createdb(dexpa)
 	

@@ -1,8 +1,8 @@
 Package: dexR
 Type: Package
 Title: Analysing and Reporting DEX Experiments
-Version: 0.6.51
-Date: 2019-10-05
+Version: 0.6.52
+Date: 2019-10-06
 Authors@R: person("Sascha", "Holzhauer", email = "Sascha.Holzhauer@uni-kassel.de", role = c("aut", "cre"))
 Depends: R (>= 3.3.2)
 Imports:

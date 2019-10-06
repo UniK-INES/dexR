@@ -60,7 +60,7 @@ output_figure_requests_numRequests_byStatusBySubmT <- function(dexpa, data, subt
 #' @author Sascha Holzhauer
 #' @export
 output_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpa, data,
-		filename = "dex_requests_numRequests_byStatusByCT", skiplegend=F) {
+		filename = "dex_requests_numRequests_byStatusByST", skiplegend=F) {
 	# count requests
 	data <- plyr::ddply(data, c("id", "status", "start_time"), function(d) {
 				d$num_requests = nrow(d)
@@ -79,6 +79,62 @@ output_figure_requests_numRequests_comp_byStatusByStartT <- function(dexpa, data
 			),  x_column = "start_time", group_column = "id", 
 			position = "dodge", returnplot = FALSE)
 }
+#' Output figure: Number of submitting clients per submission time and status.
+#' @param dexpa 
+#' @param data 
+#' @return figure file
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_figure_requests_numClients_comp_byStatusByStartT <- function(dexpa, data,
+		filename = "dex_requests_numClients_byStatusByST", skiplegend=F) {
+	# count requests
+	data <- plyr::ddply(data, c("id", "status", "start_time"), function(d) {
+				d$num_clients = length(unique(d$username))
+				d
+			})
+	data$status <- dexpa$naming$statuses[match(data$status, names(dexpa$naming$statuses))]
+	output_figure_bars(dexpa, data, y_column = "num_clients", 
+			title = "Number of submitting clients by status and delivery start time",
+			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
+			facet_column = "status", facet_ncol = 1, filename = filename,
+			alpha=1.0, ggplotaddons = list(
+					ggplot2::xlab("Start time"),
+					ggplot2::ylab("Number of Clients"),
+					if (skiplegend) ggplot2::theme(legend.position="none") else 
+								list(ggplot2::theme(legend.position = "bottom"
+										)) 	
+			),  x_column = "start_time", group_column = "id", 
+			position = "dodge", returnplot = FALSE)
+}
+#' Output figure: Number of submitting clients per submission time and status.
+#' @param dexpa 
+#' @param data 
+#' @return figure file
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_figure_requests_numClients_comp_ByStartT <- function(dexpa, data,
+		filename = "dex_requests_numClients_ByST", skiplegend=F) {
+	# count requests
+	data <- plyr::ddply(data, c("id", "start_time"), function(d) {
+				d$num_clients = length(unique(d$username))
+				d
+			})
+	data$status <- dexpa$naming$statuses[match(data$status, names(dexpa$naming$statuses))]
+	output_figure_bars(dexpa, data, y_column = "num_clients", 
+			title = "Number of submitting clients by delivery start time",
+			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
+			filename = filename,
+			alpha=1.0, ggplotaddons = list(
+					ggplot2::xlab("Start time"),
+					ggplot2::ylab("Number of Clients"),
+					if (skiplegend) ggplot2::theme(legend.position="none") else 
+								list(ggplot2::theme(legend.position = "bottom"
+										)) 	
+			),  x_column = "start_time", group_column = "id", 
+			position = "dodge", returnplot = FALSE)
+}
 #' Output figure: Number of submitted requests per submission time and request type.
 #' @param dexpa 
 #' @param data 
@@ -90,7 +146,7 @@ output_figure_requests_numRequests_comp_byTypeByStartT <- function(dexpa, data,
 		filename = "dex_requests_numRequests_byTypeByCT", skiplegend=F) {
 	# count requests
 	data <- requests_num_identify_type(dexpa, data)
-	output_figure_bars(dexpa, data, y_column = "Number", title = "Number of requests by status and delivery start time",
+	output_figure_bars(dexpa, data, y_column = "Number", title = "Number of requests by type and delivery start time",
 			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
 			facet_column = "Type", facet_ncol = 1, filename = filename,
 			alpha=1.0, ggplotaddons = list(
@@ -99,6 +155,29 @@ output_figure_requests_numRequests_comp_byTypeByStartT <- function(dexpa, data,
 					if (skiplegend) ggplot2::theme(legend.position="none") else 
 								list(ggplot2::theme(legend.position = "bottom"
 					)) 	
+			),  x_column = "start_time", group_column = "id", 
+			position = "dodge", returnplot = FALSE)
+}
+#' Output figure: Number of submitting clients per submission time and request type.
+#' @param dexpa 
+#' @param data 
+#' @return figure file
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_figure_requests_numClients_comp_byTypeByStartT <- function(dexpa, data,
+		filename = "dex_requests_numClients_byTypeByCT", skiplegend=F) {
+	# count requests
+	data <- clients_num_identify_type(dexpa, data)
+	output_figure_bars(dexpa, data, y_column = "Number", title = "Number of clients by type and delivery start time",
+			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
+			facet_column = "Type", facet_ncol = 1, filename = filename,
+			alpha=1.0, ggplotaddons = list(
+					ggplot2::xlab("Start time"),
+					ggplot2::ylab("Number of Clients"),
+					if (skiplegend) ggplot2::theme(legend.position="none") else 
+								list(ggplot2::theme(legend.position = "bottom"
+										)) 	
 			),  x_column = "start_time", group_column = "id", 
 			position = "dodge", returnplot = FALSE)
 }
