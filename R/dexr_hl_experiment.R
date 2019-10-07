@@ -546,7 +546,7 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 	
 	if (shutdown) {
 		Sys.sleep((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor)
-		dexR::hl_closeexperiment(dexpa, outputfile = outputfile, basetime = basetime, offset = offset, infoData = infoData, nodeids = allnodeids)
+		dexR::hl_closeexperiment(dexpa, outputfile = outputfile, basetime = basetime, offset = offset, infoData = infoData, nodeids = dexpa$sim$nodeids)
 	}
 	return(dexpa$sim$nodeids)
 }
