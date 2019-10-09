@@ -231,7 +231,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pauseafterxmlcreation = F) {
+hl_experiment_runemg <- function(dexpa, runemg = T, outfileemg = "", outfilesys = "", pauseafterxmlcreation = F) {
 	
 	if (!dir.exists(paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", dexpa$sim$nodeid, sep=""))) {
 		hl_experiment_configemg(dexpa, outfilesys= if (is.null(dexpa$emg$emgconfigoutput)) "" else 
@@ -248,8 +248,8 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 	}
 	
 	paramConfigs = dexR::input_csv_configparam(dexpa)
-	if (nrow(paramConfigs) > 0 && !is.na(paramConfigs["emgproperties"])) {
-		dexpa$emg$propertiesfile <- paramConfigs["emgproperties"]
+	if (nrow(paramConfigs) > 0 && !is.na(paramConfigs[1,"emgproperties"])) {
+		dexpa$emg$propertiesfile <- paramConfigs[1,"emgproperties"]
 	}
 	
 	futile.logger::flog.info("Starting EMG with properties file %s...", 
@@ -278,6 +278,7 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 	if (dexpa$sim$raspic) {
 		dexR::hl_raspic_transferemgconfig(dexpa)
 	} else {}
+	
 	args = paste(' -cp ',
 			paste('"', dexpa$files$emgconfigtool, '"', sep=""), "de.unik.ines.enavi.ctool.RunEmg", 
 			paste('"', dexpa$dirs$config, "/", dexpa$sim$id, "_", dexpa$sim$nodeid, '"', sep=""),
@@ -292,16 +293,24 @@ hl_experiment_runemg <- function(dexpa, outfileemg = "", outfilesys = "", pausea
 	futile.logger::flog.debug("Arguments when calling RunEMG: %s. Output to %s.", args, outfileemg,
 			name = "dexr.hl.experiment.emg")
 	
-	system2(wait=FALSE, "java", args,
-			stdout=outfileemg, stderr=outfileemg)
-
-	# https://www.rdocumentation.org/packages/sys/versions/1.5/topics/exec
-	#	pid = sys::exec_background("java", args = c("de.unik.ines.enavi.ctool.RunEmg", 	
-	#					paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""), dexpa$dirs$emgrundir),
-	#			std_out=outfilesys, std_err=outfilesys)
+	if (runemg) {	
+		system2(wait=FALSE, "java", args,
+				stdout=outfileemg, stderr=outfileemg)
 	
-	hl_experiment_awaitemgstartup(dexpa)
-	
+		# https://www.rdocumentation.org/packages/sys/versions/1.5/topics/exec
+		#	pid = sys::exec_background("java", args = c("de.unik.ines.enavi.ctool.RunEmg", 	
+		#					paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""), dexpa$dirs$emgrundir),
+		#			std_out=outfilesys, std_err=outfilesys)
+		
+		hl_experiment_awaitemgstartup(dexpa)
+	} else {
+		decision <- svDialogs::dlg_message("Press 'OK' when EMG is ready!", "okcancel")$res
+		if (decision == "cancel") {
+			futile.logger::flog.warn("Program canceled.", 
+					name = "dexr.hl.opsim")
+			stop("Program canceled.")
+		}
+	}
 #	max_sleep = dexpa$emg$emgstartuptime
 #	num_iterations = as.integer(max_sleep / 5) + 1
 #	# make sure not to wait for the full startup time in case an error occurs
@@ -464,7 +473,7 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 		outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, ".log", sep=""),
 		outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep=""),
 		outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep=""),
-		outfile, runmarket = T, shutdown = T, createdb = F, pauseafterxmlcreation = F) {
+		outfile, runmarket = T, runemg = T, shutdown = T, createdb = F, pauseafterxmlcreation = F) {
 	
 	futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
 			name="dexr.hl.experiment")
@@ -520,14 +529,17 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 									if (!is.na(nodeid)) nodeid, sep="_")
 				
 				# remove NodeSet-config-directory:
-				futile.logger::flog.info("NotSetId %s: Remove config directory %s...",
-						as.character(nodesetid),
-						paste(dexpa$dirs$config, "/", dexpa$sim$id,  if (nodeid != "") "_", nodeid, sep=""),
-						name="dexr.hl.experiment")
-				unlink(paste(dexpa$dirs$config, "/", dexpa$sim$id, if (nodeid != "") "_", nodeid, sep=""), recursive = TRUE, 
-						force = FALSE)
+				if (nodeid != "") {
+					futile.logger::flog.info("NotSetId %s: Remove config directory %s...",
+							as.character(nodesetid),
+							paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", nodeid, sep=""),
+							name="dexr.hl.experiment")
+					
+					unlink(paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", nodeid, sep=""), recursive = TRUE, 
+							force = FALSE)
+				}
 				
-				hl_experiment_runemg(dexpan, 
+				hl_experiment_runemg(dexpan, runemg = runemg,
 						outfileemg = paste(tools::file_path_sans_ext(outfileemg), if (!is.na(nodesetid))  "_n", if (!is.na(nodesetid)) nodesetid, 
 								if (nodeid != "") "-", nodeid, ".log", sep=""),
 						pauseafterxmlcreation = pauseafterxmlcreation)

@@ -50,7 +50,8 @@ prepare_costdata_gini <- function(data, normalise=F) {
 				peruserdata <- plyr::ddply(d, c("username"), function(dperuser) {
 							new = data.frame(
 									"energy" = sum(dperuser[, "energy_accepted"]),
-									"costs" = sum(dperuser[, "price_cleared"]),
+									"costs" = sum(dperuser[, "price_cleared"] * dperuser[, "energy_accepted"]),
+									"price" = mean(dperuser[dperuser$price_cleared > 0, "price_cleared"]),
 									"costPerEnergy" = if (sum(dperuser[, "energy_accepted"]) == 0) 0 else sum(dperuser[, "price_cleared"]) / sum(dperuser[, "energy_accepted"]))
 							new
 						})
@@ -58,6 +59,7 @@ prepare_costdata_gini <- function(data, normalise=F) {
 				result = data.frame(		
 						"Energy" = sum(peruserdata[, "energy"]),
 						"Costs" = sum(peruserdata[, "costs"]),
+						"Price" = mean(peruserdata[peruserdata$price > 0, "price"]),
 						"Gini" =ineq::Gini(peruserdata$costPerEnergy, corr=T)
 				)
 				result

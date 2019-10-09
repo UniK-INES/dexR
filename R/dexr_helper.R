@@ -276,7 +276,7 @@ param_marketproductsdiffer <- function(dexpas) {
 		if (tocomp == "") {
 			tocomp = paramConfigs["products"]
 		} else {
-			if (tocomp != paramConfigs["products"]) {
+			if (length(unique(c(unlist(tocomp), unlist(paramConfigs["products"]))))> 1) {
 				return(TRUE)
 			} 
 		}
