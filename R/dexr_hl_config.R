@@ -129,7 +129,7 @@ hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dex
 		if (is.na(paramConfigs[i, "Nodes"])) paramConfigs[i, "Nodes"] <- 1
 		for (nodeid in strsplit(paramConfigs[i, "Nodes"], ";")[[1]]) {
 			clients = rawclients
-			dexpa$sim$nodeid <- if(!is.na(as.numeric(nodeid))) as.numeric(nodeid) else 1
+			dexpa$sim$nodeid <- as.numeric(nodeid)
 			clients$name <- adjust_client_id(dexpa, clients$name)
 			clients$name_emg <- adjust_client_id(dexpa, clients$name_emg)
 		
@@ -142,7 +142,7 @@ hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dex
 			allclients = rbind(allclients, clients)
 		}
 	}
-		
+	
 	con <- input_db_getconnection(dexpa)
 	
 	colnames_clients = DBI::dbGetQuery(con, paste(

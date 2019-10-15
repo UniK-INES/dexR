@@ -200,6 +200,14 @@ emggetport <- function(dexpa, nodeid) {
 	return(dexpa$emg$startport +   (as.numeric(dexpa$sim$runnumber) -1) * length(dexpa$sim$nodeids) + if (nodeid == "") 0 else 
 						as.numeric(nodeid) + dexpa$emg$portoffset)
 }
+#' Sums the expression in <code>dataexp</code> up separately for PC/Win/StorageOut/StorageIn
+#' 
+#' @param data 
+#' @param dataexp 
+#' @return 
+#' 
+#' @author Sascha Holzhauer
+#' @export
 requests_identify_type <- function(data, dataexp='df[r, if(df$status==2) "energy_accepted" else "energy_requested"]') {
 	data <- plyr::ddply(data, c("id"), function(df) {
 				# df <- data[data$id == data[1,"id"],]

@@ -143,3 +143,31 @@ hl_figure_energycosts_requested_comp_avgByTypeStartT <- function(dexpas) {
 		output_figure_energycosts_requested_comp_avgByTypeStartT(dexpas[[1]], data)
 	}
 }
+#' Retrieves requests data from DB and creates histogram of prices.
+#' @param dexpa parameter
+#' @return figure file
+#' 
+#' @author Sascha Holzhauer
+#' @export
+hl_figure_prices_comp_histogram <- function(dexpas, skiplegend=F) {
+	futile.logger::flog.debug("Figure: prices histogram: request data...", name="dexr.hl.costs.histogram")
+	data = data.frame()
+	for (dp in dexpas) {
+		# dp = dexpas[[1]]
+		d <- dexR::input_db_requests(dp)
+		if (nrow(d) == 0) {
+			futile.logger::flog.warn("No requests retrieved from PostgreSQL database %s for ID %s!",
+					dp$db$dbname,
+					dp$id,
+					name = "dexr.hl.costs")
+		} else {
+			d$id <- dexR::input_db_runID(dp)
+			data <- rbind(data, d)
+		}
+	}
+	if (nrow(data) > 0) {
+		futile.logger::flog.debug("Figure: prices histogram: filter data...", name="dexr.hl.costs")
+		data <- dexpa$sim$filter$requests(dexpa, data)
+		output_figure_prices_comp_histogram(dexpas[[1]], data, skiplegend=skiplegend)
+	}
+}

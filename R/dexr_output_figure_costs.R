@@ -150,30 +150,54 @@ output_figure_energycosts_requested_comp_sumByStartT <- function(dexpa, data, sk
 output_figure_energycosts_requested_comp_avgByTypeStartT <- function(dexpa, data, skiplegend=FALSE) {
 	futile.logger::flog.debug("Figure: Energycosts Summed by delviery start time: sum costs...", name="dexr.hl.costs")
 	
-	dataPrice <- requests_identify_type(data, dataexp='df[r, "price_requested"]')
-	dataNums <- requests_identify_type(data, dataexp='1')
+	prices <- plyr::ddply(data, c("id"), function(d) {
+				new = data.frame(
+						"Prices" = d[d$accepted_energy > 0, "cleared_price"],
+						"id" = d$id)
+				new
+			})
+		
+	futile.logger::flog.debug("Figure: price histogram: plot figure...", 
+			name="dexr.output.figure..costs")
 	
-	futile.logger::flog.debug("Figure: Energy prices by type and delviery start time: reshape data...", 
-			name="dexr.hl.costs")
-	dataPrice <- reshape2::melt(dataPrice, id.vars=c("id", "start_time"), variable.name = "Type",
-			value.name = "Price")
-	dataNum <- reshape2::melt(dataNums, id.vars=c("id", "start_time"), variable.name = "Type",
-			value.name = "number")
-	
-	dataPrice$Price[dataPrice$Price > 0] = dataPrice$Price[dataPrice$price > 0] / dataNum$number[dataPrice$Price > 0]
-	return(data)
-	
-	futile.logger::flog.debug("Figure: Energy prices by type and delviery start time: plot figure...", 
-			name="dexr.hl.costs")
-	output_figure_lines(dexpa, dataPrice, y_column = "price", title = "Requested energy price by type and delivery start time",
-			colour_column = "id", facet_column = "Type",
-			facet_ncol = 1, filename = "dex_energyprices_requested_comp_avgByTypeDT",
+	output_figure_lines(dexpa, prices, y_column = "price", title = "Price histogram",
+			colour_column = "id", filename = "dex_pricehistogram_comp",
 			alpha=1.0, ggplotaddons = list(
-					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Average price (EUR)"),
+					ggplot2::xlab("Price"),
+					ggplot2::ylab("Häufigkeit"),
 					if (skiplegend) ggplot2::theme(legend.position="none") else list(ggplot2::theme(
 										legend.position = "bottom"
 								)), 
-			),  x_column = "start_time", 
+			),  x_column = "price", 
 			returnplot = FALSE)
+}
+#' Generate histogram of prices of load requests.
+#' @param dexpas
+#' @param data 
+#' @param skiplegend 
+#' @return price histogram
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_figure_prices_comp_histogram  <- function(dexpas, data, skiplegend=FALSE, title="Histogram of load prices", 
+		ggplotaddons = NULL, returnplot = FALSE, 
+		filename = paste("Histogram_Load_Prices_", shbasic::shbasic_condenseRunids(data[, "id"]), sep="_")) {
+	futile.logger::flog.debug("Figure: Price histogram - prepare prices...", name="dexr.output.figures.costs")
+	
+	futile.logger::flog.debug("Figure: Energy prices by type and delviery start time: reshape data...", 
+			name="dexr.hl.costs")
+	
+	dexpa$fig$init(dexpa, outdir = paste(dexpa$dirs$output$figures, "lines", sep="/"), filename = filename)
+	
+	prices <- data[data$energy_accepted < 0, c("id","price_cleared")]
+	
+	p1 <- ggplot2::ggplot(prices, ggplot2::aes(x=price_cleared, fill = id)) + ggplot2::geom_histogram(position="dodge") +
+			ggplot2::theme(strip.text.x = ggplot2::element_text(size=8)) +
+			(if (!is.null(title) && title != "") ggplot2::labs(title = title) else NULL) +
+			{if (skiplegend) ggplot2::theme(legend.position="none") else list(ggplot2::theme(legend.position = "bottom"))} +
+			{if (dexpa$fig$skiptitles)  ggplot2::theme(plot.title =  ggplot2::element_blank()) else NULL} +
+			ggplotaddons
+	print(p1)
+	dexpa$fig$close()
+	if (returnplot) return(p1)
 }
