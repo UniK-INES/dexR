@@ -108,11 +108,11 @@ hl_opsim_runnetsim <- function(dexpa, outfilenetsim = paste(dexpa$dirs$output$lo
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_opsim_startmarket <- function(dexpa, basetime = as.numeric(round(strptime("30/09/19 12:00", "%d/%m/%y %H:%M"),"mins"))*1000) {
+hl_opsim_startmarket <- function(dexpa, basetime = as.numeric(round(strptime("30/09/19 12:00", "%d/%m/%y %H:%M"),"mins"))*1000, runemg=T) {
 	dexR::hl_experiment(dexpa, outputfile=paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, ".log", sep=""),
 			outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_market.log", sep=""),
 			outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_emg.log", sep=""),
-			basetime = basetime, shutdown = F, createdb = T)
+			basetime = basetime, shutdown = F, createdb = T, runemg=runemg)
 	
 	decision <- svDialogs::dlg_message("Press 'OK' to shut down market backend server!", "okcancel")$res
 	if (decision == "cancel") {
@@ -128,7 +128,8 @@ hl_opsim_startmarket <- function(dexpa, basetime = as.numeric(round(strptime("30
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_opsim <- function(dexpa, startmanager = T, startsservice = T, startnetsim = T, emptydb = T, basetime = as.numeric(round(strptime("30/09/19 12:00", "%d/%m/%y %H:%M"),"mins"))*1000) {
+hl_opsim <- function(dexpa, startmanager = T, startsservice = T, startnetsim = T, emptydb = T, runemg=T,
+		basetime = as.numeric(round(strptime("30/09/19 12:00", "%d/%m/%y %H:%M"),"mins"))*1000) {
 	if (startmanager) {
 		dexR::hl_opsim_runmanager(dexpa)
 		
@@ -166,7 +167,7 @@ hl_opsim <- function(dexpa, startmanager = T, startsservice = T, startnetsim = T
 		futile.logger::flog.debug("Emptied database with status code %d", response$status_code, name = "dexr.hl.opsim.sservice")
 	}
 	
-	dexR::hl_opsim_startmarket(dexpa, basetime = basetime)
+	dexR::hl_opsim_startmarket(dexpa, basetime = basetime, runemg=runemg)
 	
 	dexR::hl_closeexperiment(dexpa, basetime = basetime)
 	

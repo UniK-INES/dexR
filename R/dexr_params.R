@@ -65,6 +65,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$dirs$output$dbdumpsremote	<- "/var/dex/dbdumps/"
 	defdexpa$dirs$output$logs		<- paste(defdexpa$dirs$outputdir, "logs/", sep="")
 	defdexpa$dirs$output$figures		<- paste(defdexpa$dirs$outputdir, "figures/", sep="")
+	defdexpa$dirs$output$tables		<- paste(defdexpa$dirs$outputdir, "tables/", sep="")
 	defdexpa$dirs$output$reports		<- paste(defdexpa$dirs$outputdir, "reports/", sep="")
 	defdexpa$dirs$tmp				<- "/tmp"
 	defdexpa$dirs$server			<- "set dexpa$dirs$server"

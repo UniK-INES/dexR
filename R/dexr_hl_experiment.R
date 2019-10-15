@@ -160,9 +160,9 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 				paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""),
 				name = "dexr.hl.experiment.runemg")
 	}
-
-	iddirpart <- if(!is.na(dexpa$sim$nodeid)) paste(dexpa$sim$id, "_", dexpa$sim$nodeid, sep="") else dexpa$sim$id
-	clientprefix <- if(!is.na(dexpa$sim$nodeid)) paste("n", dexpa$sim$nodeid, "_", sep="") else ""
+	
+	iddirpart <- if(length(dexpa$sim$nodeids) > 1) paste(dexpa$sim$id, "_", dexpa$sim$nodeid, sep="") else dexpa$sim$id
+	clientprefix <- if(length(dexpa$sim$nodeids) > 1) paste("n", dexpa$sim$nodeid, "_", sep="") else ""
 			
 	if (!is.na(idMatch)) {
 		args = paste(' -cp "',
@@ -233,10 +233,8 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 #' @export
 hl_experiment_runemg <- function(dexpa, runemg = T, outfileemg = "", outfilesys = "", pauseafterxmlcreation = F) {
 	
-	if (!dir.exists(paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", dexpa$sim$nodeid, sep=""))) {
-		hl_experiment_configemg(dexpa, outfilesys= if (is.null(dexpa$emg$emgconfigoutput)) "" else 
+	hl_experiment_configemg(dexpa, outfilesys= if (is.null(dexpa$emg$emgconfigoutput)) "" else 
 							paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$emg$emgconfigoutput, ".log", sep=""))
-	}
 	
 	if (pauseafterxmlcreation) {
 		decision <- svDialogs::dlg_message(paste("Press 'OK' when ready to run!", sep= ""), "okcancel")$res
@@ -281,7 +279,7 @@ hl_experiment_runemg <- function(dexpa, runemg = T, outfileemg = "", outfilesys 
 	
 	args = paste(' -cp ',
 			paste('"', dexpa$files$emgconfigtool, '"', sep=""), "de.unik.ines.enavi.ctool.RunEmg", 
-			paste('"', dexpa$dirs$config, "/", dexpa$sim$id, "_", dexpa$sim$nodeid, '"', sep=""),
+			paste('"', dexpa$dirs$config, "/", dexpa$sim$id, if (dexpa$sim$nodeid != "") "_", dexpa$sim$nodeid, '"', sep=""),
 			dexpa$emg$rseed,
 			paste('"', dexpa$dirs$emgrundir, '"', sep=""),
 			paste(dexpa$server$url,":", dexpa$server$port, "/", dexpa$server$api$submit, sep=""),
@@ -482,6 +480,9 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 			name="dexr.hl.experiment.duration")
 
 	if (createdb) {
+		futile.logger::flog.info("Create database %s..." ,
+				dexpa$db$dbname,
+				name = "dexr.hl.experiment")
 		dexR::input_db_createdb(dexpa)
 	}
 	

@@ -11,9 +11,9 @@ input_csv_clientdata <- function(dexpa) {
 	paramConfigs <- dexR::input_csv_configparam(dexpa, columns=NULL)
 	
 	if (dexR::param_clientsdiffer(c(setNames(list(dexpa), dexpa$sim$id)))) {	
-		rows = c(1)
-	} else {
 		rows = 1:nrow(paramConfigs)
+	} else {
+		rows = c(1)
 	}
 	
 	for (i in rows) {
