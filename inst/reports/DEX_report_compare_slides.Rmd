@@ -56,7 +56,7 @@ if (dexR::param_marketproductsdiffer(dexpas)) {
   }
 } else {
   cat("#### Product Information")
-  print(dexR::output_table_param_products(dexpas[[1]]))
+  print(dexR::output_table_param_products(dexpas[1]))
 }
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```

@@ -93,18 +93,26 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 		system2(wait=FALSE, "mvn", args=arguments,
 				stdout=outfilesys, stderr=outfilesys)
 	} else {
-		system2(wait=FALSE, 'java', args=paste('-Dlogback.configuration.file="', dexpa$server$logconfigfile, '"', 
-						' -jar "', dexpa$files$serverjar, '" ',
-						'--spring.profiles.active=', dexpa$server$profile, ' ',
-						'--spring.datasource.url=jdbc:postgresql://', dexpa$db$host,':', dexpa$db$port, '/', dexpa$db$dbname, ' ',
-						'--server.port=', dexpa$server$port, ' ',
-						'--de.unik.enavi.market.testing.load=FALSE ',
-						'--de.unik.enavi.market.time.factor=', dexpa$sim$timefactor, ' ',
-						'--de.unik.enavi.market.time.basetime=', format(basetime, scientific = FALSE), ' ',
-						if (dexpa$sim$setinitialbasetime) {paste(
-						'--Dde.unik.enavi.market.time.basetime.initial=', format(initialbasetime, scientific = FALSE), ' ',sep='')},
-						'--de.unik.enavi.market.time.matchbasetime=', dexpa$server$matchbasetime, ' ',
-						'--de.unik.enavi.market.time.offset=', format(offset, scientific = FALSE), sep=''),
+		arguments = paste(
+				if (!is.null(dexpa$server$cp)) paste('-cp "', dexpa$server$cp, '" ', sep=""), 
+				'-Dlogback.configuration.file="', dexpa$server$logconfigfile, '"', 
+				' -jar "', dexpa$files$serverjar, '" ',
+				'--spring.profiles.active=', dexpa$server$profile, ' ',
+				'--spring.datasource.url=jdbc:postgresql://', dexpa$db$host,':', dexpa$db$port, '/', dexpa$db$dbname, ' ',
+				'--server.port=', dexpa$server$port, ' ',
+				'--de.unik.enavi.market.testing.load=FALSE ',
+				'--de.unik.enavi.market.time.factor=', dexpa$sim$timefactor, ' ',
+				'--de.unik.enavi.market.time.basetime=', format(basetime, scientific = FALSE), ' ',
+				if (dexpa$sim$setinitialbasetime) {paste(
+							'--Dde.unik.enavi.market.time.basetime.initial=', format(initialbasetime, scientific = FALSE), ' ',sep='')},
+				'--de.unik.enavi.market.time.matchbasetime=', dexpa$server$matchbasetime, ' ',
+				'--de.unik.enavi.market.time.offset=', format(offset, scientific = FALSE), sep='')
+		
+		futile.logger::flog.debug("System2 command is %s.",
+				paste("java", arguments),
+				name = "dexr.hl.experiment")
+		
+		system2(wait=FALSE, 'java', args=arguments,
 				stdout=outfilesys, stderr=outfilesys)
 	}
 	control = 0
@@ -160,7 +168,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 				paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""),
 				name = "dexr.hl.experiment.runemg")
 	}
-	
+
 	iddirpart <- if(length(dexpa$sim$nodeids) > 1) paste(dexpa$sim$id, "_", dexpa$sim$nodeid, sep="") else dexpa$sim$id
 	clientprefix <- if(length(dexpa$sim$nodeids) > 1) paste("n", dexpa$sim$nodeid, "_", sep="") else ""
 			

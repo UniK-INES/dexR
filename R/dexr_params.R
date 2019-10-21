@@ -182,6 +182,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$server$username	<- "admin"
 	defdexpa$server$password	<- "multimodalES"
 	defdexpa$server$profile		<- "requests"
+	defdexpa$server$cp        <- "./resources"
 	defdexpa$server$usemvn		<- TRUE
 	defdexpa$server$controlinterval <- 2
 	defdexpa$server$controls		<- 30
