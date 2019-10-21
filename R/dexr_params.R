@@ -220,8 +220,9 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	### Raspberry Pi Cluster Settings #############################################
 	defdexpa$raspic$user <- "outsider"
 	defdexpa$raspic$server <- "192.168.1.111"
-	defdexpa$raspic$serverconfigpath <- "/pxe/meta/simulation/"
-	defdexpa$raspic$runemgcommand <- "/pxe/meta/sim_to_nodes"
+	# defdexpa$raspic$serverconfigpath <- "/pxe/meta/simulation/" obsolete
+	defdexpa$raspic$distributecommand <- "/pxe/meta/sim_to_nodes"
+	defdexpa$raspic$runemgcommand <- "/pxe/meta/run_emg"
 	
 	### OpSim Settings ############################################################
 	defdexpa$opsim = list()
