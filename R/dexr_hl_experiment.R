@@ -59,9 +59,9 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 	
 	initialbasetime = basetime + (firstDelivery - (basetime + dexpa$sim$timefactor * dexpa$emg$emgstartuptime))/2
 	
-	paramConfigs = input_csv_configparam(dexpa)
-	if (nrow(paramConfigs) > 0 && !is.na(paramConfigs["dexprofile"])) {
-		dexpa$server$profile <- paramConfigs["dexprofile"]
+	paramConfigs = dexR::input_csv_configparam(dexpa)
+	if (nrow(paramConfigs) > 0 && any(!is.na(paramConfigs["dexprofile"]))) {
+		dexpa$server$profile <- paramConfigs[1, "dexprofile"]
 	}
 	
 	futile.logger::flog.debug("Start DEX market backend with profile %s. Initial base time is %s.",
