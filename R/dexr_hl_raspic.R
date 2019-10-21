@@ -43,19 +43,38 @@ hl_raspic <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))*100
 #' @author Christoph Hanauer
 #' @export
 hl_raspic_transferemgconfig <- function(dexpa) {
+	
+	# probably obsolete: dexpa$raspic$serverconfigpath since we are using a temp dir
+	
 	futile.logger::flog.info("Transferring EMG config folder to Raspberry Pi cluster at %s...", dexpa$raspic$server,
 			name="dexr.hl.experiment.raspic")
 	session <- ssh::ssh_connect(paste(dexpa$raspic$user, dexpa$raspic$server, sep="@"))
 	
-	iddirpart <- if(!is.na(dexpa$sim$nodesetid)) paste(dexpa$sim$id, "_", dexpa$sim$nodesetid, sep="") else dexpa$sim$id
+	# Create character vector
+	output <- textConnection("sim_directory", "w")
 	
-	out <- ssh::ssh_exec_wait(session, command = paste('mkdir ',  dexpa$raspic$serverconfigpath, "/", iddirpart, sep =""))
+	# Unique simulation id
+	iddirpart <- if(!is.na(dexpa$sim$nodesetid)) paste(dexpa$sim$id, "_", dexpa$sim$nodesetid, sep="") else dexpa$sim$id
+		
+	# Tell the server module we need a temporary directory for sim iddirpart
+	out <- ssh::ssh_exec_wait(session, command = paste('/pxe/meta/sim_prepare_dir', ' "', iddirpart, '"', sep=""), std_out = output)
+	
 	path <- paste(dexpa$dirs$config, iddirpart, sep="/")
 	files <- dir(path)
+	
 	for (f in files) {
-		out <- ssh::scp_upload(session, paste(path, f, sep="/"), paste(dexpa$raspic$serverconfigpath, iddirpart, sep="/"), verbose = TRUE)
+		# tail(sim..) holds the temp directory as last element
+		out <- ssh::scp_upload(session, paste(path, f, sep="/"), tail(sim_directory, n=1), verbose = TRUE)
 		futile.logger::flog.debug(out, name="dexr.hl.experiment.raspic")
 	}
+	# At this point we have a temporary directory for the simulation and all files are uploaded
+	
+	# Copying the simulation to our desired nodes ToDo
+	noderange = ""
+	
+	# We distribute the simulation to the nodes
+	out <- ssh::ssh_exec_wait(session, command = paste(dexpa$raspic$distributecommand, ' "', tail(sim_directory, n=1), '"', ' "', noderange, '"', sep=""))
+	
 	return(session)
 }
 #' Run EMGs on raspberry Pi cluster
@@ -71,7 +90,8 @@ hl_raspic_runemg <- function(dexpa, session) {
 			name="dexr.hl.experiment.raspic")
 	iddirpart <- if(!is.na(dexpa$sim$nodesetid)) paste(dexpa$sim$id, "_", dexpa$sim$nodesetid, sep="") else dexpa$sim$id
 	noderange = ""
-	out <- ssh::ssh_exec_wait(session, command = paste(dexpa$raspic$runemgcommand, '"', iddirpart, '"', '"', noderange, '"', sep=""))
+	# out <- ssh::ssh_exec_wait(session, command = paste(dexpa$raspic$runemgcommand, '"', iddirpart, '"', '"', noderange, '"', sep=""))
+	out <- ssh::ssh_exec_wait(session, command = paste(dexpa$raspic$runemgcommand, ' "', iddirpart, '"', ' "', noderange, '"', sep=""))
 	futile.logger::flog.debug(out, name="dexr.hl.experiment.raspic")
 }
 #' Close SSH session to raspberry Pi cluster
