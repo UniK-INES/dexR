@@ -26,7 +26,8 @@ output_figure_energy_requested_byStatusByStartT <- function(dexpa, data, type="r
 	
 	output_figure_bars(dexpa, data, y_column = "Energy", title = "Requested energy by status and delivery start time",
 			fill_column = NULL, fill_legendtitle = NULL, fill_legenditemnames = NULL,
-			facet_ncol = 1, filename = "dex_energy_requested_byStatusByCT",
+			facet_ncol = 1, filename = paste("dex_energy_requested_byStatusByCT", 
+					shbasic::shbasic_condenseRunids(data[, "id"]), sep="_"),
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
 					ggplot2::ylab("Requested energy (kWh)"),
@@ -53,7 +54,8 @@ output_figure_energy_requested_sumByStartT <- function(dexpa, data) {
 	
 	output_figure_bars(dexpa, data, y_column = "Energy", title = "Requested energy by delivery start time",
 			fill_column = NULL, fill_legendtitle = NULL, fill_legenditemnames = NULL,
-			facet_ncol = 1, filename = "dex_energy_requested_sumByCT",
+			facet_ncol = 1, filename = paste("dex_energy_requested_sumByCT", 
+					shbasic::shbasic_condenseRunids(data[, "id"]), sep="_"),
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
 					ggplot2::ylab("Requested energy (kWh)")
@@ -115,7 +117,8 @@ output_figure_energy_requested_sumByLoadGenByStartT <- function(dexpa, data) {
 	output_figure_lines(dexpa, data, y_column = "energy", title = "Requested energy of requests by generation/load and delivery start time",
 			colour_legendtitle = "Run ID",
 			linetype_column = "Type", linetype_legendtitle = "Type",
-			facet_ncol = 1, filename = "dex_energy_requested_comp_sumGenLoadByCTlines",
+			facet_ncol = 1, filename = paste("dex_energy_requested_comp_sumGenLoadByCTlines", 
+					shbasic::shbasic_condenseRunids(data[, "id"]), sep="_"),
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
 					ggplot2::ylab("Requested energy (kWh)"),
@@ -147,7 +150,8 @@ output_figure_energy_requested_comp_byStatusByStartT <- function(dexpa, data, ty
 	data$status <- dexpa$naming$statuses[match(data$status, names(dexpa$naming$statuses))]
 	output_figure_bars(dexpa, data, y_column = "Energy", title = "Requested energy of requests by status and delivery start time",
 			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
-			facet_column = "status", facet_ncol = 1, filename = "dex_energy_requested_comp_byStatusByCT",
+			facet_column = "status", facet_ncol = 1, filename = paste("dex_energy_requested_comp_byStatusByCT", 
+					shbasic::shbasic_condenseRunids(data[, "id"]), sep="_"),
 			alpha=1.0, ggplotaddons = list(
 					if (skiplegend) ggplot2::theme(legend.position="none") else ggplot2::theme(
 										legend.position = "bottom"
@@ -176,7 +180,8 @@ output_figure_energy_requested_comp_sumByStartT <- function(dexpa, data) {
 			})
 	output_figure_bars(dexpa, data, y_column = "Energy", title = "Requested energy of requests by delivery start time",
 			fill_column = "id", fill_legendtitle = "Run ID", fill_legenditemnames = NULL,
-			facet_ncol = 1, filename = "dex_energy_requested_comp_sumByCT",
+			facet_ncol = 1, filename = paste("dex_energy_requested_comp_sumByCT", 
+					shbasic::shbasic_condenseRunids(data[, "id"]), sep="_"),
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
 					ggplot2::ylab("Requested energy (kWh)"),
@@ -204,6 +209,7 @@ output_figure_energy_requested_comp_sumByLoadGenByStartT <- function(dexpa, data
 	
 	data <- plyr::ddply(data, c("id"), function(df) {
 		# df <- data[data$id == data[1,"id"],]
+		# df <- data[data$id == data[1,"id"] & data$username == "n5_enavi02",]
 		# identify shortest delivery period:
 		shortestDelivery <- min(df$end_time - df$start_time)
 		minStartTime 	 <- min(df$start_time)
@@ -222,11 +228,11 @@ output_figure_energy_requested_comp_sumByLoadGenByStartT <- function(dexpa, data
 			if (df[r, "energy_requested"] > 0) {
 				result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
 					"Load"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-							"Load"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
+							"Load"] + df[r, "energy_accepted"]
 			} else {
 				result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
 						"Gen"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-								"Gen"] + df[r, if(df$status==2) "energy_accepted" else "energy_requested"]
+								"Gen"] + df[r, "energy_accepted"]
 			}
 		}
 		result$start_time <- lubridate::int_start(result$start_time)
@@ -243,7 +249,8 @@ output_figure_energy_requested_comp_sumByLoadGenByStartT <- function(dexpa, data
 	output_figure_lines(dexpa, data, y_column = "Energy", title = "Requested energy of requests by generation/load and delivery start time",
 			colour_column = "id", colour_legendtitle = "Run ID",
 			linetype_column = "Type", linetype_legendtitle = "Type",
-			facet_ncol = 1, filename = "dex_energy_requested_comp_sumGenLoadByCTlines",
+			facet_ncol = 1, filename = paste("dex_energy_requested_comp_sumGenLoadByCTlines", 
+					shbasic::shbasic_condenseRunids(data[, "id"]), sep="_"),
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
 					ggplot2::ylab("Requested energy (kWh)"),
@@ -272,7 +279,8 @@ output_figure_energy_requested_comp_sumGenByGenTypeStartT <- function(dexpa, dat
 	output_figure_lines(dexpa, data, y_column = "energy", title = "Requested generation energy per generation type and delivery start time",
 			colour_column = "id", colour_legendtitle = "Run ID",
 			facet_column = "Type",
-			facet_ncol = 1, filename = "dex_energy_requested_comp_sumGenByGenTypeCTlines",
+			facet_ncol = 1, filename = paste("dex_energy_requested_comp_sumGenByGenTypeCTlines", 
+					shbasic::shbasic_condenseRunids(data[, "id"]), sep="_"),
 			alpha=1.0, ggplotaddons = list(
 					if (skiplegend) ggplot2::theme(legend.position="none") else ggplot2::theme(
 										legend.position = "bottom"

@@ -138,6 +138,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$fig$show$requests$product_submission <- T
 	defdexpa$fig$show$requests$product_delivery <- T
 	defdexpa$fig$show$requests$status_submission <- T
+	defdexpa$fig$show$requests$clients_delivery <- T
 	
 	### Report Settings ###########################################################
 	defdexpa$analyse <- list()
@@ -182,7 +183,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$server$username	<- "admin"
 	defdexpa$server$password	<- "multimodalES"
 	defdexpa$server$profile		<- "requests"
-	defdexpa$server$cp        <- "./resources"
+	defdexpa$server$param     <- NULL
+	defdexpa$server$cp        <- NULL
 	defdexpa$server$usemvn		<- TRUE
 	defdexpa$server$controlinterval <- 2
 	defdexpa$server$controls		<- 30

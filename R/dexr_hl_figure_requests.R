@@ -275,7 +275,7 @@ hl_figure_requests_numClients_comp_byStatusByStartT <- function(dexpas, ...) {
 	for (dp in dexpas) {
 		# dp <- dexpas[[1]]
 		# dp <- dexpas[[2]]
-		d <- input_db_requests(dp)
+		d <- dexR::input_db_requests(dp)
 		if (nrow(d) == 0) {
 			# R.oo::throw.default("No requests in DB for ID ", dp$id, "!")
 			futile.logger::flog.warn("No requests retrieved from PostgreSQL database %s for ID %s!",
@@ -283,7 +283,7 @@ hl_figure_requests_numClients_comp_byStatusByStartT <- function(dexpas, ...) {
 					dp$id,
 					name = "dexr.hl.requests")
 		} else {
-			d$id <- input_db_runID(dp)		
+			d$id <- dexR::input_db_runID(dp)		
 			data <- rbind(data, d)
 		}
 	}

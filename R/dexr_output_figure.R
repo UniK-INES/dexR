@@ -23,7 +23,7 @@
 #' @export
 output_figure_bars <- function(dexpa, data, y_column, title = NULL,
 		fill_column = NULL, fill_legendtitle = fill_column, fill_legenditemnames = NULL,
-		facet_column = NULL, facet_ncol = 4, filename = paste(title, shbasic::shbasic_condenseRunids(data[, "Runid"]), sep="_"),
+		facet_column = NULL, facet_ncol = 4, filename = paste(title, shbasic::shbasic_condenseRunids(data[, "id"]), sep="_"),
 		alpha=1.0, ggplotaddons = NULL, x_column = "ID", 
 		group_column = NULL, group_colors = NULL, position = "dodge", returnplot = FALSE) {
 	

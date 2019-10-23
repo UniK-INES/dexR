@@ -52,6 +52,7 @@ if (dexR::param_marketproductsdiffer(dexpas)) {
   for (dp in dexpas) {
   	cat('\n')
   	cat("#### Product Information (", input_db_runID(dp), ")", sep = "")
+  	cat('\n')
   	print(dexR::output_table_param_products(dp))
   }
 } else {
@@ -78,7 +79,7 @@ if (dexR::param_marketinfodiffer(dexpas)) {
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
 
-### Client Information
+### Client Information {.allowframebreaks}
 ```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 if (dexR::param_clientsdiffer(dexpas)) {
@@ -87,8 +88,9 @@ if (dexR::param_clientsdiffer(dexpas)) {
     dexR::output_table_param_clients(dp)
   }
 } else {
-  cat("\n### Client Information") 
-  	dexR::output_table_param_clients(dexpas[[1]])
+  cat("\n### Client Information")
+  cat('\n')
+  dexR::output_table_param_clients(dexpas[[1]])
 }
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
@@ -131,6 +133,7 @@ if (dexpa$fig$show$costs$costgini_gen_delivery) {
   invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
   cat('\n')
   cat("### Energy, Costs, and Gini Coefficient for Generation by Delivery\n")
+  cat('\n')
   dexpas[[1]]$fig$height <- 750
   dexR::hl_figure_energycosts_requests_comp_giniByStartT(dexpas, type = "gen", skiplegend=T)
   invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
@@ -192,6 +195,7 @@ if (dexpa$fig$show$energy$residual_status_delivery) {
   invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
   cat('\n')
   cat("### Requested Energy (Residual) by Status and Delivery")
+  cat('\n')
   dexpas[[1]]$fig$height <- 750
   dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas, type="residual", skiplegend=T)
   invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
@@ -225,15 +229,30 @@ if (dexpa$fig$show$requests$product_delivery) {
   invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
   cat('\n')
   cat("### Request Statistics by product and delivery")
+  cat('\n')
   dexpas[[1]]$fig$height <- 750
   dexR::hl_figure_requests_numRequests_comp_byProductByStartT(dexpas, skiplegend=T)
   invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 }
 ```
+
+```{r, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+if (dexpa$fig$show$requests$clients_delivery) {
+  invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
+  cat('\n')
+  cat("### Request Statistics: Number of clients by delivery")
+  cat('\n')
+  dexpas[[1]]$fig$height <- 750
+  dexR::hl_figure_requests_numClients_comp_ByStartT(dexpas, skiplegend=T)
+  invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
+}
+```
+
 ```{r, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
 if (dexpa$fig$show$requests$status_submission || dexpa$fig$show$requests$product_submission) {
   cat('\n')
   cat("## Request Statistics by submission")
+  cat('\n')
 }
 ```
 
@@ -253,6 +272,7 @@ if (dexpa$fig$show$requests$product_submission) {
   invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
   cat('\n')
   cat("### Request Statistics by product and submission")
+  cat('\n')
   dexpas[[1]]$fig$height <- 750
   dexR::hl_figure_requests_numRequests_comp_byProductBySubmT(dexpas, skiplegend=T)
   invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))

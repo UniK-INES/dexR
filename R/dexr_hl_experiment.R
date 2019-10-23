@@ -63,6 +63,9 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 	if (nrow(paramConfigs) > 0 && any(!is.na(paramConfigs["dexprofile"]))) {
 		dexpa$server$profile <- paramConfigs[1, "dexprofile"]
 	}
+	if (nrow(paramConfigs) > 0 && any(!is.na(paramConfigs["dexparam"]))) {
+		dexpa$server$param <- paramConfigs[1, "dexparam"]
+	}
 	
 	futile.logger::flog.debug("Start DEX market backend with profile %s. Initial base time is %s.",
 			dexpa$server$profile,
@@ -84,6 +87,7 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 				"-Dde.unik.enavi.market.time.basetime.initial=", format(initialbasetime, scientific = FALSE), " ",sep="")}, 
 				"-Dde.unik.enavi.market.time.matchbasetime=", dexpa$server$matchbasetime, " ",
 				"-Dde.unik.enavi.market.time.offset=", format(offset, scientific = FALSE), " ",
+				if (!is.null(dexpa$server$param)) dexpa$server$param, " ",
 				'-Dlogback.configuration.file="', dexpa$server$logconfigfile, '"',  sep="")
 		
 		futile.logger::flog.debug("System2 command is %s.",
@@ -106,6 +110,7 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 				if (dexpa$sim$setinitialbasetime) {paste(
 							'--Dde.unik.enavi.market.time.basetime.initial=', format(initialbasetime, scientific = FALSE), ' ',sep='')},
 				'--de.unik.enavi.market.time.matchbasetime=', dexpa$server$matchbasetime, ' ',
+				if (!is.null(dexpa$server$param)) dexpa$server$param, " ",
 				'--de.unik.enavi.market.time.offset=', format(offset, scientific = FALSE), sep='')
 		
 		futile.logger::flog.debug("System2 command is %s.",
@@ -308,7 +313,6 @@ hl_experiment_runemg <- function(dexpa, runemg = T, outfileemg = "", outfilesys 
 		#					paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""), dexpa$dirs$emgrundir),
 		#			std_out=outfilesys, std_err=outfilesys)
 		
-		hl_experiment_awaitemgstartup(dexpa)
 	} else {
 		decision <- svDialogs::dlg_message("Press 'OK' when EMG is ready!", "okcancel")$res
 		if (decision == "cancel") {
@@ -555,6 +559,7 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 			}
 		}
 	}
+	hl_experiment_awaitemgstartup(dexpa)
 	
 	message = server_start(dexpa)
 	futile.logger::flog.info(message, name = "dexr.hl.experiment")	
