@@ -278,10 +278,10 @@ param_marketinfodiffer <- function(dexpas) {
 #' @author Sascha Holzhauer
 #' @export
 param_marketproductsdiffer <- function(dexpas) {
-	tocomp = ""
+	tocomp = NULL
 	for (dp in dexpas) {
 		paramConfigs <- dexR::input_csv_configparam(dp)
-		if (tocomp == "") {
+		if (is.null(tocomp)) {
 			tocomp = paramConfigs["products"]
 		} else {
 			if (length(unique(c(unlist(tocomp), unlist(paramConfigs["products"]))))> 1) {

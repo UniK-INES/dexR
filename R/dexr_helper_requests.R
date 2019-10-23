@@ -128,3 +128,43 @@ clients_num_identify_type <- function(dexpa, data) {
 			value.name = "Number")
 	return(data)
 }
+#' Filter requests according to status and products
+#' @param dexpa 
+#' @param d 
+#' @return 
+#' 
+#' @author Sascha Holzhauer
+requests_filter_data <- function(dexpa, d) {
+	d$id <- dexR::input_db_runID(dexpa)	
+	products <- dexR::input_db_param_products(dexpa)
+	if (nrow(products == 1)) {
+		openings = lubridate::as.duration(paste(products[, "opening_time"],"in",sep=""))
+		closings = lubridate::as.duration(paste(products[, "closing_time"],"in",sep=""))
+		auction =  lubridate::as.duration(paste(products[, "auction_interval"],"in",sep=""))
+		
+		if(any(as.duration(openings - closings) / auction == 1)) {
+			# Single product, single auction
+			# filter requests (ACCEPTED, PARTLY_ACCEPTED, DECLINED
+			d <- d[d$status %in% c(1,2,3),]
+			d[, "energy_accepted"] = d[, "energy_requested"]
+		} else {
+			# Single product, multiple auctions
+			# filter ACCEPTED, PARTYL_ACCEPTED (energy_accepted, last auction: energy_requested, DECLINED (last auction)
+			d <- d[d$status %in% c(1,2,3),]
+			consideredrows = (d$status %in% c(2,3) & d$submission_time > d$start_time - 
+						# lubridate obviously ignores negative durations
+						(lubridate::as.duration(paste(products[match(d$product_id,products$description), 
+													"closing_time"],"in",sep="")) + 
+							lubridate::as.duration(paste(products[match(d$product_id,products$description), 
+													"auction_interval"],"in",sep=""))))
+			d[consideredrows, "energy_accepted"] = d[consideredrows, "energy_requested"]
+		}
+	} else {
+		# Multiple products
+		futile.logger::flog.warn("Not yet fully implemented!")
+		# filter requests (ACCEPTED, PARTLY_ACCEPTED, DECLINED
+		d <- d[d$status %in% c(1,2,3),]
+		d[, "energy_accepted"] = d[, "energy_requested"]
+	}
+	d
+}
