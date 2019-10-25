@@ -142,7 +142,7 @@ requests_filter_data <- function(dexpa, d) {
 		closings = lubridate::as.duration(paste(products[, "closing_time"],"in",sep=""))
 		auction =  lubridate::as.duration(paste(products[, "auction_interval"],"in",sep=""))
 		
-		if(any(as.duration(openings - closings) / auction == 1)) {
+		if(any(lubridate::as.duration(openings - closings) / auction == 1)) {
 			# Single product, single auction
 			# filter requests (ACCEPTED, PARTLY_ACCEPTED, DECLINED
 			d <- d[d$status %in% c(1,2,3),]
