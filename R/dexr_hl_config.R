@@ -134,9 +134,9 @@ hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dex
 			clients$name <- adjust_client_id(dexpa, clients$name)
 			clients$name_emg <- adjust_client_id(dexpa, clients$name_emg)
 		
-			clients$user_id = currentID:(currentID + length(clients$user_id))
+			clients$user_id = currentID:(currentID + length(clients$user_id) - 1)
 			clients$id <- clients$user_id
-			currentID = currentID + 1
+			currentID = currentID + length(clients$user_id)
 		
 			if(!("location" %in% colnames(clients))) {
 				clients$location = "Tranformer01"
