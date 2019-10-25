@@ -53,11 +53,11 @@ if (dexR::param_marketproductsdiffer(dexpas)) {
   	cat('\n')
   	cat("#### Product Information (", input_db_runID(dp), ")", sep = "")
   	cat('\n')
-  	print(dexR::output_table_param_products(dp))
+  	print(dexR::output_table_param_products(list(dp), skipcolumns = c("id")))
   }
 } else {
   cat("#### Product Information")
-  print(dexR::output_table_param_products(dexpas[1]))
+  print(dexR::output_table_param_products(dexpas[1]), skipcolumns = c("id"))
 }
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```

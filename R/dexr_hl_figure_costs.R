@@ -41,7 +41,7 @@ hl_figure_energycosts_requests_comp_giniByStartT <- function(dexpas, type = "loa
 		# dp = dexpas[[1]]
 		if (type == "gen") {
 			d <- dexR::input_db_requests(dp, additionalwhere = "e.status IN (1,2) AND e.energy_accepted < 0")
-			d$energy_accepted <- data$energy_accepted * (-1)
+			d$energy_accepted <- d$energy_accepted * (-1)
 		} else if (type == "load") {
 			d <- dexR::input_db_requests(dp, additionalwhere = "e.status IN (1,2) AND e.energy_accepted > 0")
 		} else {

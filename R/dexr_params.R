@@ -210,6 +210,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	
 	defdexpa$emg$rseed	 	<- 1
 	
+	defdexpa$emg$minuserid	 	<- 5
+	
 	defdexpa$emg$copyrundir	 	<- FALSE
 
 	defdexpa$emg$emgconfigoutput	<- "emgconfig"
