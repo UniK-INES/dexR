@@ -134,7 +134,7 @@ hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dex
 			clients$name <- adjust_client_id(dexpa, clients$name)
 			clients$name_emg <- adjust_client_id(dexpa, clients$name_emg)
 		
-			clients$user_id = currentID
+			clients$user_id = currentID:(currentID + length(clients$user_id))
 			clients$id <- clients$user_id
 			currentID = currentID + 1
 		
