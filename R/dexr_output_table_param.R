@@ -67,20 +67,22 @@ output_table_param_marketinfo <- function(dexpa, format="markdown", caption="Mar
 output_table_param_clients <- function(dexpa, format="markdown", caption="Client information", linespertable = 18,
 		file=NULL, filextension="tex", prefix="") {
 	# format="csv"
-	data <- input_csv_clientdata(dexpa)
+	data <- dexR::input_csv_clientdata(dexpa)
 	
 	data$annualConsumption = data$annualConsumption / 10^9
 	data$ratedEnergy_upperLimit = data$ratedEnergy_upperLimit / 10^6
 	data$profileType = substr(data$profileType,1,2)
-	
+	data$name_emg <- substr(data$name_emg, stringi::stri_length(data$name_emg[1])-2, stringi::stri_length(data$name_emg[1])-1)
 	columns = c("name_emg"				= "Name",
-				"price_fluctuation"		= "P fluc",
-				"price_average"			= "P avg",
+				"price_fluctuation"		= "PfL",
+				"price_average"			= "PaL",
 				"annualConsumption"		= "Cons (GJ)",
 				"profileType"			= "Prof",
 				"rotorArea"				= "RotorA",
-				"panelArea"				= "PanelA",
-				"ratedEnergy_upperLimit"= "Storage"
+				"panelArea"				= "PVA",
+				"ratedEnergy_upperLimit"= "Storage",
+				"priceOfferFluctuationGen" ="PfG", 
+				"averagePriceOfferGen"  ="PaG"
 		)
 	if (format=="csv") {
 		shbasic::sh.ensurePath(dexpa$dirs$output$tables)
@@ -89,24 +91,29 @@ output_table_param_clients <- function(dexpa, format="markdown", caption="Client
 		write.csv(data, file=paste(dexpa$dirs$output$tables, "/products_",  
 						dexpa$sim$id, ".csv", sep=""), row.names=F)
 	} else {
-		for (i in seq(1,nrow(data), linespertable)) {
-			# i=19
-			optionKnitKableNa = getOption("knitr.kable.NA")
-			options(knitr.kable.NA = '')
-			tab <- knitr::kable(data[i:min(nrow(data),(i+linespertable-1)),], format=format, 
-					caption=caption, row.names=F, digits = 3,
-					col.names = columns)
-			options(knitr.kable.NA = optionKnitKableNa)
-			
-			if (!is.null(file)) {
-				if (prefix != "") write(prefix, file = paste(file, "_", i, ".", filextension,sep=""))
-				write(tab, file = paste(file, "_", i, ".", filextension,sep=""), append=prefix!="")	
-			} else {
-				print(tab)
+		data$numnodes <- as.numeric(sapply(sapply(data$nodes, strsplit,";"), function(x) x[[1]]))
+		data <- data[order(data$numnodes),]
+		plyr::ddply(data, "numnodes", function(d) {
+			cat(paste("\n####", paste("Nodes ", unique(d$nodes), collapse="/")))	
+			for (i in seq(1,nrow(d), linespertable)) {
+				# i=19
+				optionKnitKableNa = getOption("knitr.kable.NA")
+				options(knitr.kable.NA = '')
+				tab <- knitr::kable(d[i:min(nrow(d),(i+linespertable-1)), names(columns)], format=format, 
+						caption=caption, row.names=F, digits = 3,
+						col.names = columns)
+				options(knitr.kable.NA = optionKnitKableNa)
+				
+				if (!is.null(file)) {
+					if (prefix != "") write(prefix, file = paste(file, "_", i, ".", filextension,sep=""))
+					write(tab, file = paste(file, "_", i, ".", filextension,sep=""), append=prefix!="")	
+				} else {
+					print(tab)
+				}
+				if (i + linespertable <= nrow(d)) {
+					cat("\n***")
+				}
 			}
-			if (i + linespertable <= nrow(data)) {
-				cat("\n***")
-			}
-		}
+		})
 	}
 }

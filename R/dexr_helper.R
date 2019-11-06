@@ -269,6 +269,7 @@ param_marketinfodiffer <- function(dexpas) {
 			input_csv_runinfos(dp)[,c("TF", "Basetime", "Offset", "Duration")],
 			input_db_param_marketinfo(dp)[,-c(1)]))
 	}
+	data[,"Offset"] <- lubridate::round_date(as.POSIXct(as.numeric(data[,"Offset"])/1000, origin="1970-01-01"), unit="minute")
 	return(nrow(unique(data))>1)
 }
 #' Check differences in market product configuration
@@ -278,10 +279,10 @@ param_marketinfodiffer <- function(dexpas) {
 #' @author Sascha Holzhauer
 #' @export
 param_marketproductsdiffer <- function(dexpas) {
-	tocomp = ""
+	tocomp = NULL
 	for (dp in dexpas) {
 		paramConfigs <- dexR::input_csv_configparam(dp)
-		if (tocomp == "") {
+		if (is.null(tocomp)) {
 			tocomp = paramConfigs["products"]
 		} else {
 			if (length(unique(c(unlist(tocomp), unlist(paramConfigs["products"]))))> 1) {
@@ -291,13 +292,13 @@ param_marketproductsdiffer <- function(dexpas) {
 	}
 	return(FALSE)
 }
-#' Check differences in client configuration
-#' @param dexpas 
-#' @return true if client configurations differ between passed dexpas
+#' Check differences in client configuration (compare rows of configuration belonging to same ID)
+#' @param dexpa
+#' @return true if client configurations differ between rows of passed dexpa
 #' 
 #' @author Sascha Holzhauer
 #' @export
-param_clientsdiffer <- function(dexpas) {	
+param_clientsdiffer <- function(dexpa) {	
 	tocompclients = ""
 	tocomploads = ""
 	tocomploadprofiles = ""
@@ -307,32 +308,45 @@ param_clientsdiffer <- function(dexpas) {
 	tocompstorages = ""
 	tocomprequestconfigs = ""
 	
-	for (dp in dexpas) {
-		# dp = dexpas[[1]]
-		# dp = dexpas[[3]]
-		paramConfigs <- dexR::input_csv_configparam(dp)
-		for (i in 1:nrow(paramConfigs)) {
-			if (tocompclients == "") {
-				tocompclients = paramConfigs[i, "clients"]
-				tocomploads = paramConfigs[i, "loads"]
-				tocomploadprofiles = paramConfigs[i, "loadProfiles"]
-				tocompgenerations = paramConfigs[i, "generations"]
-				tocomppvplant = paramConfigs[i, "pvplants"]
-				tocompwindplants = paramConfigs[i, "windplants"]
-				tocompstorages = paramConfigs[i, "devicesStorage"]
-				tocomprequestconfigs = paramConfigs[i, "requestConfig"]
-			} else {
-				if (tocompclients != paramConfigs[i, "clients"] || 
-					tocomploads != paramConfigs[i, "loads"] ||
-					tocomploadprofiles != paramConfigs[i, "loadProfiles"] ||
-					tocompgenerations != paramConfigs[i, "generations"] ||
-					tocomppvplant != paramConfigs[i, "pvplants"] ||
-					tocompwindplants != paramConfigs[i, "windplants"] ||
-					tocompstorages != paramConfigs[i, "devicesStorage"] ||
-					tocomprequestconfigs != paramConfigs[i, "requestConfig"]) {
-					return(TRUE)
-				}
-			} 
+	paramConfigs <- dexR::input_csv_configparam(dexpa)
+	for (i in 1:nrow(paramConfigs)) {
+		if (tocompclients == "") {
+			tocompclients = paramConfigs[i, "clients"]
+			tocomploads = paramConfigs[i, "loads"]
+			tocomploadprofiles = paramConfigs[i, "loadProfiles"]
+			tocompgenerations = paramConfigs[i, "generations"]
+			tocomppvplant = paramConfigs[i, "pvplants"]
+			tocompwindplants = paramConfigs[i, "windplants"]
+			tocompstorages = paramConfigs[i, "devicesStorage"]
+			tocomprequestconfigs = paramConfigs[i, "requestConfig"]
+		} else {
+			if (tocompclients != paramConfigs[i, "clients"] || 
+				tocomploads != paramConfigs[i, "loads"] ||
+				tocomploadprofiles != paramConfigs[i, "loadProfiles"] ||
+				tocompgenerations != paramConfigs[i, "generations"] ||
+				tocomppvplant != paramConfigs[i, "pvplants"] ||
+				tocompwindplants != paramConfigs[i, "windplants"] ||
+				tocompstorages != paramConfigs[i, "devicesStorage"] ||
+				tocomprequestconfigs != paramConfigs[i, "requestConfig"]) {
+				return(TRUE)
+			}
+		} 
+	}
+	return(FALSE)
+}
+#' Check differences in client configuration (compare runs)
+#' @param dexpas
+#' @return true if client configurations differ between passed dexpas
+#' 
+#' @author Sascha Holzhauer
+#' @export
+param_clientsdiffer_runs <- function(dexpas) {
+	clientdata <- input_csv_clientdata(dexpas[[1]])
+	for (i in 2:length(dexpas)) {
+		tocompare <- input_csv_clientdata(dexpas[[i]])
+		m <- sapply(list(df1 = clientdata, df2 = tocompare), sapply, class)
+		if (any(m[, "df1"] != m[, "df2"]) || !dplyr::all_equal(clientdata, tocompare)) {
+			return(TRUE)
 		}
 	}
 	return(FALSE)

@@ -57,7 +57,7 @@ hl_raspic_transferemgconfig <- function(dexpa) {
 	iddirpart <- if(!is.na(dexpa$sim$nodesetid)) paste(dexpa$sim$id, "_", dexpa$sim$nodesetid, sep="") else dexpa$sim$id
 		
 	# Tell the server module we need a temporary directory for sim iddirpart
-	out <- ssh::ssh_exec_wait(session, command = paste('/pxe/meta/sim_prepare_dir', ' "', iddirpart, '"', sep=""), std_out = output)
+	out <- ssh::ssh_exec_wait(session, command = paste(dexpa$raspic$preparedircommand, ' "', iddirpart, '"', sep=""), std_out = output)
 	
 	path <- paste(dexpa$dirs$config, iddirpart, sep="/")
 	files <- dir(path)
