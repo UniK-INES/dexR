@@ -13,7 +13,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	if (!exists("defdexpa")) defdexpa <- list()
 	defdexpa$sim <- list()
 
-	defdexpa$sim$version			<- "version"
+	defdexpa$sim$version <- "version"
 	defdexpa$sim$id				<- c("NN")
 	defdexpa$sim$runnumber				<- 1
 	defdexpa$sim$nodesetid <- NA
@@ -129,6 +129,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$fig$show$costs$summed_delivery <- T
 	defdexpa$fig$show$costs$costgini_gen_delivery <- T
 	defdexpa$fig$show$costs$costgini_load_delivery <- T
+	defdexpa$fig$show$prices$avg_delivery <- T
 	
 	defdexpa$fig$show$energy <- list()
 	defdexpa$fig$show$energy$summed_delivery <- T

@@ -276,7 +276,7 @@ output_figure_energy_requested_comp_sumGenByGenTypeStartT <- function(dexpa, dat
 	
 	data <- requests_energy_identify_type(dexpa, data)
 	
-	output_figure_lines(dexpa, data, y_column = "energy", title = "Requested generation energy per generation type and delivery start time",
+	output_figure_lines(dexpa, data, y_column = "energy", title = "Requested energy per type and delivery start time",
 			colour_column = "id", colour_legendtitle = "Run ID",
 			facet_column = "Type",
 			facet_ncol = 1, filename = paste("dex_energy_requested_comp_sumGenByGenTypeCTlines", 
@@ -286,7 +286,7 @@ output_figure_energy_requested_comp_sumGenByGenTypeStartT <- function(dexpa, dat
 										legend.position = "bottom"
 								),
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Requested energy (kWh)"),
+					ggplot2::ylab("Energy (kWh)"),
 					ggplot2::scale_x_datetime(),
 					ggplot2::guides(colour = ggplot2::guide_legend(ncol=1))
 			),  x_column = "start_time", returnplot = FALSE)

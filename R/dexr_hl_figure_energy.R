@@ -167,7 +167,6 @@ hl_figure_energy_requested_comp_sumLoadGenByStartT <- function(dexpas) {
 #' @export
 hl_figure_energy_requested_comp_sumGenByTypeStartT <- function(dexpas, skiplegend=F) {
 	data = data.frame()
-	products <- input_db_param_products(dexpas[[1]])
 	for (dp in dexpas) {
 		d <- dexR::input_db_requests(dp)
 		if (nrow(d) == 0) {
