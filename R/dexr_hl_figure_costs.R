@@ -41,7 +41,7 @@ hl_figure_energycosts_requests_comp_giniByStartT <- function(dexpas, type = "loa
 		# dp = dexpas[[1]]
 		if (type == "gen") {
 			d <- dexR::input_db_requests(dp, additionalwhere = "e.status IN (1,2) AND e.energy_accepted < 0")
-			data$energy_accepted <- data$energy_accepted * (-1)
+			d$energy_accepted <- d$energy_accepted * (-1)
 		} else if (type == "load") {
 			d <- dexR::input_db_requests(dp, additionalwhere = "e.status IN (1,2) AND e.energy_accepted > 0")
 		} else {
@@ -58,12 +58,13 @@ hl_figure_energycosts_requests_comp_giniByStartT <- function(dexpas, type = "loa
 					name = "dexr.hl.requests")
 		} else {
 			d$id <- input_db_runID(dp)
+			d$rawid <- names(input_db_runID(dp))
 			data <- rbind(data, d)
 		}
 	}
 	if (nrow(data) > 0) {
 		data <- dexpas[[1]]$sim$filter$requests(dexpas[[1]], data)
-		output_figure_energycosts_requested_comp_giniByStartT(dexpas[[1]], data, skiplegend=skiplegend)
+		output_figure_energycosts_requested_comp_giniByStartT(dexpas, data, type = type, skiplegend=skiplegend)
 	}
 }
 #' Retrieves requests data from DB and creates figure of requested energy and associated costs

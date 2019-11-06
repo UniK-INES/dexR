@@ -114,6 +114,7 @@ hl_config_marketProducts2db <- function(dexpa, sourcedir=paste(dexpa$dirs$config
 hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dexpa$sim$id, sep="/"), paramConfigs) {
 	
 	allclients = data.frame()
+	currentID = dexpa$emg$minuserid
 	for (i in 1:nrow(paramConfigs)) {
 		
 		sourcefile = if(!is.na(paramConfigs[i, "clients"])) paramConfigs[i, "clients"] else 
@@ -133,8 +134,9 @@ hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dex
 			clients$name <- adjust_client_id(dexpa, clients$name)
 			clients$name_emg <- adjust_client_id(dexpa, clients$name_emg)
 		
-			clients$user_id = max(clients$user_id) * (dexpa$sim$nodeid - 1) + clients$user_id
+			clients$user_id = currentID:(currentID + length(clients$user_id) - 1)
 			clients$id <- clients$user_id
+			currentID = currentID + length(clients$user_id)
 		
 			if(!("location" %in% colnames(clients))) {
 				clients$location = "Tranformer01"
@@ -142,6 +144,8 @@ hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dex
 			allclients = rbind(allclients, clients)
 		}
 	}
+	
+	
 	
 	con <- input_db_getconnection(dexpa)
 	
@@ -151,6 +155,7 @@ hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dex
 	
 	RPostgreSQL::dbWriteTable(con, dexpa$db$tablenames$clients, 
 			value=allclients[,colnames_clients$column_name], append=T, row.names=F)
+	
 	# encrypt passwords:
 	for (i in 1:nrow(allclients)) {
 		DBI::dbGetQuery(con, paste(

@@ -13,7 +13,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	if (!exists("defdexpa")) defdexpa <- list()
 	defdexpa$sim <- list()
 
-	defdexpa$sim$version			<- "version"
+	defdexpa$sim$version <- "version"
 	defdexpa$sim$id				<- c("NN")
 	defdexpa$sim$runnumber				<- 1
 	defdexpa$sim$nodesetid <- NA
@@ -129,6 +129,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$fig$show$costs$summed_delivery <- T
 	defdexpa$fig$show$costs$costgini_gen_delivery <- T
 	defdexpa$fig$show$costs$costgini_load_delivery <- T
+	defdexpa$fig$show$prices$avg_delivery <- T
 	
 	defdexpa$fig$show$energy <- list()
 	defdexpa$fig$show$energy$summed_delivery <- T
@@ -138,6 +139,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$fig$show$requests$product_submission <- T
 	defdexpa$fig$show$requests$product_delivery <- T
 	defdexpa$fig$show$requests$status_submission <- T
+	defdexpa$fig$show$requests$clients_delivery <- T
 	
 	### Report Settings ###########################################################
 	defdexpa$analyse <- list()
@@ -182,6 +184,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$server$username	<- "admin"
 	defdexpa$server$password	<- "multimodalES"
 	defdexpa$server$profile		<- "requests"
+	defdexpa$server$param     <- NULL
+	defdexpa$server$cp        <- NULL
 	defdexpa$server$usemvn		<- TRUE
 	defdexpa$server$controlinterval <- 2
 	defdexpa$server$controls		<- 30
@@ -207,6 +211,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	
 	defdexpa$emg$rseed	 	<- 1
 	
+	defdexpa$emg$minuserid	 	<- 5
+	
 	defdexpa$emg$copyrundir	 	<- FALSE
 
 	defdexpa$emg$emgconfigoutput	<- "emgconfig"
@@ -220,9 +226,9 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	### Raspberry Pi Cluster Settings #############################################
 	defdexpa$raspic$user <- "outsider"
 	defdexpa$raspic$server <- "192.168.1.111"
-	# defdexpa$raspic$serverconfigpath <- "/pxe/meta/simulation/" obsolete
-	defdexpa$raspic$distributecommand <- "/pxe/meta/sim_to_nodes"
-	defdexpa$raspic$runemgcommand <- "/pxe/meta/run_emg"
+	defdexpa$raspic$serverconfigpath <- "/pxe/meta/simulation/"
+	defdexpa$raspic$runemgcommand <- "/pxe/meta/sim_to_nodes"
+	defdexpa$raspic$preparedircommand <- '/pxe/meta/sim_prepare_dir'
 	
 	### OpSim Settings ############################################################
 	defdexpa$opsim = list()

@@ -29,7 +29,7 @@ output_figure_lines <- function(dexpa = dexpa, data = data, x_column= NULL, y_co
 		colour_column = NULL, colour_legendtitle = colour_column, colour_legenditemnames = NULL,
 		linetype_column = NULL, linetype_legendtitle = linetype_column, linetype_legenditemnames = NULL,
 		facet_column = NULL, facet_ncol = 2, filename = paste(gsub(" ", "_", title), 
-				shbasic::shbasic_condenseRunids(data[, "Runid"]), sep="_"),
+				shbasic::shbasic_condenseRunids(data[, "id"]), sep="_"),
 		alpha = dexpa$fig$alpha, showsd = FALSE, ggplotaddons = NULL, returnplot = FALSE) {
 
 	if (!is.data.frame(data)) {

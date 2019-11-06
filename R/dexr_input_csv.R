@@ -6,19 +6,27 @@
 #' @export
 input_csv_clientdata <- function(dexpa) {
 
+	# TODO cache data for dexpa
+	
 	result <- data.frame()
 	
 	paramConfigs <- dexR::input_csv_configparam(dexpa, columns=NULL)
 	
-	if (dexR::param_clientsdiffer(c(setNames(list(dexpa), dexpa$sim$id)))) {	
+	nodes <- paramConfigs[, "Nodes"]
+	if (dexR::param_clientsdiffer(dexpa)) {	
 		rows = 1:nrow(paramConfigs)
 	} else {
 		rows = c(1)
+		nodes = paste(nodes, collapse=";")
 	}
 	
-	for (i in rows) {
-		clients <- checkandloadcsvfile(dexpa, paramConfigs[i, "clients"])
 	
+	for (i in rows) {
+		
+		clients <- checkandloadcsvfile(dexpa, paramConfigs[i, "clients"])
+		colnames(clients)[colnames(clients) == "name"] <- "name_org"
+		clients$nodes <- nodes[i]
+		
 		loads <- checkandloadcsvfile(dexpa, paramConfigs[i, "loads"])
 		
 		loadProfiles <- checkandloadcsvfile(dexpa, paramConfigs[i, "loadProfiles"])
@@ -38,8 +46,7 @@ input_csv_clientdata <- function(dexpa) {
 		colnames(data)[colnames(data)=="name.y"] <- "nameLoad"
 		data <- merge(data, loadProfiles, by.x="building", by.y="powerSensor", all=T)
 		
-		colnames(generations)[match( 
-							c("name", "averagePrice", "priceFluctuation", "averagePriceOffer", "priceOfferFluctuation"), 
+		colnames(generations)[match(c("name", "averagePrice", "priceFluctuation", "averagePriceOffer", "priceOfferFluctuation"), 
 							colnames(generations))] <- c("nameGen", "averagePriceGen","priceFluctuationGen",
 							"averagePriceOfferGen", "priceOfferFluctuationGen")
 		# TODO storage
@@ -68,7 +75,8 @@ input_csv_clientdata <- function(dexpa) {
 		colnames(data)[colnames(data)=="name"] <- "nameStorage"
 		colnames(data)[colnames(data)=="reading"] <- "readingStorage"
 		
-		data <- data[, c("name_emg", "price_fluctuation", "price_average", "annualConsumption", 
+		data <- data[, c("name_org", "nodes", "name_emg", "price_fluctuation", "price_average", "annualConsumption",
+						"priceOfferFluctuationGen", "averagePriceOfferGen",
 						"profileType", "rotorArea", "panelArea", "ratedEnergy_upperLimit")]
 		result = rbind(result, data)
 	}
