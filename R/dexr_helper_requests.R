@@ -52,7 +52,7 @@ requests_num_identify_type <- function(dexpa, data) {
 						& df$energy_requested > 0,])
 					result[i, "StorageOut"] = nrow(df[lubridate::interval(df$start_time,df$end_time) %within% intervals[i] & grepl("Storage", df$cid) 
 						& df$energy_requested < 0,])
-					result[i, "Load"] = nrow(df[lubridate::interval(df$start_time,df$end_time) %within% intervals[i] & grepl("SimulatedDevices", df$cid),]) 
+					result[i, "Load"] = nrow(df[lubridate::interval(df$start_time,df$end_time) %within% intervals[i] & grepl("_EnaviSimulatedDevices", df$cid),]) 
 				}
 
 				result$start_time <- lubridate::int_start(result$start_time)

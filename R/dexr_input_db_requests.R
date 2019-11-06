@@ -5,13 +5,13 @@
 #' 
 #' @author Sascha Holzhauer
 #' @export
-input_db_requests <- function(dexp, additionalwhere="TRUE") {
+input_db_requests <- function(dexpa, additionalwhere="TRUE") {
 	
 	futile.logger::flog.info("Retrieve request data from PostgreSQL database %s",
-			dexp$db$dbname,
+			dexpa$db$dbname,
 			name = "dexr.input.db.requests")
 	
-	con <- input_db_getconnection(dexp)
+	con <- input_db_getconnection(dexpa)
 	
 	df_requests <- DBI::dbGetQuery(con, paste("
 					SELECT

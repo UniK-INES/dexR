@@ -5,8 +5,8 @@
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_energycosts_requested_giniByStartT <- function(dexpa, data) {
-	data <- prepare_costdata_gini(data)
+output_figure_energycosts_requested_giniByStartT <- function(dexpa, data, type) {
+	data <- prepare_costdata_gini(list(dexpa), data, type)
 	
 	output_figure_lines(dexpa, data, y_column = "values", title = "Normalised energy, costs, and Gini coef. of costs/KWh by delivery start",
 			colour_column = "Type",
@@ -28,39 +28,76 @@ output_figure_energycosts_requested_giniByStartT <- function(dexpa, data) {
 #' 
 #' @author Sascha Holzhauer
 #' @export
-output_figure_energycosts_requested_comp_giniByStartT <- function(dexpa, data, skiplegend=F) {
-	data <- prepare_costdata_gini(data)
+output_figure_energycosts_requested_comp_giniByStartT <- function(dexpas, data, type, skiplegend=F) {
+	data <- prepare_costdata_gini(dexpas, data, type)
 	
-	output_figure_lines(dexpa, data, y_column = "values", title = "Normalised energy, costs, and Gini coef. of costs/KWh by delivery start",
+	output_figure_lines(dexpas[[1]], data, y_column = "values", title = "Normalised energy, costs, and Gini coef. of costs/KWh by delivery start",
 			colour_column = "id",
 			facet_column = "Type",
 			facet_ncol = 1, filename = "dex_energycosts_requested_comp_GiniByDT",
 			alpha=1.0, ggplotaddons = list(
 					ggplot2::xlab("Start time"),
-					ggplot2::ylab("Energy (kWh) / costs (EUR) / Gini coefficient"),
+					ggplot2::ylab("Traded Energy (kWh) / costs (EUR) / Gini coefficient"),
 					if (skiplegend) ggplot2::theme(legend.position="none") else list(ggplot2::theme(
 												legend.position = "bottom"
 										), ggplot2::guides(colour = ggplot2::guide_legend(ncol=1)))
 			),  x_column = "start_time", 
 			returnplot = FALSE)	
 }
-prepare_costdata_gini <- function(data, normalise=F) {
+prepare_costdata_gini <- function(dexpas, data, type, normalise=F) {
+	userdata <- list()
+	for (dexpa in dexpas) {
+		users <- dexR::input_csv_clientdata(dexpa)
+		
+		if (type == "load") {
+			users <- users[
+					(!is.na(users[,"annualConsumption"]) &
+								(users[,"annualConsumption"] > 0)	|
+								(!is.na(users[,"ratedEnergy_upperLimit"]) & 
+									users[,"ratedEnergy_upperLimit"] > 0)),]
+		} else {
+			users <- users[
+					(!is.na(users[,"annualConsumption"]) &
+								(users[,"annualConsumption"] < 0)	|
+								(!is.na(users[,"ratedEnergy_upperLimit"]) & 
+									users[,"ratedEnergy_upperLimit"] > 0) |
+								(!is.na(users[,"rotorArea"]) & 
+									users[,"rotorArea"] > 0) |
+								(!is.na(users[,"panelArea"]) & 
+									users[,"panelArea"] > 0)
+								),]
+		}
+		
+		users <- unlist(mapply(function(a, b) {paste("n", strsplit(a, ";", fixed = T)[[1]], "_", b, sep="")}, 
+						users$nodes, users$name_org))
+		
+		userdata = c(userdata, setNames(list(users), dexpa$sim$id))
+	}
+	
 	data <- plyr::ddply(data, c("start_time", "id"), function(d) {
 				# d <- data[data$id == data$id[1] & data$start_tim == data$start_time[1],]
+				# fill users with no request during start_time:
+				# identify user with load and/or storage
+				 
+				d <- merge(d, data.frame("users" = userdata[[d$rawid[1]]]), by.x='username',by.y='users',all.x=T,all.y=T)
+				d[is.na(d$energy_accepted),"energy_accepted"] <- 0
+				d[is.na(d$price_cleared),"price_cleared"] <- 0
+				
 				peruserdata <- plyr::ddply(d, c("username"), function(dperuser) {
 							new = data.frame(
 									"energy" = sum(dperuser[, "energy_accepted"]),
 									"costs" = sum(dperuser[, "price_cleared"] * dperuser[, "energy_accepted"]),
-									"price" = mean(dperuser[dperuser$price_cleared > 0, "price_cleared"]),
+									"price" = if (any(dperuser$price_cleared > 0)) 
+										mean(dperuser[dperuser$price_cleared > 0, "price_cleared"]) else 0,
 									"costPerEnergy" = if (sum(dperuser[, "energy_accepted"]) == 0) 0 else sum(dperuser[, "price_cleared"]) / sum(dperuser[, "energy_accepted"]))
 							new
 						})
 				
 				result = data.frame(		
-						"Energy" = sum(peruserdata[, "energy"]),
+						"Traded Energy" = sum(peruserdata[, "energy"]),
 						"Costs" = sum(peruserdata[, "costs"]),
 						"Price" = mean(peruserdata[peruserdata$price > 0, "price"]),
-						"Gini" =ineq::Gini(peruserdata$costPerEnergy, corr=T)
+						"Gini" = ineq::Gini(peruserdata$costPerEnergy, corr=T)
 				)
 				result
 			})
