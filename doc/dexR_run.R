@@ -1,4 +1,4 @@
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  source("/home/USER/dexr/scripts/dexpa-machine_machine.R")
 #  dexpa$sim$version <- "testversion"	
 #  dexpa$sim$id 	  <- "Testrun01"
@@ -6,7 +6,7 @@
 #  
 #  dexR::hl_experiment(dexpa, basetime = as.numeric(round(strptime("30/09/19 12:00", "%d/%m/%y %H:%M"),"mins"))*1000)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  source("/home/USER/dexr/scripts/dexpa-machine_machine.R")
 #  dexpa$sim$version <- "testversion"	
 #  dexpa$sim$id 	  <- "Testrun01"
@@ -15,7 +15,7 @@
 #  dexR::hl_experiment_cluste(dexpa, basetime = as.numeric(round(strptime("30/09/19 12:00", "%d/%m/%y %H:%M"),"mins"))*1000),
 #  		offset = round(basetime - as.numeric(Sys.time())*1000))
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  source("<path to git repository>/enavi/market/enavi-r/config/dexpa-machine_T460s.R")
 #  dexpa$sim$version 	<- "testversion"	
 #  dexpa$sim$id 		<- "Testrun01"

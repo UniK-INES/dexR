@@ -5,7 +5,7 @@
 #' 
 #' @author Sascha Holzhauer
 #' @export
-hl_figure_energycosts_requests_giniByStartT <- function(dexpa, type = "load") {
+hl_figure_energycosts_requests_giniByStartT <- function(dexpa, type = "load", skiplegend=F) {
 	if (type == "gen") {
 		data <- dexR::input_db_requests(dexpa, additionalwhere = "e.status IN (1,2) AND e.energy_accepted < 0")
 		data$energy_accepted <- data$energy_accepted * (-1)
@@ -18,15 +18,17 @@ hl_figure_energycosts_requests_giniByStartT <- function(dexpa, type = "load") {
 	}
 	if (nrow(data) > 0) {
 		data <- dexpa$sim$filter$requests(dexpa, data)
-		output_figure_energycosts_requested_giniByStartT(dexpa, data)
+		output_figure_energycosts_requested_giniByStartT(dexpa, data, skiplegend=F)
 	} else {
 		futile.logger::flog.warn("No requests retrieved from PostgreSQL database %s!",
 				dexpa$db$dbname,
 				name = "dexr.hl.costs")
 	}
 }
-#' Retrieves requests data from DB and creates figure of gini coefficient of requested energy cost per KWh by delivery start time.
+#' Retrieves requests data from DB and creates figure of gini coefficient of requested energy cost
+#' per KWh by delivery start time.
 #' 
+#' TODO Considers different delivery intervals (converts resolution to longer intervals) for total costs and total energy
 #' TODO consider meter readings
 #' 
 #' @param dexpa  
@@ -57,13 +59,17 @@ hl_figure_energycosts_requests_comp_giniByStartT <- function(dexpas, type = "loa
 					dp$id,
 					name = "dexr.hl.requests")
 		} else {
-			d$id <- input_db_runID(dp)
-			d$rawid <- names(input_db_runID(dp))
+			d$id <- dexR::input_db_runID(dp)
+			d$rawid <- dp$sim$id
 			data <- rbind(data, d)
 		}
 	}
 	if (nrow(data) > 0) {
 		data <- dexpas[[1]]$sim$filter$requests(dexpas[[1]], data)
+		data <- prepare_costdata_gini(dexpas, data, type)
+		
+		# filter types:
+		data <- data[data$Type %in% dexpas[[1]]$fig$ginitypes,]
 		output_figure_energycosts_requested_comp_giniByStartT(dexpas, data, type = type, skiplegend=skiplegend)
 	}
 }

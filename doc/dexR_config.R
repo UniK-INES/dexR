@@ -1,11 +1,11 @@
-## ---- eval=F-------------------------------------------------------------
+## ---- eval=F------------------------------------------------------------------
 #  Sys.getenv("GIT_DIR")
 #  Sys.setenv("GIT_DIR"="<path to git repositry including enavi projeckt, eg. ~/git>")
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  demo(config, package="dexR", echo=F)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  dexpa$db$host			<- "localhost"
 #  dexpa$db$port			<- "5432"
 #  dexpa$db$dbname			<- "enavi"
@@ -15,32 +15,32 @@
 #  dexpa$db$suname			<- "postgres"
 #  dexpa$db$supassword		<- "supassword"
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  preserve <- list()
 #  preserve$dexpa$db$supassword         <- "anotherSUpassword"
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  demo(run, package="dexR", echo=F)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  dexpa <- dexR::param_getDefaultDexpa()
 #  dexpa$dirs$project <- "<substitute by path to project>/project"
 #  dexpa$dirs$config  <- "<substitute by path to project>/project/config"
 #  dexR::setup_environment(dexpa)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  source("/home/USER/dexr/scripts/dexpa-machine_machine.R")
 #  dexpa$sim$version <- "TestA
 #  dexpa <- dexR::setup_project_version(dexpa)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  source("/home/USER/dexr/scripts/dexpa-machine_machine.R")
 #  dexpa$sim$version <- "TestA"	
 #  dexpa$sim$id 	  <- "Testrun01"
 #  
 #  dexR::hl_config_copycsvtemplates(dexpa)
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  ################################################################
 #  # General SIMulation Properties:
 #  ################################################################
@@ -213,7 +213,7 @@
 #  dexpa$debug$output		<- NA
 #  dexpa$debug$fig		<- NA
 
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  dexpa$db$host		<- "localhost"
 #  dexpa$db$port		<- "5432"
 #  dexpa$db$dbname		<- "dexr"

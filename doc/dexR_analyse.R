@@ -24,7 +24,7 @@ dexpas <- dexR::demo_prepare_db4figures()
 dexR::hl_figure_clearing_comp_numConsideredRequests(dexpas, filename=NULL)
 dexR::input_db_dropdbs(dexpas)
 
-## ---- eval=TRUE, results="hide", echo=TRUE, messages=FALSE, warning=FALSE----
+## ---- eval=TRUE, results="hide", echo=TRUE, messages=FALSE, warning=FALSE-----
 dexpas <- dexR::demo_prepare_db4figures()
 dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(dexpas, filename=NULL)
 dexR::input_db_dropdbs(dexpas)

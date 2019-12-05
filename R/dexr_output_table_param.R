@@ -27,9 +27,12 @@ output_table_param_products <- function(dexpas, format="markdown", caption="Prod
 		shbasic::sh.ensurePath(dexpa$dirs$output$tables)
 		products <- products[, names(columns)]
 		colnames(products) <- columns[colnames(products)]
-		write.csv(products[, columns], file=paste(dexpa$dirs$output$tables, "/products_",  
-						paste(lapply(dexpas, function(x) x$sim$id), collapse="__"), ".csv", sep=""), row.names=F)
+		filename = paste(dexpa$dirs$output$tables, "/products_",  
+		                 paste(dexpa$files$filenameprefix, lapply(dexpas, function(x) x$sim$id), collapse="__"),
+		                 dexpa$files$filenamepostfix, ".csv", sep="")
+		write.csv(products[, columns], file=filename, row.names=F)
 	} else {
+	  futile.logger::flog.info("Write product configuration to %s", filename, name="dexr.output.table.param.products")
 		knitr::kable(products[, names(columns)], format=format, caption = caption, 
 				col.names = c(columns))
 	}
@@ -74,6 +77,7 @@ output_table_param_clients <- function(dexpa, format="markdown", caption="Client
 	data$profileType = substr(data$profileType,1,2)
 	data$name_emg <- substr(data$name_emg, stringi::stri_length(data$name_emg[1])-2, stringi::stri_length(data$name_emg[1])-1)
 	columns = c("name_emg"				= "Name",
+				"nodes"					= "Nodes",
 				"price_fluctuation"		= "PfL",
 				"price_average"			= "PaL",
 				"annualConsumption"		= "Cons (GJ)",
@@ -87,8 +91,14 @@ output_table_param_clients <- function(dexpa, format="markdown", caption="Client
 	if (format=="csv") {
 		shbasic::sh.ensurePath(dexpa$dirs$output$tables)
 		data <- data[, names(columns)]
+		
 		colnames(data) <- columns[colnames(data)]
-		write.csv(data, file=paste(dexpa$dirs$output$tables, "/products_",  
+		filename = paste(dexpa$dirs$output$tables, "/clients_",  
+				paste(dexpa$files$filenameprefix, lapply(dexpas, function(x) x$sim$id), collapse="__"),
+				dexpa$files$filenamepostfix, ".csv", sep="")
+		
+		futile.logger::flog.info("Write client configuration to %s", filename, name="dexr.output.table.param.clients")
+		write.csv(data, file=paste(dexpa$dirs$output$tables, "/clients_",  
 						dexpa$sim$id, ".csv", sep=""), row.names=F)
 	} else {
 		data$numnodes <- as.numeric(sapply(sapply(data$nodes, strsplit,";"), function(x) x[[1]]))

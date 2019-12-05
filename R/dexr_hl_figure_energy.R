@@ -147,13 +147,14 @@ hl_figure_energy_requested_comp_sumLoadGenByStartT <- function(dexpas) {
 					dp$id,
 					name = "dexr.hl.requests")
 		} else {
-			d <- requests_filter_data(dp, d)
+			d <- dexR::requests_filter_data(dp, d)
 			data <- rbind(data, d)
 		}
 	}
 	#df <- data[data$id == data[1,"id"] & data$username == "n5_enavi02",]
 	if (nrow(data) > 0) {
-		data <- dexpa$sim$filter$requests(dexpa, data)
+		data <- dexpa$sim$filter$requests(dexpas[[1]], data)
+		data <- dexR::map_requests2intervals_energy(dexpa, data)
 		dexR::output_figure_energy_requested_comp_sumByLoadGenByStartT(dexpas[[1]], data)
 	}
 }

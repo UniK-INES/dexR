@@ -33,7 +33,7 @@ dexpas <- lapply(dexpas, function(dp) {
 # Parameters
 ## General Information
 * IDs:
-```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
+```{r param_general, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 for (dp in dexpas) {
 	cat('\n')
@@ -45,7 +45,7 @@ invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 * Date: `r format(Sys.time(), "%a %b %d %H:%M:%S %Y")`
 
 ## Product Information {.allowframebreaks}
-```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
+```{r param_producs, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 if (dexR::param_marketproductsdiffer(dexpas)) {
   for (dp in dexpas) {
@@ -61,9 +61,9 @@ if (dexR::param_marketproductsdiffer(dexpas)) {
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
 
-## Market Information {.allowframebreaks}
-### Market Information
-```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
+## Market Information 
+### Market Information{.allowframebreaks}
+```{r param_market, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 if (dexR::param_marketinfodiffer(dexpas)) {
   for (dp in dexpas) {
@@ -79,8 +79,8 @@ if (dexR::param_marketinfodiffer(dexpas)) {
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
 
-## Client Information {.allowframebreaks}
-```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
+## Client Information
+```{r param_client, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 if (dexR::param_clientsdiffer_runs(dexpas)) {
   for (dp in dexpas) {
@@ -88,7 +88,7 @@ if (dexR::param_clientsdiffer_runs(dexpas)) {
     dexR::output_table_param_clients(dp)
   }
 } else {
-  cat("\n### Client Information")
+  cat("\n### Client Information{.allowframebreaks}")
   cat('\n')
   dexR::output_table_param_clients(dexpas[[1]])
 }
@@ -98,18 +98,18 @@ invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 # Time Series: Requests
 ## Request Statistics By delivery
 ### Request Statistics by status and delivery
-```{r, eval=TRUE, results="hide", echo=FALSE, message=FALSE, warning=FALSE}
+```{r requests_num_statusStartT, eval=TRUE, results="hide", echo=FALSE, message=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 950
 dexR::hl_figure_requests_numRequests_comp_byStatusByStartT(dexpas, skiplegend=F)
 ```
 
 ### Request Statistics by requests type and delivery
-```{r numReqByTypeByStart, eval=TRUE, results="hide", echo=FALSE, message=FALSE, warning=FALSE}
+```{r requests_num_typeStart, eval=TRUE, results="hide", echo=FALSE, message=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 950
-hl_figure_requests_numRequests_comp_byTypeByStartT(dexpas, skiplegend=T)
+dexR::hl_figure_requests_numRequests_comp_byTypeByStartT(dexpas, skiplegend=T)
 ```
 
-```{r, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+```{r requests_num_productStarT, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
 if (dexpa$fig$show$requests$product_delivery) {
   invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
   cat('\n')
@@ -121,7 +121,7 @@ if (dexpa$fig$show$requests$product_delivery) {
 }
 ```
 
-```{r, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+```{r clients_StartT, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
 if (dexpa$fig$show$requests$clients_delivery) {
   invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
   cat('\n')
@@ -133,7 +133,7 @@ if (dexpa$fig$show$requests$clients_delivery) {
 }
 ```
 
-```{r, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+```{r requests_num_submission, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
 if (dexpa$fig$show$requests$status_submission || dexpa$fig$show$requests$product_submission) {
   cat('\n')
   cat("## Request Statistics by submission")
@@ -141,7 +141,7 @@ if (dexpa$fig$show$requests$status_submission || dexpa$fig$show$requests$product
 }
 ```
 
-```{r, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+```{r requests_num_statusSubmission, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
 if (dexpa$fig$show$requests$status_submission) {
   invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
   cat('\n')
@@ -152,7 +152,7 @@ if (dexpa$fig$show$requests$status_submission) {
 }
 ```
 
-```{r, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+```{r requests_num_procudtSubmission, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
 if (dexpa$fig$show$requests$product_submission) {
   invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
   cat('\n')
@@ -173,12 +173,12 @@ dexR::hl_figure_energy_requested_comp_sumLoadGenByStartT(dexpas)
 ```
 
 ### Requested Energy by type and delivery
-```{r, eval=TRUE, results="hide", echo=FALSE, message=FALSE, warning=FALSE}
+```{r energy_req_typeStartT, eval=TRUE, results="hide", echo=FALSE, message=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 750
 dexR::hl_figure_energy_requested_comp_sumGenByTypeStartT(dexpas, skiplegend=T)
 ```
 
-```{r, eval=TRUE, results="asis", echo=FALSE, messages=FALSE, warning=FALSE}
+```{r energy_reqSum_startT, eval=TRUE, results="asis", echo=FALSE, messages=FALSE, warning=FALSE}
 if (dexpa$fig$show$energy$summed_delivery) {
   invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
   cat('\n')
@@ -190,19 +190,19 @@ if (dexpa$fig$show$energy$summed_delivery) {
 ```
 
 ### Requested Energy (Generation) by Status and Delivery
-```{r, eval=TRUE, results="hide", echo=FALSE, message=FALSE, warning=FALSE}
+```{r energy_gen_statusStartT, eval=TRUE, results="hide", echo=FALSE, message=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 750
 dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas, type="generation", skiplegend=T)
 ```
 
 ### Requested Energy (Load) by Status and Delivery
-```{r, eval=TRUE, results="hide", echo=FALSE, message=FALSE, warning=FALSE}
+```{r energy_load_statusStartT, eval=TRUE, results="hide", echo=FALSE, message=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 750
 dexR::hl_figure_energy_requested_comp_byStatusByStartT(dexpas, type="load", skiplegend=T)
 ```
 
 
-```{r, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+```{r energy_res_statusStartT, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
 if (dexpa$fig$show$energy$residual_status_delivery) {
   invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
   cat('\n')
@@ -216,7 +216,7 @@ if (dexpa$fig$show$energy$residual_status_delivery) {
 
 ## Aggregated Energy Figures
 ### Aggregated Energy Figures
-```{r, eval=TRUE, results="asis", echo=FALSE, messages=FALSE, warning=FALSE}
+```{r energy_table, eval=TRUE, results="asis", echo=FALSE, messages=FALSE, warning=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 dexR::hl_statistics_comp_energy(dexpas)
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
@@ -225,13 +225,13 @@ invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 
 ## Clearing: Number of Considered Requests
 ### Clearing: Number of Considered Requests by Delivery
-```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+```{r clearing_numReq_startT, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexR::hl_figure_clearing_comp_numConsideredRequests(dexpas)
 ```
 
 ## Clearing: Requested Prices
 ### Clearing: Average Requested Prices by Type and Delivery
-```{r, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+```{r clearing_priceRey_typeStartT, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 if (dexpa$fig$show$prices$avg_delivery) {
 dexR::hl_figure_prices_requested_comp_byTypeStartT(dexpas, skiplegend=T)
@@ -241,19 +241,19 @@ invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 
 ## Clearing: Prices
 ### Clearing: Prices by Delivery
-```{r, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
+```{r clearing_price_startT, eval=TRUE, results="hide", echo=FALSE, messages=FALSE, warning=FALSE}
 dexpas[[1]]$fig$height <- 750
 dexR::hl_figure_clearing_comp_clearingPriceByCTbyProduct(dexpas)
 ```
 
-```{r, eval=TRUE, results="asis", echo=FALSE, messages=FALSE, warning=FALSE}
+```{r clearing_gini_header, eval=TRUE, results="asis", echo=FALSE, messages=FALSE, warning=FALSE}
 if (dexpa$fig$show$costs$summed_delivery || dexpa$fig$show$costs$costgini_gen_delivery || dexpa$fig$show$costs$costgini_load_delivery) {
   cat('\n')
   cat("## Summed Costs\n")
 }
 ```
 
-```{r, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+```{r clearing_costs_startT, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 if (dexpa$fig$show$costs$summed_delivery) {
   cat('\n')
@@ -264,7 +264,7 @@ if (dexpa$fig$show$costs$summed_delivery) {
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
 
-```{r, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+```{r clearing_giniGen_startT, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
 if (dexpa$fig$show$costs$costgini_gen_delivery) {
   invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
   cat('\n')
@@ -276,13 +276,22 @@ if (dexpa$fig$show$costs$costgini_gen_delivery) {
 }
 ```
 
-```{r, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+```{r clearing_giniLoad_startT, eval=TRUE, results="asis", echo=FALSE, message=FALSE, warning=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 if (dexpa$fig$show$costs$costgini_load_delivery) {
   cat('\n')
   cat("### Energy, Costs, and Gini Coefficient for Loads by Delivery\n")
   dexpas[[1]]$fig$height <- 750
   dexR::hl_figure_energycosts_requests_comp_giniByStartT(dexpas, type = "load", skiplegend=T)
+}
+invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
+```
+
+```{r gini_table, eval=TRUE, results="asis", echo=FALSE, messages=FALSE, warning=FALSE}
+invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
+if (dexpa$fig$show$costs$costgini_aggregate) {
+  cat("### Aggregated Gini Figures\n")
+  dexR::hl_statistics_comp_gini(dexpas)
 }
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```

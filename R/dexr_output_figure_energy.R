@@ -204,47 +204,6 @@ output_figure_energy_requested_comp_sumByStartT <- function(dexpa, data) {
 #' @author Sascha Holzhauer
 #' @export
 output_figure_energy_requested_comp_sumByLoadGenByStartT <- function(dexpa, data) {
-	# count requests
-	# data$id = "Test"
-	
-	data <- plyr::ddply(data, c("id"), function(df) {
-		# df <- data[data$id == data[1,"id"],]
-		# df <- data[data$id == data[1,"id"] & data$username == "n5_enavi02",]
-		# identify shortest delivery period:
-		shortestDelivery <- min(df$end_time - df$start_time)
-		minStartTime 	 <- min(df$start_time)
-		maxEndTime		 <- max(df$end_time)
-		
-		# create interval vector of shortest delivery period:
-		intervals <- seq(minStartTime, maxEndTime, by = shortestDelivery)
-		intervals <- lubridate::interval(intervals[1:(length(intervals)-1)], intervals[(1+1):length(intervals)])
-		result <- data.frame(start_time = intervals, 
-				Load = rep(0, length(intervals)),
-				Gen  = rep(0, length(intervals)))
-		
-		# aggregate energy:
-		for (r in 1:nrow(df)) {
-			# r = 1
-			if (df[r, "energy_requested"] > 0) {
-				result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-					"Load"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-							"Load"] + df[r, "energy_accepted"]
-			} else {
-				result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-						"Gen"] = result[intervals %within% lubridate::interval(df[r, "start_time"],df[r, "end_time"]),
-								"Gen"] + df[r, "energy_accepted"]
-			}
-		}
-		result$start_time <- lubridate::int_start(result$start_time)
-		result
-	})
-
-	# calculate residuals:
-	data$Residual <- data$Load + data$Gen
-	data$Gen <- -data$Gen
-	
-	data <- reshape2::melt(data, id.vars=c("id", "start_time"), variable.name = "Type",
-			value.name = "Energy")
 	
 	output_figure_lines(dexpa, data, y_column = "Energy", title = "Requested energy of requests by generation/load and delivery start time",
 			colour_column = "id", colour_legendtitle = "Run ID",
