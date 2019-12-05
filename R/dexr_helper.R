@@ -255,6 +255,27 @@ requests_identify_type <- function(data, dataexp='df[r, if(df$status==2) "energy
 				result
 			})
 }
+adaptValuesToTimeResolution <- function(dexpa, data) {
+
+	# identify shorted delivery interval
+	shortestDuration <<- Inf
+	durations <- plyr::ddply(data, c("id"), function(df) {
+				# df <- data[data$id == data[1,"id"],]
+				df <- df[order(df$start_time),]
+				duration <- as.numeric(df[1 + length(unique(df$Type)), "start_time"] - df[1, "start_time"], units = "secs")
+				shortestDuration <<- min(shortestDuration, duration)
+				duration
+			})
+	
+	# for every id, identify delivery interval and multiply values by quotient of shortest interval by longer interval
+	data <- plyr::ddply(data, c("id"), function(df) {
+				# df <- data[data$id == data[1,"id"],]
+				df$Energy <- df$Energy * (shortestDuration / durations[durations$id == df$id[1], "V1"])
+				df
+			})
+	
+}
+
 #' Check differences in market information
 #' @param dexpas 
 #' @return true if market information differ between passed dexpas

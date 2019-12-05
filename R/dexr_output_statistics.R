@@ -111,13 +111,36 @@ output_statistics_comp_numclients <- function(dexpa, requestdata) {
 	if (nrow(requestTable) == 0) {
 		futile.logger::flog.warn("Request data has no rows!", 
 				"dexr.output.stats.comp.clients")
-	} else if (nrow(cinfosTable) == 0) {
-		futile.logger::flog.warn("Clearing information has no rows!", 
-				"dexr.output.stats.comp.clients")
 	} else {
 		knitr::kable(requestTable, format="markdown", caption="Aggregated client information",
 				digits = 3,
 				col.names = c(	"ID",
 						"Number of clients"))
+	}
+}
+#' Show aggregate gini figures in table per ID.
+#' @param dexpa 
+#' @param data data.frame with column "id' and individual data point in column 'gini' 
+#' @return markdown table
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_statistics_comp_gini <- function(dexpas, data) {
+	tableData <- plyr::ddply(data, c("Kind", "id"), function(df) {
+				# data <- requestdata[requestdata$id == "enavi_08-01",]
+				result <- data.frame(
+						Mean = mean(df$values, na.rm = T),
+						Sum = sum(df$values, na.rm = T))
+				result
+			})
+	
+	if (nrow(tableData) == 0) {
+		futile.logger::flog.warn("Gini data has no rows!", 
+				"dexr.output.stats.comp.clients")
+	} else {
+		knitr::kable(tableData, format="markdown", caption="Aggregated client information",
+				digits = 3,
+				col.names = c(	"Type",
+						"ID", "Gini mean", "Gini sum"))
 	}
 }

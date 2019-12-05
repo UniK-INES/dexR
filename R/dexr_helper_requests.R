@@ -24,43 +24,35 @@ requests_num_identify_type <- function(dexpa, data) {
 				name = "dexr.helper.types")
 	}
 	
-	
 	data <- plyr::ddply(data, c("id"), function(df) {
-				# df <- data[data$id == unique(data$id)[2],]
-				# df <- data[data$id == unique(data$id)[3],]
-				
-				# identify shortest delivery period:
-				shortestDelivery <- min(df$end_time - df$start_time)
-				minStartTime 	 <- min(df$start_time)
-				maxEndTime		 <- max(df$end_time)
-				
-				# create interval vector of shortest delivery period:
-				intervals <- seq(minStartTime, maxEndTime, by = shortestDelivery)
-				intervals <- lubridate::interval(intervals[1:(length(intervals)-1)], intervals[(1+1):length(intervals)])
-				result <- data.frame(start_time = intervals, 
-						PV = rep(0, length(intervals)),
-						Wind  = rep(0, length(intervals)),
-						StorageOut  = rep(0, length(intervals)),
-						StorageIn  = rep(0, length(intervals)))
-				
-				# aggregate energy:
-				# TODO more efficient implementation!
-				for (i in 1:length(intervals)) {
-					result[i, "PV"] = nrow(df[lubridate::interval(df$start_time,df$end_time) %within% intervals[i] & grepl("Pv", df$cid),])
-					result[i, "Wind"] = nrow(df[lubridate::interval(df$start_time,df$end_time) %within% intervals[i] & grepl("Wind", df$cid),])
-					result[i, "StorageIn"] = nrow(df[lubridate::interval(df$start_time,df$end_time) %within% intervals[i] & grepl("Storage", df$cid) 
-						& df$energy_requested > 0,])
-					result[i, "StorageOut"] = nrow(df[lubridate::interval(df$start_time,df$end_time) %within% intervals[i] & grepl("Storage", df$cid) 
-						& df$energy_requested < 0,])
-					result[i, "Load"] = nrow(df[lubridate::interval(df$start_time,df$end_time) %within% intervals[i] & grepl("_EnaviSimulatedDevices", df$cid),]) 
-				}
-
-				result$start_time <- lubridate::int_start(result$start_time)
-				result
-			})
-	
-	data <- reshape2::melt(data, id.vars=c("id", "start_time"), variable.name = "Type",
-			value.name = "Number")
+		# df <- data[data$id == unique(data$id)[2],]
+		# df <- data[data$id == unique(data$id)[3],]
+		
+		# identify shortest delivery period:
+		shortestDelivery <- min(df$end_time - df$start_time)
+		minStartTime 	 <- min(df$start_time)
+		maxEndTime		 <- max(df$end_time)
+		
+		# create interval vector of shortest delivery period:
+		intervals <- seq(minStartTime, maxEndTime, by = shortestDelivery)
+		intervals <- lubridate::interval(intervals[1:(length(intervals)-1)], intervals[(1+1):length(intervals)])
+		
+		types = c("PV", "Wind", "Storage", "Load")
+		typesPatterns = c("Pv", "Wind", "Storage", "_EnaviSimulatedDevices")
+		
+		df$type <- types[unlist(lapply(transpose(lapply(typesPatterns, grepl, substr(df$cid, 22, 43))), which))]
+		df[df$type == "Storage", "type"] <- ifelse(df[df$type == "Storage", "energy_requested"] > 0, "StorageIn", "StorageOut")
+		types = c("PV", "Wind", "StorageIn", "StorageOut", "Load")
+		
+		
+		#df$startIndex <- min(which(lubridate::interval(df$start_time, df$end_time) %within% intervals))
+		result = expand.grid(Type=types, start_time=1:length(intervals))
+		d <- data.table(result, key=c("Type", "start_time"))
+		d <- d[, list(Number=nrow(df[df$Type == Type && lubridate::interval(df$start_time, df$end_time) %within% intervals[start_time],])), by=key(d)]
+		
+		d$start_time <- intervals[d$start_time]
+		d
+	})
 	return(data)
 }
 #' Add a column with generation (Pv, Wind, StorageOut) and load type (StorageIn) per Id.
@@ -133,6 +125,7 @@ clients_num_identify_type <- function(dexpa, data) {
 #' @param d 
 #' @return 
 #' 
+#' @export
 #' @author Sascha Holzhauer
 requests_filter_data <- function(dexpa, d) {
 	d$id <- dexR::input_db_runID(dexpa)	

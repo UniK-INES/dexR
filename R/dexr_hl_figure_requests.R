@@ -122,7 +122,7 @@ hl_figure_requests_numRequests_comp_byTypeByStartT <- function(dexpas, ...) {
 		}
 	}
 	if (nrow(data) > 0) {
-		data <- dexpa$sim$filter$requests(dexpa, data)
+		data <- dexpa$sim$filter$requests(dexpas[[1]], data)
 		output_figure_requests_numRequests_comp_byTypeByStartT(dexpas[[1]], data, ...)
 	} else {
 		futile.logger::flog.warn("No requests retrieved from PostgreSQL databases %s for IDs %s!",

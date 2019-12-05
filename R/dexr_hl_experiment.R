@@ -152,7 +152,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 	setwd(paste(dexpa$dirs$emgconfigtool, "/../..", sep=""))
 	
 	if (tools::file_ext(dexpa$files$paramconfigs)=="ods") {
-		paramConfigs <- readODS::read_ods(dexpa$files$paramconfigs, sheet = 1, col_names = TRUE)
+		paramConfigs <- readODS::read_ods(dexpa$files$paramconfigs, sheet = 1, col_names = TRUE, col_types = cols())
 	} else {
 		paramConfigs <- read.csv(dexpa$files$paramconfigs, header = TRUE, sep = ",", quote = "\"",
 				dec = ".", fill = TRUE, comment.char = "")

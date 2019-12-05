@@ -173,30 +173,42 @@ input_db_dropdbs <- function(dexpas) {
 #' @author Sascha Holzhauer
 #' @export
 input_db_runID <- function(dexpa) {
-	futile.logger::flog.info("Retrieve run ID from PostgreSQL database %s",
-			dexpa$db$dbname,
-			name = "dexr.input.db")
-	
-	con <- input_db_getconnection(dexpa)
-	
-	num_clients <- DBI::dbGetQuery(con, "
-					SELECT
-					COUNT(id) - 3 as num_clients
-					FROM 
-					user_account")
-	products <- input_db_param_products(dexpa)
-		
-	minfo <- DBI::dbGetQuery(con, "
-					SELECT
-						fine_per_untraded_kwh
-					FROM 
-						market_information")
-	
-	DBI::dbDisconnect(con)
-	
 	if (!is.null(dexpa$fig$labelsubs)) {
 		return(dexpa$fig$labelsubs[dexpa$sim$id])	
 	} else {
+		
+		num_clients <- if (dexpa$cache$usecache) R.cache::loadCache(key=list("num_clients", dexpa$sim$id)) else NULL
+		minfo <- if (dexpa$cache$usecache) R.cache::loadCache(key=list("minfo", dexpa$sim$id)) else NULL
+		
+		if (is.null(num_clients) || is.null(minfo)) {
+			
+			futile.logger::flog.info("Retrieve run ID from PostgreSQL database %s",
+					dexpa$db$dbname,
+					name = "dexr.input.db")
+			
+			
+			con <- input_db_getconnection(dexpa)
+			
+			num_clients <- DBI::dbGetQuery(con, "
+							SELECT
+							COUNT(id) - 3 as num_clients
+							FROM 
+							user_account")
+			R.cache::saveCache(num_clients, key=list("num_clients", dexpa$sim$id), comment="input_db_runID()", dirs = dexpa$cache$subdir)
+				
+			minfo <- DBI::dbGetQuery(con, "
+							SELECT
+								fine_per_untraded_kwh
+							FROM 
+								market_information")
+				
+			R.cache::saveCache(minfo, key=list("minfo", dexpa$sim$id), comment="input_db_runID()", dirs = dexpa$cache$subdir)
+				
+			DBI::dbDisconnect(con)
+	
+		}
+		products <- input_db_param_products(dexpa)
+		
 		return(paste(dexpa$sim$id, "_", num_clients$num_clients, "C", nrow(products), "P", minfo$fine_per_untraded_kwh, "F", "_",
 			paste(products$delivery_period_duration/(1000*60), "d", products$auction_interval, "a", products$clearingID, sep="", collapse="_"), sep=""))
 	}

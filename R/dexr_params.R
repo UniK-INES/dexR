@@ -78,6 +78,13 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$files$emgconfigtool		<- paste(defdexpa$dirs$emgconfigtool, "emg-config-tool-jar-with-dependencies.jar", sep="/")
 	defdexpa$files$serverjar		<- paste(dexpa$dirs$server, "enavi-market-backend-0.0.1-SNAPSHOT.jar", sep="/")
 	defdexpa$files$backendPOM		<- "./market-backend/pom.xml"
+	defdexpa$files$filenameprefix		<- ""
+	defdexpa$files$filenamepostfix	<- ""
+	
+	### Caching ################################################################
+	defdexpa$cache$subdir <- "dexR"
+	defdexpa$cache$usecache <- TRUE
+	
 	
 	### DB Settings ##################################################################
 	defdexpa$db <- list()	
@@ -122,13 +129,17 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$fig$legend$ncols	<- 3
 	defdexpa$fig$labelsubs <- NULL
 	defdexpa$fig$skiptitles <- F
-	
+	defdexpa$fig$filenameprefix		<- ""
+	defdexpa$fig$filenamepostfix	<- ""
+	defdexpa$fig$ggplotaddon	<- NULL
+	defdexpa$fig$ginitypes <- c("Traded energy", "Costs", "Price", "Gini")
 	defdexpa$fig$show <- list()
 	
 	defdexpa$fig$show$costs <- list()
 	defdexpa$fig$show$costs$summed_delivery <- T
 	defdexpa$fig$show$costs$costgini_gen_delivery <- T
 	defdexpa$fig$show$costs$costgini_load_delivery <- T
+	defdexpa$fig$show$costs$costgini_aggregate <- T
 	defdexpa$fig$show$prices$avg_delivery <- T
 	
 	defdexpa$fig$show$energy <- list()
@@ -140,6 +151,10 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$fig$show$requests$product_delivery <- T
 	defdexpa$fig$show$requests$status_submission <- T
 	defdexpa$fig$show$requests$clients_delivery <- T
+
+	### Substitution ###
+	defdexpa$sub <- list()
+	defdexpa$sub$subs <- c()
 	
 	### Report Settings ###########################################################
 	defdexpa$analyse <- list()
@@ -233,7 +248,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	### OpSim Settings ############################################################
 	defdexpa$opsim = list()
 	defdexpa$opsim$control = list()
-  defdexpa$opsim$control$rundir = "set opsim rundir"
+    defdexpa$opsim$control$rundir = "set opsim rundir"
 	defdexpa$opsim$control$jre = NA
 	defdexpa$opsim$control$args = "--module-path /usr/share/openjfx/lib --add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
 	defdexpa$opsim$control$jar = "iwes-opsim-mcp-gui-2.0.33-jar-with-dependencies.jar"
