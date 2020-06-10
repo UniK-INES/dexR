@@ -75,7 +75,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$files <- list()
 	defdexpa$files$paramconfigs		<- paste(defdexpa$dirs$config, "DEX_Param_Configs.csv", sep="/")
 	defdexpa$files$runinfos			<- paste(defdexpa$dirs$project, "DEX_Runs.csv", sep="/")
-	defdexpa$files$emgconfigtool		<- paste(defdexpa$dirs$emgconfigtool, "emg-config-tool-jar-with-dependencies.jar", sep="/")
+	defdexpa$files$emgconfigtool	<- paste(defdexpa$dirs$emgconfigtool, "emg-config-tool-jar-with-dependencies.jar", sep="/")
 	defdexpa$files$serverjar		<- paste(dexpa$dirs$server, "enavi-market-backend-0.0.1-SNAPSHOT.jar", sep="/")
 	defdexpa$files$backendPOM		<- "./market-backend/pom.xml"
 	defdexpa$files$filenameprefix		<- ""
@@ -109,7 +109,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	### XML attributes Names ###########################################################
 	defdexpa$xml <- list()
 	defdexpa$xml$staticfiles 		<- c("OutsideBuildingRoom.xml", "kassel2012Sensors.xml", 
-							"outsideTemperature.xml", "PropertyLocation.xml")
+							"outsideTemperature.xml", "PropertyLocation.xml", "LocationKassel.xml")
 	
 	### Figure Settings ###########################################################
 	defdexpa$fig <- list()
@@ -126,10 +126,11 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$fig$alpha			<- 0.7
 	defdexpa$fig$linewidth		<- 0.5
 	defdexpa$fig$facetlabelsize	<- 12
+	defdexpa$fig$facet$scale	<- "free_y"
 	defdexpa$fig$legend$ncols	<- 3
 	defdexpa$fig$labelsubs <- NULL
 	defdexpa$fig$skiptitles <- F
-	defdexpa$fig$filenameprefix		<- ""
+	defdexpa$fig$filenameprefix		<- "dex_"
 	defdexpa$fig$filenamepostfix	<- ""
 	defdexpa$fig$ggplotaddon	<- NULL
 	defdexpa$fig$ginitypes <- c("Traded energy", "Costs", "Price", "Gini")
@@ -156,12 +157,13 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$sub <- list()
 	defdexpa$sub$subs <- c()
 	
-	### Report Settings ###########################################################
+	### Analysis Settings ###########################################################
 	defdexpa$analyse <- list()
 	defdexpa$analyse$intervalsdifftoaccept = 100
 	
 	### Report Settings ###########################################################
 	defdexpa$reports <- list()
+	defdexpa$reports$do		<-  TRUE
 	defdexpa$reports$author <- "Uni Kassel"
 	
 	### Colour Settings ###########################################################
@@ -206,6 +208,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$server$controls		<- 30
 	defdexpa$server$port		<- 8080
 	defdexpa$server$startport	<- 8000
+	defdexpa$server$javahome	<- "/usr/lib/jvm/jdk-12.0.1"
 	defdexpa$server$portoffset 	<- 0
 	defdexpa$server$rseed		<- 0
 	defdexpa$server$matchbasetime	<- "false"
@@ -218,6 +221,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$emg$port		<- "8443"
 	defdexpa$emg$startport		<- 8400
 	defdexpa$emg$portoffset 	<- 0
+	defdexpa$emg$jre			<- NA
 	
 	defdexpa$emg$propertiesfile <- "config/sh_ogema.properties"
 	defdexpa$emg$httpport		<- "8088"
@@ -237,6 +241,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$emg$restarttime	<- 40
 
 	defdexpa$emg$startoptions	<- "-clean -uro"
+	defdexpa$emg$javaargs		<- "--add-opens=java.base/jdk.internal.ref=ALL-UNNAMED"
 	
 	### Raspberry Pi Cluster Settings #############################################
 	defdexpa$raspic$user <- "outsider"
@@ -251,14 +256,14 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
     defdexpa$opsim$control$rundir = "set opsim rundir"
 	defdexpa$opsim$control$jre = NA
 	defdexpa$opsim$control$args = "--module-path /usr/share/openjfx/lib --add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
-	defdexpa$opsim$control$jar = "iwes-opsim-mcp-gui-2.0.33-jar-with-dependencies.jar"
+	defdexpa$opsim$control$jar = "iwes-opsim-mcp-gui-2.0.38-jar-with-dependencies.jar"
 	defdexpa$opsim$control$logfile = "opsim.log"
 	
 	### Schedule Service Settings ############################################################
 	defdexpa$opsim$sservice = list()
 	defdexpa$opsim$sservice$rundir = "set schedule service rundir"
 	defdexpa$opsim$sservice$jre = NA
-	defdexpa$opsim$sservice$args = ""
+	defdexpa$opsim$sservice$args = "-add-opens=java.base/jdk.internal.ref=ALL-UNNAMED"
 	defdexpa$opsim$sservice$jar = "set jar for schedule service"
 	defdexpa$opsim$sservice$logfile = "sservice.log"
 	
@@ -283,6 +288,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$debug$input		<- NA
 	defdexpa$debug$output	<- NA
 	defdexpa$debug$fig		<- NA
+	defdexpa$debug$loginit <- F
 	
 	result <- modifyList(defdexpa, dexpa)
 	result

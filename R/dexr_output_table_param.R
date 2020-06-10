@@ -11,7 +11,7 @@ output_table_param_products <- function(dexpas, format="markdown", caption="Prod
 	for (dexpa in dexpas) {
 		products <- rbind(products, cbind("id" = dexpa$sim$id, input_db_param_products(dexpa)))
 	}
-	products$id = dexpa$fig$labelsubs[products$id]
+	products$id = if(!is.null(dexpa$fig$labelsubs[products$id])) dexpa$fig$labelsubs[products$id] else products$id
 	columns = c(
 			"id"							= "Run ID",
 			"description" 					= "Product",
@@ -30,9 +30,10 @@ output_table_param_products <- function(dexpas, format="markdown", caption="Prod
 		filename = paste(dexpa$dirs$output$tables, "/products_",  
 		                 paste(dexpa$files$filenameprefix, lapply(dexpas, function(x) x$sim$id), collapse="__"),
 		                 dexpa$files$filenamepostfix, ".csv", sep="")
+		futile.logger::flog.info("Write product configuration to %s", filename, name="dexr.output.table.param.products")
 		write.csv(products[, columns], file=filename, row.names=F)
 	} else {
-	  futile.logger::flog.info("Write product configuration to %s", filename, name="dexr.output.table.param.products")
+		futile.logger::flog.info("Output product configuration as markdown...", name="dexr.output.table.param.products")
 		knitr::kable(products[, names(columns)], format=format, caption = caption, 
 				col.names = c(columns))
 	}
@@ -88,13 +89,18 @@ output_table_param_clients <- function(dexpa, format="markdown", caption="Client
 				"priceOfferFluctuationGen" ="PfG", 
 				"averagePriceOfferGen"  ="PaG"
 		)
+		
+	if (all(is.na(data$nodes))) {
+		columns["nodes"] <- NULL
+	}
+		
 	if (format=="csv") {
 		shbasic::sh.ensurePath(dexpa$dirs$output$tables)
 		data <- data[, names(columns)]
 		
 		colnames(data) <- columns[colnames(data)]
 		filename = paste(dexpa$dirs$output$tables, "/clients_",  
-				paste(dexpa$files$filenameprefix, lapply(dexpas, function(x) x$sim$id), collapse="__"),
+				paste(dexpa$files$filenameprefix, dexpa$sim$id, collapse="__"),
 				dexpa$files$filenamepostfix, ".csv", sep="")
 		
 		futile.logger::flog.info("Write client configuration to %s", filename, name="dexr.output.table.param.clients")

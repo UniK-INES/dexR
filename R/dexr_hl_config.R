@@ -128,7 +128,11 @@ hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dex
 		futile.logger::flog.debug("Node-IDs in Param Config: %s", paramConfigs[i, "Nodes"], name="dexr.hl.config.clients")
 		
 		if (is.na(paramConfigs[i, "Nodes"])) paramConfigs[i, "Nodes"] <- 1
-		for (nodeid in strsplit(paramConfigs[i, "Nodes"], ";")[[1]]) {
+		
+		# TODO correct for one entry
+		for (nodeid in strsplit(as.character(paramConfigs[i, "Nodes"]), ";")[[1]]) {
+			futile.logger::flog.debug("Current node-ID %s", nodeid, name="dexr.hl.config.clients")
+			
 			clients = rawclients
 			dexpa$sim$nodeid <- as.numeric(nodeid)
 			clients$name <- adjust_client_id(dexpa, clients$name)
@@ -145,13 +149,20 @@ hl_config_clients2db <- function(dexpa, sourcedir = paste(dexpa$dirs$config, dex
 		}
 	}
 	
-	
-	
 	con <- input_db_getconnection(dexpa)
 	
 	colnames_clients = DBI::dbGetQuery(con, paste(
 					"select column_name from information_schema.columns where table_name= '", 
 					dexpa$db$tablenames$clients,"';", sep=""))
+	
+	if (!all(colnames_clients %in% colnames(allclients))) {
+		futile.logger::flog.info("%s not in %s (%s)...", 
+				colnames_clients,
+				colnames(allclients),
+				combine_sourcedirfile(sourcedir, sourcefile), 
+				name = "dexr.hl.config.backend")
+		#R.oo::throw.default("Missing columns in ", combine_sourcedirfile(sourcedir, sourcefile), "!")
+	}
 	
 	RPostgreSQL::dbWriteTable(con, dexpa$db$tablenames$clients, 
 			value=allclients[,colnames_clients$column_name], append=T, row.names=F)

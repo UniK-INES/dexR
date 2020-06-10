@@ -1,7 +1,7 @@
 #' Gnerates a figure of clearing at starttime
 #' 
 #' @param dexpa parameter list 
-#' @param starttime start time to consider
+#' @param starttime start time to consider in ms
 #' @param title figure title
 #' @param filename output filename
 #' @param dexpa_comp parameter list of run to compare with

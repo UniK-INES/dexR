@@ -22,9 +22,15 @@ input_db_param_products <- function(dexpa) {
 					WHERE 
 					p.product_id = mp.product_pattern_product_id;")
 	
+	futile.logger::flog.info("Obtained product information from database %s",
+			dexpa$db$dbname,
+			name = "dexr.input.db.param")
 	df_products$first_delivery_period_start <- ms_to_date(df_products$first_delivery_period_start, timezone="Europe/Berlin")
 	
 	DBI::dbDisconnect(con)
+	futile.logger::flog.info("Disconnected from database %s",
+			dexpa$db$dbname,
+			name = "dexr.input.db.param")
 	return(df_products)
 }
 #' Retrieve timing information from PostgreSQL database.

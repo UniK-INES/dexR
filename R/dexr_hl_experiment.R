@@ -62,6 +62,9 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 	paramConfigs = dexR::input_csv_configparam(dexpa)
 	if (nrow(paramConfigs) > 0 && any(!is.na(paramConfigs["dexprofile"]))) {
 		dexpa$server$profile <- paramConfigs[1, "dexprofile"]
+		futile.logger::flog.info("Applying profile %s from Param Config File...",
+				paramConfigs[1, "dexprofile"],
+				name = "dexr.hl.experiment")
 	}
 	if (nrow(paramConfigs) > 0 && any(!is.na(paramConfigs["dexparam"]))) {
 		dexpa$server$param <- paramConfigs[1, "dexparam"]
@@ -90,11 +93,13 @@ hl_experiment_bootbackend <- function(dexpa, basetime, offset, outfilesys) {
 				if (!is.null(dexpa$server$param)) dexpa$server$param, " ",
 				'-Dlogback.configuration.file="', dexpa$server$logconfigfile, '"',  sep="")
 		
-		futile.logger::flog.debug("System2 command is %s.",
-				paste("mvn", arguments),
+		env=c(paste("JAVA_HOME=", dexpa$server$javahome, ";", sep=""))
+		
+		futile.logger::flog.debug("System2 command is %s. Env: %s",
+				paste("mvn", arguments), paste(env),
 				name = "dexr.hl.experiment")
 		
-		system2(wait=FALSE, "mvn", args=arguments,
+		system2(wait=FALSE, "mvn", args=arguments, env=env,
 				stdout=outfilesys, stderr=outfilesys)
 	} else {
 		arguments = paste(
@@ -152,7 +157,8 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 	setwd(paste(dexpa$dirs$emgconfigtool, "/../..", sep=""))
 	
 	if (tools::file_ext(dexpa$files$paramconfigs)=="ods") {
-		paramConfigs <- readODS::read_ods(dexpa$files$paramconfigs, sheet = 1, col_names = TRUE, col_types = cols())
+		paramConfigs <- readODS::read_ods(dexpa$files$paramconfigs, sheet = 1, col_names = TRUE, col_types = readr::cols())
+		hpConfigs	<-  readODS::read_ods(dexpa$files$paramconfigs, sheet = 2, col_names = TRUE, col_types = readr::cols())
 	} else {
 		paramConfigs <- read.csv(dexpa$files$paramconfigs, header = TRUE, sep = ",", quote = "\"",
 				dec = ".", fill = TRUE, comment.char = "")
@@ -160,6 +166,7 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 	
 	# Check Runs.csv for requested simulation ID and node set ID:
 	idMatch <- which(dexpa$sim$id == paramConfigs$ID)
+	idMatchHP <- which(dexpa$sim$id == hpConfigs$ID)
 	
 	if(length(idMatch) > 1) {
 		# more than one Node Set ID per Simulation ID:
@@ -196,6 +203,13 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 				' -r "', paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'requestConfig']), sep=''), '"',
 				' -sc "',paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'ogemaConfig']), sep=''), '"',
 				' -pr "',paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, paramConfigs[idMatch,'windpvpricing']), sep=''), '"',
+				
+				' -hs "',paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, hpConfigs[idMatchHP,'heatPumpSimConfig']), sep=''), '"',
+				' -hd "',paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, hpConfigs[idMatchHP,'heatDemandSimConfig']), sep=''), '"',
+				' -hp "',paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, hpConfigs[idMatchHP,'heatPump']), sep=''), '"',
+				' -ht "',paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, hpConfigs[idMatchHP,'heatThermalStorage']), sep=''), '"',
+				' -hts "',paste(dexpa$dirs$config, '/', combine_sourcedirfile(dexpa$sim$id, hpConfigs[idMatchHP,'heatThermalStorageSim']), sep=''), '"',
+						
 				' -u "', dexpa$server$url, '"',
 				' -po "',dexpa$server$port, '"',
 				sep="")
@@ -222,6 +236,13 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 				' -r "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_RequestConfig_', dexpa$sim$id, '.csv', sep=''), '"',
 				' -sc "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_OgemaConfig_', dexpa$sim$id, '.csv', sep=''), '"',
 				' -pr "', paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_WindPvPricing_', dexpa$sim$id, '.csv', sep=''), '"',
+				
+				' -hs "',paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_HeatPumpSimConfig_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -hd "',paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_HeatDemandSimConfig_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -hp "',paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_HeatPump_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -ht "',paste(dexpa$dirs$config, '/', dexpa$sim$id, '/DEX_Param_HeatThermalStorage_', dexpa$sim$id, '.csv', sep=''), '"',
+				' -hts "',paste(dexpa$dirs$config, '/',dexpa$sim$id, '/DEX_Param_HeatThermalStorageSim_', dexpa$sim$id, '.csv', sep=''), '"',
+				
 				' -u "', dexpa$server$url, '"',
 				' -po "',dexpa$server$port, '"',
 				sep="")
@@ -233,8 +254,12 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 		
 	# copy static XML files:
 	for (f in dexpa$xml$staticfiles) {
-		file.copy(from = paste(dexpa$dirs$xmltemplatesstatic, f, sep="/"), to = paste(dexpa$dirs$config, "/", dexpa$sim$id, "_", 
-						dexpa$sim$nodeid, "/", sep=""),
+		futile.logger::flog.info("Copy static XML config files from %s to %s", 
+				paste(dexpa$dirs$xmltemplatesstatic, f, sep="/"),
+				paste(dexpa$dirs$config, "/", iddirpart, "/", sep=""),
+				name = "dexr.hl.experiment.emg")
+		file.copy(from = paste(dexpa$dirs$xmltemplatesstatic, f, sep="/"), 
+				to = paste(dexpa$dirs$config, "/", iddirpart, "/", sep=""),
 				overwrite = TRUE)
 	}
 }
@@ -299,13 +324,15 @@ hl_experiment_runemg <- function(dexpa, runemg = T, outfileemg = "", outfilesys 
 			dexpa$emg$port,
 			dexpa$emg$httpport,
 			dexpa$emg$propertiesfile,
-			paste('"',dexpa$emg$startoptions,'"', sep=""))
+			paste('"',dexpa$emg$startoptions,'"', sep=""),
+			if (dexpa$emg$javaargs != "") dexpa$emg$javaargs else NULL)
 	
 	futile.logger::flog.debug("Arguments when calling RunEMG: %s. Output to %s.", args, outfileemg,
 			name = "dexr.hl.experiment.emg")
 	
-	if (runemg) {	
-		system2(wait=FALSE, "java", args,
+	if (runemg) {
+		java <- if (is.na(dexpa$opsim$sservice$jre)) "java" else paste(dexpa$opsim$sservice$jre, "bin", "java", sep="/")
+		system2(wait=FALSE, java, args,
 				stdout=outfileemg, stderr=outfileemg)
 	
 		# https://www.rdocumentation.org/packages/sys/versions/1.5/topics/exec
@@ -386,20 +413,24 @@ hl_experiment_stopemg <- function(dexpa) {
 #' @author Sascha Holzhauer
 #' @export
 hl_experiment_ensureFileLogging <- function(dexpa, outputfile) {
-	if (outputfile != "") {
-		futile.logger::flog.info("Ensures path for %s...", outputfile,
-				name="dexr.hl.experiment")
-		shbasic::sh.ensurePath(outputfile, stripFilename = T)
-		con <- file(outputfile)
-		sink(con, append=TRUE)
-		sink(con, append=TRUE, type="message")
-		
-		futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
-				name="dexr.hl.experiment")
-		futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + 
-								round((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor), tz="CEST"),
-				name="dexr.hl.experiment.duration")
+	if (!dexpa$debug$loginit) {
+		if (outputfile != "") {
+			futile.logger::flog.info("Ensures path for %s...", outputfile,
+					name="dexr.hl.experiment")
+			shbasic::sh.ensurePath(outputfile, stripFilename = T)
+			con <- file(outputfile)
+			sink(con, append=TRUE)
+			sink(con, append=TRUE, type="message")
+			
+			futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
+					name="dexr.hl.experiment")
+			futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + 
+									round((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor), tz="CEST"),
+					name="dexr.hl.experiment.duration")
+		}
+		dexpa$debug$loginit <- T
 	}
+	return(dexpa)
 }
 #' Append current run information to runInfos file.
 #' @param dexpa 
@@ -461,13 +492,13 @@ hl_closeexperiment <- function(dexpa, outputfile = "", basetime, offset = round(
 			outputfile= if (is.null(dexpa$db$sshoutput)) "" else 
 						paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_", dexpa$db$sshoutput, ".log", sep=""))
 	
-	try(dexR::createFullReport(dexpa, outputfile = paste("StageA_FullReport_", dexpa$sim$id, ".pdf", sep="")))
+	if (dexpa$reports$do) {
+		try(dexR::createFullReport(dexpa, outputfile = paste("StageA_FullReport_", dexpa$sim$id, ".pdf", sep="")))
+	}
 	
 	server_shutdown(dexpa)
 	
 	if (outputfile != "") {
-		sink()
-		sink()
 		sink()
 		sink(type="message")
 	}
@@ -498,7 +529,7 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 		dexR::input_db_createdb(dexpa)
 	}
 	
-	dexR::hl_experiment_ensureFileLogging(dexpa, outputfile)
+	dexpa <- dexR::hl_experiment_ensureFileLogging(dexpa, outputfile)
 	
 	# whether there are multiple nodes needs to be checked before market backend configuration (client names):
 	nodesetids = dexR::input_csv_configparam(dexpa)[,"NodeSetId"]
@@ -521,7 +552,7 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 	for (nodesetid in nodesetids) {
 		# nodesetid = nodesetids[2]
 		dexpa$sim$notesetid <- nodesetid
-		nodeids = strsplit(dexR::input_csv_configparam(dexpa, checkNodeSetId = T)[,"Nodes"], ';', fixed=T)[[1]]	
+		nodeids = strsplit(as.character(dexR::input_csv_configparam(dexpa, checkNodeSetId = T)[,"Nodes"]), ';', fixed=T)[[1]]	
 		if (is.na(nodeids)) nodeids = c("")
 		
 		if (dexpa$sim$raspic) {

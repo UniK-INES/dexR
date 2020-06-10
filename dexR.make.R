@@ -6,7 +6,7 @@ full <- TRUE #required to update NAMESPACE by roxygen2
 # external command, operable program or batch file.
 
 pkgsName <- "dexR"
-setwd("/daten/INES/workspace/")
+setwd("~/git")
 
 #create(pkgsName)
 

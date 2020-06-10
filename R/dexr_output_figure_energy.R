@@ -219,6 +219,39 @@ output_figure_energy_requested_comp_sumByLoadGenByStartT <- function(dexpa, data
 					), ggplot2::guides(colour = ggplot2::guide_legend(ncol=1), linetype = ggplot2::guide_legend(ncol=1))
 			),  x_column = "start_time", returnplot = FALSE)
 }
+#' Output figure: Requested energy for specific status per location and submission time.
+#' 
+#' Requirement: Delivery periods of all products must be a multiple of the shortest delivery period (with start and end
+#' times matching those of the shortest delivery period product)!
+#' 
+#' @param dexpa 
+#' @param data 
+#' @return figure file
+#' @seealso \code{\link{output_figure_lines}}
+#' 
+#' @author Sascha Holzhauer
+#' @export
+output_figure_energy_status_comp_sumByLocationLoadGenByStartT <- function(dexpa, data, status="REQUESTED", ggplotaddons = NULL) {
+	
+	output_figure_lines(dexpa, data, 
+			y_column = "Energy", 
+			title = paste("Energy (", status, ") of requests by location, Gen/Load and delivery", sep=""),
+			colour_column = "id", colour_legendtitle = "Run ID",
+			linetype_column = "Type", linetype_legendtitle = "Type",
+			facet_column = "Location",
+			facet_ncol = 1, 
+			filename = paste(dexpa$fig$filenameprefix, "energy_", status, "_comp_SumByLocationDelivery_", 
+					shbasic::shbasic_condenseRunids(data[, "id"]), dexpa$fig$filenamepostfix, sep=""),
+			alpha=1.0, ggplotaddons = list(
+					ggplot2::xlab("Start time"),
+					ggplot2::ylab("Energy (kWh)"),
+					ggplot2::scale_x_datetime(),
+					ggplot2::theme(
+							legend.position = "bottom"
+					), ggplot2::guides(colour = ggplot2::guide_legend(ncol=1), linetype = ggplot2::guide_legend(ncol=1)),
+					ggplotaddons
+			),  x_column = "start_time", returnplot = FALSE)
+}
 #' Output figure: Requested generation energy per generation type and submission time and status.
 #' 
 #' Requirement: Delivery periods of all products must be a multiple of the shortest delivery period (with start and end

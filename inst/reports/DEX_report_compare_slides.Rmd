@@ -85,7 +85,7 @@ invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
 if (dexR::param_clientsdiffer_runs(dexpas)) {
   for (dp in dexpas) {
   	cat("\n### Client Information (", input_db_runID(dp), "){.allowframebreaks}\n", sep = "") 
-    dexR::output_table_param_clients(dp)
+    dexR::output_table_param_clients(dp, linespertable = 16)
   }
 } else {
   cat("\n### Client Information{.allowframebreaks}")

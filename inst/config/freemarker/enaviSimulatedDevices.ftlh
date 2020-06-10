@@ -11,6 +11,71 @@
         <path>enaviSimulatedDevices/${building.name}</path>
         <decorating>true</decorating>
         <active>true</active>
+		<resource>
+			<name>temperatureSensor</name>
+			<type>org.ogema.model.sensors.TemperatureSensor</type>
+			<path>enaviSimulatedDevices/${building.name}/temperatureSensor</path>
+			<decorating>true</decorating>
+			<active>true</active>
+		</resource>
+		
+		<resource xsi:type="og:FloatResource">
+			<name>heatCapacity</name>
+			<type>org.ogema.core.model.units.ThermalEnergyCapacityResource</type>
+			<path>enaviSimulatedDevices/${building.name}/heatCapacity</path>
+			<decorating>false</decorating>
+			<active>true</active>
+			<!-- typical range for a building: 2kWh/K to 15kWh/K -->
+			<value>${building.heatCapacity}</value>
+			<unit>J/K</unit>
+		</resource>
+
+		<resource>
+		    <name>energyDemand</name>
+		    <type>org.ogema.model.smartgriddata.ThermalEnergyRequest</type>
+		    <path>enaviSimulatedDevices/${building.name}/energyDemand</path>
+		    <decorating>true</decorating>
+		    <active>true</active>
+		</resource>
+
+		<resource xsi:type="og:ResourceList">
+			<path>enaviSimulatedDevices/${building.name}/heatConnections</path>
+			<type>org.ogema.core.model.ResourceList</type>
+			<elementType>org.ogema.model.connections.ThermalConnection</elementType>
+			<name>heatConnections</name>
+			<decorating>true</decorating>
+			<active>true</active>
+			<resourcelink>
+				<link>thermalStorages/${building.thermalStorage}/heatConnections/output</link>
+				<type>org.ogema.model.connections.ThermalConnection</type>
+				<name>inputStorage</name>
+			</resourcelink>
+		</resource>
+
+		<resource xsi:type="og:FloatResource">
+			<path>enaviSimulatedDevices/${building.name}/thermalLossFactor</path>
+			<type>org.ogema.core.model.units.PowerResource</type>
+			<name>thermalLossFactor</name>
+			<unit>W</unit>
+			<decorating>false</decorating>
+			<active>true</active>
+			<!-- factor 100 implies e.g. a heat loss of ca. 50kWh at 0°C outside temp and 20°C inside temp -->
+			<value>${building.thermalLossFactor}</value>
+		</resource>
+
+		<resource>
+		    <name>location</name>
+		    <type>org.ogema.model.locations.Location</type>
+		    <path>enaviSimulatedDevices/${building.name}/location</path>
+		    <decorating>false</decorating>
+		    <active>true</active>
+		    <resourcelink>
+		        <link>LocationKassel</link>
+		        <type>org.ogema.model.locations.GeographicLocation</type>
+		        <name>geographicLocation</name>
+		    </resourcelink>
+		</resource>
+
         <resource>
             <name>electricityConnection</name>
             <type>org.ogema.model.connections.ElectricityConnection</type>

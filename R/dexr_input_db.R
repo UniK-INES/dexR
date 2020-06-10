@@ -166,7 +166,7 @@ input_db_dropdbs <- function(dexpas) {
 		dexR::input_db_dropdb(dp)
 	}	
 }
-#' Genrate run ID string of the given database configuration.
+#' Generate run ID string of the given database configuration.
 #' @param dexpa 
 #' @return run ID string
 #' 

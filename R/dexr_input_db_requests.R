@@ -18,6 +18,7 @@ input_db_requests <- function(dexpa, additionalwhere="TRUE") {
 						m.submission_time,
 						m.id,
 						u.name 				AS username,
+						u.location			AS location,
 						e.cid,
 						e.start_time,
 						e.end_time,
@@ -46,7 +47,11 @@ input_db_requests <- function(dexpa, additionalwhere="TRUE") {
 	df_requests$submission_time <- ms_to_date(df_requests$submission_time, timezone="Europe/Berlin")
 	df_requests$start_time <- ms_to_date(df_requests$start_time, timezone="Europe/Berlin")
 	df_requests$end_time <- ms_to_date(df_requests$end_time, timezone="Europe/Berlin")
-		
+	
+	if (all(!is.na(dexpa$fig$labelsubs[df_requests$location]))) {
+		df_requests$location <- dexpa$fig$labelsubs[df_requests$location]
+	}
+	
 	DBI::dbDisconnect(con)
 	return(df_requests)
 }
@@ -77,10 +82,10 @@ input_db_requests_clearing <- function(dexpa, starttime=NULL){
 					to_timestamp(er.start_time/1000) start_time,
 					to_timestamp(er.end_time/1000) end_time
 					from market_energy_request mer, energy_request er
-					where mer.request_uid=er.uid AND",
-			if (!is.null(starttime)) paste("and er.start_time=", starttime, " ", sep="") else "",
-					"e.start_time >= ", dexpa$sim$starttime_min, " AND
-					e.start_time <= ", dexpa$sim$starttime_max,
+					where mer.request_uid=er.uid AND ",
+			if (!is.null(starttime)) paste("er.start_time=", starttime, " AND ", sep="") else "",
+					"er.start_time >= ", dexpa$sim$starttime_min, " AND
+					er.start_time <= ", dexpa$sim$starttime_max,
 					"order by start_time;"
 					,sep="");
 	

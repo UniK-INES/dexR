@@ -24,7 +24,7 @@ setwd(paste(dexpa$dirs$scripts, sep="/"))
 ## Products
 ```{r, eval=TRUE, results="asis", message=FALSE, error=FALSE, warning=FALSE, echo=FALSE}
 invisible(futile.logger::flog.threshold(futile.logger::ERROR, name='dexr'))
-dexR::output_table_param_products(dexpa)
+dexR::output_table_param_products(list(dexpa))
 invisible(futile.logger::flog.threshold(futile.logger::INFO, name='dexr'))
 ```
 ## Market Information

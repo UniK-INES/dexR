@@ -9,7 +9,9 @@
 #' 
 #' @author Sascha Holzhauer
 prepare_costdata_gini <- function(dexpas, data, type, normalise=F) {
-	shortestDelivery <- numbers::mGCD(unique(as.numeric(data$end_time) - as.numeric(data$start_time)))
+	
+	deliveries <- unique(as.numeric(data$end_time) - as.numeric(data$start_time))
+	shortestDelivery <- if (length(deliveries) == 1) deliveries else numbers::mGCD(deliveries)
 	
 	userdata <- list()
 	for (dexpa in dexpas) {

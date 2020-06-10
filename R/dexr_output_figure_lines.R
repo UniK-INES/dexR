@@ -39,7 +39,7 @@ output_figure_lines <- function(dexpa = dexpa, data = data, x_column= NULL, y_co
 		data[,linetype_column] <- as.factor(data[,linetype_column])
 	}
 	if (!is.null(facet_column)) {
-		data[,facet_column] <- as.factor(data[,facet_column])
+		if (!grepl("~",facet_column)) data[,facet_column] <- as.factor(data[,facet_column])
 	}
 
 	dexpa$fig$init(dexpa, outdir = paste(dexpa$dirs$output$figures, "lines", sep="/"), filename = filename)
@@ -74,7 +74,7 @@ output_figure_lines <- function(dexpa = dexpa, data = data, x_column= NULL, y_co
 	
 	facetElem = NULL
 	if (!is.null(facet_column)) {
-		facetElem <- ggplot2::facet_wrap(as.formula(paste("~", facet_column)), ncol = facet_ncol, scales="free_y")
+		facetElem <- ggplot2::facet_wrap(as.formula(paste("~", facet_column)), ncol = facet_ncol, scales=dexpa$fig$facet$scale)
 	}
 	
 	if (is.null(x_column)) {

@@ -1,5 +1,7 @@
 #' Create a report for the given <code>ids</code> based on the given <code>dexpa</code> (e.g. dumpdir).
 #' 
+#' Loads data from dumpfiles into database and drops these afterwards.
+#' 
 #' @param dexpa parameter object required for e.g. dump dir configuration 
 #' @param ids IDs of runs to compare
 #' @param reporttmpl template for report
@@ -9,7 +11,7 @@
 #' @author Sascha Holzhauer
 #' @export
 hl_reports_comp <- function(dexpa, ids, reporttmpl="DEX_report_compare_slides.Rmd",
-		outfileprefix = paste(dexpa$sim$project, "_ComparisonReport", sep="_"), clean=T) {
+		outfileprefix = paste(dexpa$sim$project, "_ComparisonReport", sep="_"), clean=T, dropdb = T) {
 	dexpas <- dexR::create_dexpas(ids, dexpa=dexpa)
 
 	dexR::input_db_dumps2db(dexpas)
@@ -20,5 +22,7 @@ hl_reports_comp <- function(dexpa, ids, reporttmpl="DEX_report_compare_slides.Rm
 		clean = clean)
 
 	## drop DBs:
-	dexR::input_db_dropdbs(dexpas)
+	if (dropdb) {
+		dexR::input_db_dropdbs(dexpas)
+	}
 }

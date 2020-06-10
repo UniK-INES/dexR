@@ -103,7 +103,7 @@ input_csv_configparam <- function(dexpa, columns=NULL, checkNodeSetId = F) {
 	if (is.null(paramConfigs)) {
 		if (tools::file_ext(dexpa$files$paramconfigs)=="ods") {
 			futile.logger::flog.info("Reading config ODS file %s", dexpa$files$paramconfigs, name = "dexr.hl.experiment")
-			paramConfigs <- readODS::read_ods(dexpa$files$paramconfigs, sheet = 1, col_types = cols())
+			paramConfigs <- readODS::read_ods(dexpa$files$paramconfigs, sheet = 1, col_types = readr::cols())
 		} else {
 			futile.logger::flog.info("Reading config CSV file %s", dexpa$files$paramconfigs, name = "dexr.hl.experiment")
 			paramConfigs <- read.csv(dexpa$files$paramconfigs, header = TRUE, sep = ",", quote = "\"",

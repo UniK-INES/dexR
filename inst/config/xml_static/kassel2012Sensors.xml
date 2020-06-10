@@ -53,4 +53,28 @@
             <unit>W/m²</unit>
         </resource>
     </resource>
+    <resource>
+        <name>location</name>
+        <type>org.ogema.model.locations.Location</type>
+        <path>kassel2012Sensors/location</path>
+        <decorating>false</decorating>
+        <active>true</active>
+        <resourcelink>
+            <link>LocationKassel</link>
+            <type>org.ogema.model.locations.GeographicLocation</type>
+            <name>geographicLocation</name>
+        </resourcelink>
+    </resource>
+    <resource>
+        <name>temperatureSensor</name>
+        <type>org.ogema.model.sensors.TemperatureSensor</type>
+        <path>kassel2012Sensors/temperatureSensor</path>
+        <decorating>true</decorating>
+        <active>true</active>
+        <resourcelink>
+            <link>kassel2012Sensors/temperatureSensor/reading</link>
+            <type>org.ogema.core.model.units.TemperatureResource</type>
+            <name>reading</name>
+        </resourcelink>
+    </resource>
 </og:resource>

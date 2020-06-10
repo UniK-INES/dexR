@@ -366,7 +366,7 @@ param_clientsdiffer_runs <- function(dexpas) {
 	for (i in 2:length(dexpas)) {
 		tocompare <- input_csv_clientdata(dexpas[[i]])
 		m <- sapply(list(df1 = clientdata, df2 = tocompare), sapply, class)
-		if (any(m[, "df1"] != m[, "df2"]) || !dplyr::all_equal(clientdata, tocompare)) {
+		if (any(m[, "df1"] != m[, "df2"]) || is.character(dplyr::all_equal(clientdata, tocompare))) {
 			return(TRUE)
 		}
 	}
