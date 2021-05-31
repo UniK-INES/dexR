@@ -20,7 +20,7 @@ Second, *dexR* has a dependency which currently cannot be installed automaticall
 ``devtools::install_bitbucket("S-Holzhauer/shbasic")``
 
 Finally, install *dexR*:  
-``devtools::install_bitbucket("uniks-ines/dexr@default")``
+``devtools::install_github("uniks-ines/dexr")``
 
 To build dexR from source and install it in your local repository, use one of the build scripts *dexR.make.R* or *dexR.make2.R*, e.g. on Windows `Rscript.exe dexR.make2.R`.
 

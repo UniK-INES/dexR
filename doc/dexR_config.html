@@ -12,7 +12,7 @@
 
 <meta name="author" content="Sascha Holzhauer" />
 
-<meta name="date" content="2020-06-05" />
+<meta name="date" content="2020-07-27" />
 
 <title>Configure experiments with dexR</title>
 
@@ -95,7 +95,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Configure experiments with dexR</h1>
 <h4 class="author">Sascha Holzhauer</h4>
-<h4 class="date">2020-06-05</h4>
+<h4 class="date">2020-07-27</h4>
 
 
 <div id="TOC">
@@ -119,7 +119,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <div id="setup-and-run-sample-project" class="section level1">
 <h1><span class="header-section-number">1</span> Setup and run sample project</h1>
-<p>First, in case you checked out the enavi project from the git repository, you should have the system environment variable <code>GIT_DIR</code> point to your local git repository which contains enavi, if it doesn’t do already:</p>
+<p>First, in case you checked out the enavi project from the git repository, you should have the system environment variable <code>GIT_DIR</code> point to your local git repository which contains enavi, if it doesn't do already:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">Sys.getenv</span>(<span class="st">&quot;GIT_DIR&quot;</span>)
 <span class="kw">Sys.setenv</span>(<span class="st">&quot;GIT_DIR&quot;</span>=<span class="st">&quot;&lt;path to git repositry including enavi projeckt, eg. ~/git&gt;&quot;</span>)</code></pre></div>
 <p>To create a sample project, execute:</p>
@@ -139,7 +139,7 @@ preserve<span class="op">$</span>dexpa<span class="op">$</span>db<span class="op
 <p>(setting via command line directly does not help as this is overridden by importing the dexpa parameter files afterwards).</p>
 <p>To run the sample project, call:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">demo</span>(run, <span class="dt">package=</span><span class="st">&quot;dexR&quot;</span>, <span class="dt">echo=</span>F)</code></pre></div>
-<p>NOTE: The demo files reside in the R session’s temporary folder and will be removed after closing R.</p>
+<p>NOTE: The demo files reside in the R session's temporary folder and will be removed after closing R.</p>
 </div>
 <div id="setup" class="section level1">
 <h1><span class="header-section-number">2</span> Setup</h1>
@@ -150,7 +150,7 @@ preserve<span class="op">$</span>dexpa<span class="op">$</span>db<span class="op
 dexpa<span class="op">$</span>dirs<span class="op">$</span>project &lt;-<span class="st"> &quot;&lt;substitute by path to project&gt;/project&quot;</span>
 dexpa<span class="op">$</span>dirs<span class="op">$</span>config  &lt;-<span class="st"> &quot;&lt;substitute by path to project&gt;/project/config&quot;</span>
 dexR<span class="op">::</span><span class="kw">setup_environment</span>(dexpa)</code></pre></div>
-<p>After execution of <code>dexR::setup_environment(dexpa)</code> the config folder should contain two config files (machine-specific and project-specific). It creates the folder as possible if not existing. Now it’s time to adapt <code>dexpa-project.R</code> and <code>dexpa-machine_machine.R</code> to your needs.</p>
+<p>After execution of <code>dexR::setup_environment(dexpa)</code> the config folder should contain two config files (machine-specific and project-specific). It creates the folder as possible if not existing. Now it's time to adapt <code>dexpa-project.R</code> and <code>dexpa-machine_machine.R</code> to your needs.</p>
 </div>
 <div id="setup-a-new-project-version" class="section level2">
 <h2><span class="header-section-number">2.2</span> Setup a new project version</h2>
@@ -388,7 +388,7 @@ dexpa<span class="op">$</span>debug<span class="op">$</span>fig     &lt;-<span c
 </div>
 <div id="db-configuration" class="section level2">
 <h2><span class="header-section-number">4.2</span> DB configuration</h2>
-<p>Requires a PostgreSQL-DB with following configuration (or changed parameters accordingly in <code>&lt;project&gt;/scripts/&lt;version&gt;/dexpa-pversion_&lt;version&gt;.R</code>) and extension pgcrypto (see documentation “Market Server DEX” &gt; “Installation and Configuration” &gt; “DB”).</p>
+<p>Requires a PostgreSQL-DB with following configuration (or changed parameters accordingly in <code>&lt;project&gt;/scripts/&lt;version&gt;/dexpa-pversion_&lt;version&gt;.R</code>) and extension pgcrypto (see documentation &quot;Market Server DEX&quot; &gt; &quot;Installation and Configuration&quot; &gt; &quot;DB&quot;).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dexpa<span class="op">$</span>db<span class="op">$</span>host       &lt;-<span class="st"> &quot;localhost&quot;</span>
 dexpa<span class="op">$</span>db<span class="op">$</span>port       &lt;-<span class="st"> &quot;5432&quot;</span>
 dexpa<span class="op">$</span>db<span class="op">$</span>dbname     &lt;-<span class="st"> &quot;dexr&quot;</span>

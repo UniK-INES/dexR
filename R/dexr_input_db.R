@@ -45,15 +45,28 @@ input_db_createdb <- function(dexpa) {
 }
 #' Imports the given dumpfile into the database configured in the given parameter object
 #' @param dexpa parameter object
+#' <ul><li>dexpa$db$dbname</li>
+#'     <li>dexpa$db$suname</li>
+#' 	   <li>dexpa$db$supassword</li>
+#' 	   <li>dexpa$db$dbname_template</li>
+#'     <li>dexpa$db$host</li>
+#'     <li>dexpa$db$port</li>	  
+#'     <li>dexpa$dirs$output$dbdumps</li>
+#' 	   <li>dexpa$db$username</li>
+#' </ul>
+#' 
 #' @param dumpfile dumpfile to import
 #' @return -
 #' 
 #' @author Sascha Holzhauer
 #' @export
 input_db_dump2db <- function(dexpa, dumpfile =  paste("dump_", dexpa$sim$id, sep="")) {
-	futile.logger::flog.info("Import dump %s to database %s..." ,
+	futile.logger::flog.info("Import dump %s to database %s, using template %s and user %s (password: %s)..." ,
 			dumpfile,
 			dexpa$db$dbname,
+			dexpa$db$dbname_template,
+			dexpa$db$suname,
+			dexpa$db$supassword,
 			name = "dexr.input.db.dump")
 	# Superuser required as long as other user does not have rights for new database:
 	Sys.setenv("PGPASSWORD"=dexpa$db$supassword)

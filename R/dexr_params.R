@@ -22,6 +22,7 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$sim$nodeids  <- 0
 	defdexpa$sim$duration			<- 2*60*60             # in sec
 	defdexpa$sim$timefactor			<- 60.0
+	defdexpa$sim$deliveryinterval   <- 15*60
 	
 	defdexpa$sim$raspic = F
 

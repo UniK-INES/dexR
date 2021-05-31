@@ -213,6 +213,121 @@ hl_figure_energy_status_comp_sumLoadGenByLocationAndStartT <- function(dexpas,
 				ggplotaddons = ggplotaddons)
 	}
 }
+#' Retrieves requests data from DB and creates figure of requested and accepted power by delivery start time
+#' 
+#' Facets: Location
+#' Colour: RunID
+#' LineType: Load/Generation  
+#' 
+#' In case stati = ALL_REQUESTED, requests are filtered according to product configurations:
+#' Single product, single auction: ACCEPTED, PARTYL_ACCEPTED, DECLINED
+#' Single product, multiple auctions: ACCEPTED, PARTYL_ACCEPTED (energy_accepted, last auction: energy_requested, DECLINED (last auction)
+#' Multiple products: ACCEPTED, PARTYL_ACCEPTED (actually, PARTLY_ACCEPTED (energy_requested) and DECLINED need to be considered for the last
+#' auction across products, which is not yet implemented).
+#' 
+#' @param dexpa  
+#' @return figure file
+#' 
+#' @author Sascha Holzhauer
+#' @export
+hl_figure_power_status_comp_sumLoadGenByLocationAndStartT <- function(dexpas, 
+		stati=c("ALL_REQUESTED", "ACCEPTED", "PARTLY_ACCEPTED", "DECLINED"),
+		ggplotaddons = NULL) {
+	data = data.frame()
+	# stati=c("ACCEPTED", "PARTLY_ACCEPTED")
+	for (dp in dexpas) {
+		# dp = dexpas[[1]]
+		d <- dexR::input_db_requests(dp)
+		if (nrow(d) == 0) {
+			# R.oo::throw.default("No requests in DB for ID ", dp$id, "!")
+			futile.logger::flog.warn("No requests retrieved from PostgreSQL database %s for ID %s!",
+					dp$db$dbname,
+					dp$id,
+					name = "dexr.hl.requests")
+		} else {
+			if ("ALL_REQUESTED" %in% stati) {
+				d <- dexR::requests_filter_data(dp, d)	
+			} else {
+				d$id <- dexR::input_db_runID(dp)	
+				d <- d[d$status %in% as.numeric(names(dexpa$naming$statuses[dexpa$naming$statuses %in% stati])),]
+				if ("DECLINED" %in% stati) {
+					# In this case, the not-accepted share of partly accepted is counted as well!
+					d[, "energy_accepted"] = d[, "energy_requested"]
+				}
+			}
+			data <- rbind(data, d)
+		}
+	}
+	#df <- data[data$id == data[1,"id"] & data$username == "n5_enavi02",]
+	if (nrow(data) > 0) {
+		data <- dexpa$sim$filter$requests(dexpas[[1]], data)
+		data <- dexR::map_requests2intervals_energy(dexpa, data, location = T)
+		
+		data <- dplyr::filter(data, Type!="Residual") %>% 
+				dplyr::rename(Power = Energy) %>% # Rename Energy to Power
+				dplyr::mutate(Power=Power*(60*60/dexpa$sim$deliveryinterval))
+		dexR::output_figure_power_status_comp_sumByLocationLoadGenByStartT(dexpas[[1]], data, status = paste(stati, sep="-"),
+				ggplotaddons = ggplotaddons)
+	}
+}
+#' Retrieves requests data from DB and creates figure of power balance by area/location
+#' by delivery start time
+#' 
+#' Facets: Location
+#' Colour: RunID
+#' LineType: Load/Generation  
+#' 
+#' In case stati = ALL_REQUESTED, requests are filtered according to product configurations:
+#' Single product, single auction: ACCEPTED, PARTYL_ACCEPTED, DECLINED
+#' Single product, multiple auctions: ACCEPTED, PARTYL_ACCEPTED (energy_accepted, last auction: energy_requested, DECLINED (last auction)
+#' Multiple products: ACCEPTED, PARTYL_ACCEPTED (actually, PARTLY_ACCEPTED (energy_requested) and DECLINED need to be considered for the last
+#' auction across products, which is not yet implemented).
+#' 
+#' @param dexpa  
+#' @return figure file
+#' 
+#' @author Sascha Holzhauer
+#' @export
+hl_figure_power_status_comp_sumBalanceByLocationAndStartT <- function(dexpas, 
+		stati=c("ALL_REQUESTED", "ACCEPTED", "PARTLY_ACCEPTED", "DECLINED"),
+		ggplotaddons = NULL) {
+	data = data.frame()
+	# stati=c("ACCEPTED", "PARTLY_ACCEPTED")
+	for (dp in dexpas) {
+		# dp = dexpas[[1]]
+		d <- dexR::input_db_requests(dp)
+		if (nrow(d) == 0) {
+			# R.oo::throw.default("No requests in DB for ID ", dp$id, "!")
+			futile.logger::flog.warn("No requests retrieved from PostgreSQL database %s for ID %s!",
+					dp$db$dbname,
+					dp$id,
+					name = "dexr.hl.requests")
+		} else {
+			if ("ALL_REQUESTED" %in% stati) {
+				d <- dexR::requests_filter_data(dp, d)	
+			} else {
+				d$id <- dexR::input_db_runID(dp)	
+				d <- d[d$status %in% as.numeric(names(dexpa$naming$statuses[dexpa$naming$statuses %in% stati])),]
+				if ("DECLINED" %in% stati) {
+					# In this case, the not-accepted share of partly accepted is counted as well!
+					d[, "energy_accepted"] = d[, "energy_requested"]
+				}
+			}
+			data <- rbind(data, d)
+		}
+	}
+	#df <- data[data$id == data[1,"id"] & data$username == "n5_enavi02",]
+	if (nrow(data) > 0) {
+		data <- dexpa$sim$filter$requests(dexpas[[1]], data)
+		data <- dexR::map_requests2intervals_energy(dexpa, data, location = T)
+		
+		data <- dplyr::filter(data, !(Type %in% c("Gen", "Load"))) %>% 
+				dplyr::rename(Power = Energy) %>% # Rename Energy to Power
+				dplyr::mutate(Power=Power*(60*60/dexpa$sim$deliveryinterval))
+		dexR::output_figure_power_status_comp_sumByLocationBalanceByStartT(dexpas[[1]], data, status = paste(stati, sep="-"),
+				ggplotaddons = ggplotaddons)
+	}
+}
 #' Retrieves requests data from DB and creates figure of requested energy from generation by generation type 
 #' and delivery start time.
 #' 

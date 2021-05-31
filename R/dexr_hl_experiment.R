@@ -180,6 +180,14 @@ hl_experiment_configemg <- function(dexpa, outfilesys = "") {
 				paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""),
 				name = "dexr.hl.experiment.runemg")
 	}
+	
+	if(is.na(idMatchHP)) {
+		futile.logger::flog.warn("ID %s not present in Heat Pump config table (%s)!", 
+				dexpa$sim$id, 
+				dexpa$files$paramconfigs,
+				paste(dexpa$dirs$config, "/", dexpa$sim$id, sep=""),
+				name = "dexr.hl.experiment.runemg")
+	}
 
 	iddirpart <- if(length(dexpa$sim$nodeids) > 1) paste(dexpa$sim$id, "_", dexpa$sim$nodeid, sep="") else dexpa$sim$id
 	clientprefix <- if(length(dexpa$sim$nodeids) > 1) paste("n", dexpa$sim$nodeid, "_", sep="") else ""
@@ -518,6 +526,17 @@ hl_experiment <- function(dexpa, basetime = as.numeric(round(Sys.time(),"mins"))
 	
 	futile.logger::flog.info("Perform experiment for %s (output to %s)...", dexpa$sim$id, outputfile,
 			name="dexr.hl.experiment")
+	
+	if (as.numeric(Sys.time())*1000 > basetime) {
+		decision <- svDialogs::dlg_message(paste("Basetime is in past. This may cause anomalies!", sep= ""), 
+				"okcancel")$res
+		if (decision == "cancel") {
+			futile.logger::flog.warn("Program canceled.", 
+					name = "dexr.hl.opsim")
+			stop("Program canceled.")
+		}
+	}
+	
 	futile.logger::flog.info("Expected to finish at about %s.", format(Sys.time() + 
 							round((dexpa$sim$duration + dexpa$sim$firstdeliverystart$delay)/dexpa$sim$timefactor), tz="CEST"),
 			name="dexr.hl.experiment.duration")

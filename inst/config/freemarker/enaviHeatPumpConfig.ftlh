@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<og:resource xmlns:og="http://www.ogema-source.net/REST" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="og:ResourceList">
+	<name>heatpumps</name>
+    <type>org.ogema.core.model.ResourceList</type>
+    <path>heatpumps</path>
+    <decorating>false</decorating>
+    <active>true</active>
+    <#list hps as heatpump>
+	<resource>
+		<name>${heatpump.name}</name>
+		<type>org.ogema.model.devices.generators.HeatPump</type>
+		<path>heatpumps/${heatpump.name}</path>
+		<decorating>false</decorating>
+		<active>true</active>
+		<resource>
+			<name>electricityConnection</name>
+			<type>org.ogema.model.connections.ElectricityConnection</type>
+			<path>heatpumps/${heatpump.name}/electricityConnection</path>
+			<decorating>false</decorating>
+			<active>true</active>
+			<resource>
+				<name>powerSensor</name>
+				<type>org.ogema.model.sensors.ElectricPowerSensor</type>
+				<path>heatpumps/${heatpump.name}/electricityConnection/powerSensor</path>
+				<decorating>false</decorating>
+				<active>true</active>
+				<resource>
+					<name>ratedValues</name>
+					<type>org.ogema.model.ranges.PowerRange</type>
+					<path>heatpumps/${heatpump.name}/electricityConnection/powerSensor/ratedValues</path>
+					<decorating>false</decorating>
+					<active>true</active>
+					<resource xsi:type="og:FloatResource">
+						<path>heatpumps/${heatpump.name}/electricityConnection/powerSensor/ratedValues/upperLimit</path>
+						<type>org.ogema.core.model.units.PowerResource</type>
+						<name>upperLimit</name>
+						<unit>W</unit>
+						<decorating>false</decorating>
+						<active>true</active>
+						<value>${heatpump.upperLimit}</value><!-- 10kW -->
+					</resource>
+				</resource>
+			</resource>
+		</resource>
+		<resource>
+			<name>thermalConnection</name>
+			<type>org.ogema.model.connections.ThermalConnection</type>
+			<path>heatpumps/${heatpump.name}/thermalConnection</path>
+			<decorating>false</decorating>
+			<active>true</active>
+			<resource>
+				<name>powerSensor</name>
+				<type>org.ogema.model.sensors.ThermalPowerSensor</type>
+				<path>heatpumps/${heatpump.name}/thermalConnection/powerSensor</path>
+				<decorating>false</decorating>
+				<active>true</active>
+				<resource xsi:type="og:FloatResource">
+					<path>heatpumps/${heatpump.name}/thermalConnection/powerSensor/reading</path>
+					<type>org.ogema.core.model.units.PowerResource</type>
+					<name>reading</name>
+					<unit>W</unit>
+					<decorating>false</decorating>
+					<active>false</active>
+					<value>0</value>
+				</resource>
+			</resource>
+		</resource>
+	</resource>
+    </#list>
+	<elementType>org.ogema.model.devices.generators.HeatPump</elementType>
+</og:resource>

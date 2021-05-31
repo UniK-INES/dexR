@@ -12,7 +12,7 @@
 
 <meta name="author" content="Sascha Holzhauer" />
 
-<meta name="date" content="2020-06-05" />
+<meta name="date" content="2020-07-27" />
 
 <title>Introduction to dexR</title>
 
@@ -95,7 +95,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to dexR</h1>
 <h4 class="author">Sascha Holzhauer</h4>
-<h4 class="date">2020-06-05</h4>
+<h4 class="date">2020-07-27</h4>
 
 
 <div id="TOC">
@@ -115,7 +115,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#debugginglogging"><span class="toc-section-number">6</span> Debugging/Logging</a></li>
 <li><a href="#troubleshooting"><span class="toc-section-number">7</span> Troubleshooting</a><ul>
 <li><a href="#error-messages"><span class="toc-section-number">7.1</span> Error Messages</a><ul>
-<li><a href="#dexr-terminates-saying-rs-dbi-driver-could-not-retrieve-the-result-error-duplicate-key-value-violates-unique-constraint-user_account_pkey"><span class="toc-section-number">7.1.1</span> dexR terminates saying ‘RS-DBI driver: (could not Retrieve the result : ERROR: duplicate key value violates unique constraint “user_account_pkey”’</a></li>
+<li><a href="#dexr-terminates-saying-rs-dbi-driver-could-not-retrieve-the-result-error-duplicate-key-value-violates-unique-constraint-user_account_pkey"><span class="toc-section-number">7.1.1</span> dexR terminates saying 'RS-DBI driver: (could not Retrieve the result : ERROR: duplicate key value violates unique constraint &quot;user_account_pkey&quot;'</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -131,7 +131,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="concept" class="section level1">
 <h1><span class="header-section-number">2</span> Concept</h1>
-<p>The package provides various functions to configure and run experiments, load data from db and XML configuration files, convert, and finally visualise it. Therefore, in a chain of production these functions need to be combined. At the same time, there are a number of high level functions which integrate the more basic functions but leave less scope for customisation. These high level functions start with ‘hl’.</p>
+<p>The package provides various functions to configure and run experiments, load data from db and XML configuration files, convert, and finally visualise it. Therefore, in a chain of production these functions need to be combined. At the same time, there are a number of high level functions which integrate the more basic functions but leave less scope for customisation. These high level functions start with 'hl'.</p>
 </div>
 <div id="configuration-and-simulation-course" class="section level1">
 <h1><span class="header-section-number">3</span> Configuration and Simulation Course</h1>
@@ -193,8 +193,8 @@ dexpa<span class="op">$</span>db<span class="op">$</span>password       &lt;-<sp
 dexpa<span class="op">$</span>db<span class="op">$</span>suname         &lt;-<span class="st"> &quot;postgres&quot;</span>
 dexpa<span class="op">$</span>db<span class="op">$</span>supassword     &lt;-<span class="st"> &quot;supassword&quot;</span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
-<li><p>The script then includes a project-version-specific file <code>dexpa-pversion.R</code> (e.g. image resolutions)</p></li>
-<li><p>The script itself may then override particular parameter values with experiment-specific properties (e.g. runID).</p></li>
+<li><p>The script then includes a project-version-specific file <code>dexpa-pversion.R</code> (e.g. image resolutions)</p></li>
+<li><p>The script itself may then override particular parameter values with experiment-specific properties (e.g. runID).</p></li>
 </ol>
 <p>Consequently, one can define parameters on four different levels: project &gt; machine &gt; project version &gt; simulation.</p>
 <p>Using the parameter set during an initial execution of the machine-dependent scripts at startup, each script using dexR should load the <code>dexpa</code> code anew. During that process, the entire <code>dexpa</code> list including all possible changes are removed from memory and loaded anew. Following above suggestions, a script first loading the setting/scenario specific <code>dexpa.R</code> would look like this:</p>
@@ -243,7 +243,7 @@ futile.logger<span class="op">::</span><span class="kw">flog.threshold</span>(fu
 <div id="error-messages" class="section level2">
 <h2><span class="header-section-number">7.1</span> Error Messages</h2>
 <div id="dexr-terminates-saying-rs-dbi-driver-could-not-retrieve-the-result-error-duplicate-key-value-violates-unique-constraint-user_account_pkey" class="section level3">
-<h3><span class="header-section-number">7.1.1</span> dexR terminates saying ‘RS-DBI driver: (could not Retrieve the result : ERROR: duplicate key value violates unique constraint “user_account_pkey”’</h3>
+<h3><span class="header-section-number">7.1.1</span> dexR terminates saying 'RS-DBI driver: (could not Retrieve the result : ERROR: duplicate key value violates unique constraint &quot;user_account_pkey&quot;'</h3>
 <p>Usually, a previous instance of the market server is still running.</p>
 </div>
 </div>

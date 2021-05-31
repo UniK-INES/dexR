@@ -14,6 +14,7 @@ hl_opsim_runnetsim(dexpa, outfilenetsim = paste(dexpa$dirs$output$logs,
 }
 \value{
 run panda power
+stringi::stri_startswith_fixed(sourcefile
 }
 \description{
 Run panda power net simulation in python

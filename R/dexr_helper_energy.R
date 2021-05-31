@@ -73,8 +73,7 @@ map_requests2intervals_energy <- function(dexpa, data, location=F) {
 	
 	data <- plyr::ddply(data, c("id"), function(df) {
 		# df <- data[data$id == unique(data[,"id"])[1],]
-		# df <- data[data$id == data[1,"id"] & data$username == "n5_enavi02",]
-
+		
 		minStartTime 	 <- min(df$start_time)
 		maxEndTime		 <- max(df$end_time)
 		
@@ -105,6 +104,13 @@ map_requests2intervals_energy <- function(dexpa, data, location=F) {
 			d$Type <- as.factor(d$Type)
 			d$location <- as.factor(d$location)
 			#d2 <- reshape2::dcast(setDF(d), start_time~Type~location, sum)
+
+			# calculate residuals:
+			d %>% tidyr::spread(key = Type, value = Value) %>% 
+					dplyr::mutate(Residual=Load+Gen) %>% 
+					dplyr::mutate(Gen = abs(Gen), start_time = lubridate::int_start(intervals[start_time])) %>%
+					tidyr::gather(key = Type, value = Value, -start_time, -location) %>%
+					dplyr::rename(Location = location, Energy = Value)
 		} else {
 			result = expand.grid(Type=types, start_time=1:length(intervals), stringsAsFactors = F)
 			d <- data.table(result, key=c("Type", "start_time"))
@@ -117,12 +123,13 @@ map_requests2intervals_energy <- function(dexpa, data, location=F) {
 			
 			d$Type <- as.factor(d$Type)
 			#d2 <- reshape2::dcast(setDF(d), start_time~Type, sum)
+	
+			# calculate residuals:
+			d %>% tidyr::spread(key = Type, value = Value) %>% 
+					dplyr::mutate(Residual=Load+Gen) %>% 
+					dplyr::mutate(Gen = abs(Gen), start_time = lubridate::int_start(intervals[start_time])) %>%
+					tidyr::gather(key = Type, value = Value, -start_time) %>%
+					dplyr::rename(Energy = Value)
 		}
-		# calculate residuals:
-		d %>% tidyr::spread(key = Type, value = Value) %>% 
-				dplyr::mutate(Residual=Load+Gen) %>% 
-				dplyr::mutate(Gen = abs(Gen), start_time = lubridate::int_start(intervals[start_time])) %>%
-				tidyr::gather(key = Type, value = Value, -start_time, -location) %>%
-				dplyr::rename(Location = location, Energy = Value)
 	})
 }

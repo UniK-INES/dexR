@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><og:resource xmlns:og="http://www.ogema-source.net/REST" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <name>PropertyLocation</name>
+    <type>org.ogema.model.locations.GeographicLocation</type>
+    <path>LocationKassel</path>
+    <decorating>false</decorating>
+    <active>true</active>
+    <resource xsi:type="og:IntegerResource">
+        <name>longitudeFullDegrees</name>
+        <type>org.ogema.core.model.simple.IntegerResource</type>
+        <path>PropertyLocation/longitudeFullDegrees</path>
+        <decorating>false</decorating>
+        <active>true</active>
+        <value>9</value>
+    </resource>
+    <resource xsi:type="og:FloatResource">
+        <name>longitudeArcMinutes</name>
+        <type>org.ogema.core.model.simple.FloatResource</type>
+        <path>PropertyLocation/longitudeArcMinutes</path>
+        <decorating>false</decorating>
+        <active>true</active>
+        <value>30.0</value>
+    </resource>
+    <resource xsi:type="og:FloatResource">
+        <name>latitudeArcMinutes</name>
+        <type>org.ogema.core.model.simple.FloatResource</type>
+        <path>PropertyLocation/latitudeArcMinutes</path>
+        <decorating>false</decorating>
+        <active>true</active>
+        <value>19.0</value>
+    </resource>
+    <resource xsi:type="og:IntegerResource">
+        <name>latitudeFullDegrees</name>
+        <type>org.ogema.core.model.simple.IntegerResource</type>
+        <path>PropertyLocation/latitudeFullDegrees</path>
+        <decorating>false</decorating>
+        <active>true</active>
+        <value>51</value>
+    </resource>
+</og:resource>

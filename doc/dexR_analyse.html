@@ -12,7 +12,7 @@
 
 <meta name="author" content="Sascha Holzhauer" />
 
-<meta name="date" content="2020-06-05" />
+<meta name="date" content="2020-07-27" />
 
 <title>Analysing Simulations with dexR</title>
 
@@ -96,7 +96,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Analysing Simulations with dexR</h1>
 <h4 class="author">Sascha Holzhauer</h4>
-<h4 class="date">2020-06-05</h4>
+<h4 class="date">2020-07-27</h4>
 
 
 <div id="TOC">
@@ -124,7 +124,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <div id="comparing-runsscenarios" class="section level1">
 <h1><span class="header-section-number">1</span> Comparing Runs/Scenarios</h1>
-<p>The generic way of comparing data of several simulation runs, i.e. combining the data to visualise in one plot, is the following:</p>
+<p>The generic way of comparing data of several simulation runs, i.e. combining the data to visualise in one plot, is the following:</p>
 <ol style="list-style-type: decimal">
 <li>For each data set to compare
 <ul>
@@ -167,11 +167,11 @@ dexpa<span class="op">$</span>db<span class="op">$</span>supassword     &lt;-<sp
 <pre><code>## Lade nötiges Paket: DBI</code></pre>
 <pre><code>## knitr hook &quot;anchor&quot; is now available</code></pre>
 <pre><code>## Welcome to shbasic</code></pre>
-<p>INFO [2020-06-05 12:28:07] Import dump dump_enavi_07-08 to database enavi_07-08… INFO [2020-06-05 12:28:08] Importing dump completed INFO [2020-06-05 12:28:08] Import dump dump_enavi_07-09 to database enavi_07-09… INFO [2020-06-05 12:28:09] Importing dump completed INFO [2020-06-05 12:28:09] Retrieve clearing data from PostgreSQL database enavi_07-08 WARN [2020-06-05 12:28:09] DB contains no clearing information (table clearing_info) for DB enavi_07-08 for start between 20/11/69 08:00:00 and 10/03/71 08:00:00! INFO [2020-06-05 12:28:09] Retrieve clearing data from PostgreSQL database enavi_07-09 WARN [2020-06-05 12:28:09] DB contains no clearing information (table clearing_info) for DB enavi_07-09 for start between 20/11/69 08:00:00 and 10/03/71 08:00:00! WARN [2020-06-05 12:28:09] No clearing information (table clearing_info) retrieved from PostgreSQL databases enavi_07-08/enavi_07-09 for IDs NULL/NULL! INFO [2020-06-05 12:28:09] Drop database enavi_07-08… INFO [2020-06-05 12:28:09] Database enavi_07-08 dropped. INFO [2020-06-05 12:28:09] Drop database enavi_07-09… INFO [2020-06-05 12:28:09] Database enavi_07-09 dropped.</p>
+<p>INFO [2020-07-27 13:32:50] Import dump dump_enavi_07-08 to database enavi_07-08... INFO [2020-07-27 13:32:55] Importing dump completed INFO [2020-07-27 13:32:55] Import dump dump_enavi_07-09 to database enavi_07-09... INFO [2020-07-27 13:32:56] Importing dump completed INFO [2020-07-27 13:32:56] Retrieve clearing data from PostgreSQL database enavi_07-08 WARN [2020-07-27 13:32:56] DB contains no clearing information (table clearing_info) for DB enavi_07-08 for start between 20/11/69 08:00:00 and 10/03/71 08:00:00! INFO [2020-07-27 13:32:56] Retrieve clearing data from PostgreSQL database enavi_07-09 WARN [2020-07-27 13:32:56] DB contains no clearing information (table clearing_info) for DB enavi_07-09 for start between 20/11/69 08:00:00 and 10/03/71 08:00:00! WARN [2020-07-27 13:32:56] No clearing information (table clearing_info) retrieved from PostgreSQL databases enavi_07-08/enavi_07-09 for IDs NULL/NULL! INFO [2020-07-27 13:32:56] Drop database enavi_07-08... INFO [2020-07-27 13:32:56] Database enavi_07-08 dropped. INFO [2020-07-27 13:32:56] Drop database enavi_07-09... INFO [2020-07-27 13:32:56] Database enavi_07-09 dropped.</p>
 </div>
 <div id="number-of-considered-requests-per-clearing-by-clearing-time" class="section level3">
 <h3><span class="header-section-number">3.3.2</span> Number of considered requests per clearing by clearing time</h3>
-<p>INFO [2020-06-05 12:28:09] Import dump dump_enavi_07-08 to database enavi_07-08… INFO [2020-06-05 12:28:10] Importing dump completed INFO [2020-06-05 12:28:10] Import dump dump_enavi_07-09 to database enavi_07-09… INFO [2020-06-05 12:28:11] Importing dump completed INFO [2020-06-05 12:28:11] Retrieve clearing data from PostgreSQL database enavi_07-08 WARN [2020-06-05 12:28:11] DB contains no clearing information (table clearing_info) for DB enavi_07-08 for start between 20/11/69 08:00:00 and 10/03/71 08:00:00! INFO [2020-06-05 12:28:11] Retrieve clearing data from PostgreSQL database enavi_07-09 WARN [2020-06-05 12:28:11] DB contains no clearing information (table clearing_info) for DB enavi_07-09 for start between 20/11/69 08:00:00 and 10/03/71 08:00:00! WARN [2020-06-05 12:28:11] No clearing information (table clearing_info) retrieved from PostgreSQL databases enavi_07-08/enavi_07-09 for IDs NULL/NULL! INFO [2020-06-05 12:28:11] Drop database enavi_07-08… INFO [2020-06-05 12:28:12] Database enavi_07-08 dropped. INFO [2020-06-05 12:28:12] Drop database enavi_07-09… INFO [2020-06-05 12:28:12] Database enavi_07-09 dropped.</p>
+<p>INFO [2020-07-27 13:32:56] Import dump dump_enavi_07-08 to database enavi_07-08... INFO [2020-07-27 13:32:57] Importing dump completed INFO [2020-07-27 13:32:57] Import dump dump_enavi_07-09 to database enavi_07-09... INFO [2020-07-27 13:32:58] Importing dump completed INFO [2020-07-27 13:32:58] Retrieve clearing data from PostgreSQL database enavi_07-08 WARN [2020-07-27 13:32:58] DB contains no clearing information (table clearing_info) for DB enavi_07-08 for start between 20/11/69 08:00:00 and 10/03/71 08:00:00! INFO [2020-07-27 13:32:58] Retrieve clearing data from PostgreSQL database enavi_07-09 WARN [2020-07-27 13:32:58] DB contains no clearing information (table clearing_info) for DB enavi_07-09 for start between 20/11/69 08:00:00 and 10/03/71 08:00:00! WARN [2020-07-27 13:32:58] No clearing information (table clearing_info) retrieved from PostgreSQL databases enavi_07-08/enavi_07-09 for IDs NULL/NULL! INFO [2020-07-27 13:32:58] Drop database enavi_07-08... INFO [2020-07-27 13:32:58] Database enavi_07-08 dropped. INFO [2020-07-27 13:32:58] Drop database enavi_07-09... INFO [2020-07-27 13:32:58] Database enavi_07-09 dropped.</p>
 </div>
 </div>
 <div id="comparisons-requests" class="section level2">
