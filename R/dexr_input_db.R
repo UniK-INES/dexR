@@ -6,8 +6,10 @@
 #' @export
 input_db_getconnection <- function(dexpa) {
 	
-	futile.logger::flog.debug("Retrieve connection from PostgreSQL database %s",
+	futile.logger::flog.debug("Retrieve connection from PostgreSQL database %s for user %s at host %s",
 			dexpa$db$dbname,
+			dexpa$db$username,
+			dexpa$db$host,
 			name = "dexr.input.db")
 	
 	drv <- DBI::dbDriver("PostgreSQL")
