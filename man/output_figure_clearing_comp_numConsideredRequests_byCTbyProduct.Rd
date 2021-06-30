@@ -4,8 +4,11 @@
 \alias{output_figure_clearing_comp_numConsideredRequests_byCTbyProduct}
 \title{Output figure: Number of considered requests per clearing and run ID by clearing time. Adds a legend for run ID.}
 \usage{
-output_figure_clearing_comp_numConsideredRequests_byCTbyProduct(dexpa,
-  data, filename = "dex_clearing_comp_numConsRequestsByCTbyProduct")
+output_figure_clearing_comp_numConsideredRequests_byCTbyProduct(
+  dexpa,
+  data,
+  filename = "dex_clearing_comp_numConsRequestsByCTbyProduct"
+)
 }
 \arguments{
 \item{dexpa}{}

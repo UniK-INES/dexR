@@ -4,8 +4,12 @@
 \alias{createFullReport}
 \title{Create the full report}
 \usage{
-createFullReport(dexpa, outputfile, rmdfile = "DEX_report_full.Rmd",
-  output_dir = dexpa$dirs$output$reports)
+createFullReport(
+  dexpa,
+  outputfile,
+  rmdfile = "DEX_report_full.Rmd",
+  output_dir = dexpa$dirs$output$reports
+)
 }
 \arguments{
 \item{dexpa}{parameter object}

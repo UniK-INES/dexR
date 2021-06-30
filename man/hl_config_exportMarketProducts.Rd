@@ -4,8 +4,11 @@
 \alias{hl_config_exportMarketProducts}
 \title{Export market products from DB to CSV file.}
 \usage{
-hl_config_exportMarketProducts(dexpa, dexpa_template,
-  targetdir = paste(dexpa$dirs$config, dexpa$sim$id, sep = "/"))
+hl_config_exportMarketProducts(
+  dexpa,
+  dexpa_template,
+  targetdir = paste(dexpa$dirs$config, dexpa$sim$id, sep = "/")
+)
 }
 \arguments{
 \item{dexpa}{the new configuration (relevant for config folder to store CSV file in)}

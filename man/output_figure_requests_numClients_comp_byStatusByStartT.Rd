@@ -4,8 +4,12 @@
 \alias{output_figure_requests_numClients_comp_byStatusByStartT}
 \title{Output figure: Number of submitting clients per submission time and status.}
 \usage{
-output_figure_requests_numClients_comp_byStatusByStartT(dexpa, data,
-  filename = "dex_requests_numClients_byStatusByST", skiplegend = F)
+output_figure_requests_numClients_comp_byStatusByStartT(
+  dexpa,
+  data,
+  filename = "dex_requests_numClients_byStatusByST",
+  skiplegend = F
+)
 }
 \arguments{
 \item{dexpa}{}

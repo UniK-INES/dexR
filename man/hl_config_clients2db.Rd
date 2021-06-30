@@ -5,8 +5,11 @@
 \title{Stores client and role data from CSV file to PostGreSQL database.
 The database tables are _not_ emptied before submission.}
 \usage{
-hl_config_clients2db(dexpa, sourcedir = paste(dexpa$dirs$config,
-  dexpa$sim$id, sep = "/"), paramConfigs)
+hl_config_clients2db(
+  dexpa,
+  sourcedir = paste(dexpa$dirs$config, dexpa$sim$id, sep = "/"),
+  paramConfigs
+)
 }
 \arguments{
 \item{dexpa}{}

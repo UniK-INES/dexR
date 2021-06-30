@@ -4,9 +4,12 @@
 \alias{output_figure_requests_numRequests_comp_byProductBySubmT}
 \title{Output figure: Number of considered requests by submission time and product.}
 \usage{
-output_figure_requests_numRequests_comp_byProductBySubmT(dexpa, data,
+output_figure_requests_numRequests_comp_byProductBySubmT(
+  dexpa,
+  data,
   filename = "dex_requests_numRequests_byProductBySubmT",
-  skiplegend = F)
+  skiplegend = F
+)
 }
 \arguments{
 \item{dexpa}{}

@@ -3,7 +3,6 @@
 \docType{package}
 \name{dexR}
 \alias{dexR}
-\alias{dexR-package}
 \title{DexR}
 \description{
 The package offers deployment and anlyses methods for DEX.

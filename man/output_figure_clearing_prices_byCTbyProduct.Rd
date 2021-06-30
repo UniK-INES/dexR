@@ -4,8 +4,11 @@
 \alias{output_figure_clearing_prices_byCTbyProduct}
 \title{Output figure: Cleared price per clearing by clearing time and product (colour).}
 \usage{
-output_figure_clearing_prices_byCTbyProduct(dexpa, data,
-  filename = "dex_clearing_clearedPriceByCTbyProduct")
+output_figure_clearing_prices_byCTbyProduct(
+  dexpa,
+  data,
+  filename = "dex_clearing_clearedPriceByCTbyProduct"
+)
 }
 \arguments{
 \item{dexpa}{}

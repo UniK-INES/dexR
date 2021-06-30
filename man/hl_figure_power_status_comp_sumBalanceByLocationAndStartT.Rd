@@ -5,9 +5,11 @@
 \title{Retrieves requests data from DB and creates figure of power balance by area/location
 by delivery start time}
 \usage{
-hl_figure_power_status_comp_sumBalanceByLocationAndStartT(dexpas,
+hl_figure_power_status_comp_sumBalanceByLocationAndStartT(
+  dexpas,
   stati = c("ALL_REQUESTED", "ACCEPTED", "PARTLY_ACCEPTED", "DECLINED"),
-  ggplotaddons = NULL)
+  ggplotaddons = NULL
+)
 }
 \arguments{
 \item{dexpa}{}

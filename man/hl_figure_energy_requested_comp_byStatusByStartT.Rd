@@ -5,8 +5,11 @@
 \title{Retrieves requests data from DB and creates figure of requested energy per 
 status by delivery start time.}
 \usage{
-hl_figure_energy_requested_comp_byStatusByStartT(dexpas, skiplegend = F,
-  type = "residual")
+hl_figure_energy_requested_comp_byStatusByStartT(
+  dexpas,
+  skiplegend = F,
+  type = "residual"
+)
 }
 \arguments{
 \item{dexpa}{}

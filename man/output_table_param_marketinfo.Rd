@@ -4,8 +4,11 @@
 \alias{output_table_param_marketinfo}
 \title{Provides markdown formated table of timing information.}
 \usage{
-output_table_param_marketinfo(dexpa, format = "markdown",
-  caption = "Market information")
+output_table_param_marketinfo(
+  dexpa,
+  format = "markdown",
+  caption = "Market information"
+)
 }
 \arguments{
 \item{dexp}{}

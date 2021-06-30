@@ -4,8 +4,10 @@
 \alias{requests_identify_type}
 \title{Sums the expression in <code>dataexp</code> up separately for PC/Win/StorageOut/StorageIn}
 \usage{
-requests_identify_type(data,
-  dataexp = "df[r, if(df$status==2) \\"energy_accepted\\" else \\"energy_requested\\"]")
+requests_identify_type(
+  data,
+  dataexp = "df[r, if(df$status==2) \\"energy_accepted\\" else \\"energy_requested\\"]"
+)
 }
 \arguments{
 \item{data}{}

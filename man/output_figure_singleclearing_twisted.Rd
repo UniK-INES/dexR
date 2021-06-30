@@ -4,8 +4,14 @@
 \alias{output_figure_singleclearing_twisted}
 \title{Plots demand and supply curve for a single uniform price clearing with price on x-axis}
 \usage{
-output_figure_singleclearing_twisted(dexpa, title = "", offers_df,
-  bids_df, offers_comp = NULL, bids_comp = NULL)
+output_figure_singleclearing_twisted(
+  dexpa,
+  title = "",
+  offers_df,
+  bids_df,
+  offers_comp = NULL,
+  bids_comp = NULL
+)
 }
 \arguments{
 \item{title}{Title to be plotted in figure}

@@ -4,9 +4,11 @@
 \alias{hl_figure_energy_status_comp_sumLoadGenByLocationAndStartT}
 \title{Retrieves requests data from DB and creates figure of requested and accepted energy by delivery start time}
 \usage{
-hl_figure_energy_status_comp_sumLoadGenByLocationAndStartT(dexpas,
+hl_figure_energy_status_comp_sumLoadGenByLocationAndStartT(
+  dexpas,
   stati = c("ALL_REQUESTED", "ACCEPTED", "PARTLY_ACCEPTED", "DECLINED"),
-  ggplotaddons = NULL)
+  ggplotaddons = NULL
+)
 }
 \arguments{
 \item{dexpa}{}

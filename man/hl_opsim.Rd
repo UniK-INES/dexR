@@ -4,12 +4,19 @@
 \alias{hl_opsim}
 \title{Run OpSim control manager, schedule service, net simulation, DEX market backend, and EMG clients}
 \usage{
-hl_opsim(dexpa, startmanager = T, startsservice = T, startnetsim = T,
-  emptydb = T, runemg = T,
-  basetime = as.numeric(round(strptime("30/09/19 12:00",
-  "\%d/\%m/\%y \%H:\%M"), "mins")) * 1000,
-  outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/",
-  dexpa$sim$id, ".log", sep = ""), shutdown = F)
+hl_opsim(
+  dexpa,
+  startmanager = T,
+  startsservice = T,
+  startnetsim = T,
+  emptydb = T,
+  runemg = T,
+  basetime = as.numeric(round(strptime("30/09/19 12:00", "\%d/\%m/\%y \%H:\%M"),
+    "mins")) * 1000,
+  outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id,
+    ".log", sep = ""),
+  shutdown = F
+)
 }
 \arguments{
 \item{dexpa}{}

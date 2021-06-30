@@ -4,11 +4,19 @@
 \alias{input_db_dump2db}
 \title{Imports the given dumpfile into the database configured in the given parameter object}
 \usage{
-input_db_dump2db(dexpa, dumpfile = paste("dump_", dexpa$sim$id, sep =
-  ""))
+input_db_dump2db(dexpa, dumpfile = paste("dump_", dexpa$sim$id, sep = ""))
 }
 \arguments{
-\item{dexpa}{parameter object}
+\item{dexpa}{parameter object
+<ul><li>dexpa$db$dbname</li>
+    <li>dexpa$db$suname</li>
+       <li>dexpa$db$supassword</li>
+       <li>dexpa$db$dbname_template</li>
+    <li>dexpa$db$host</li>
+    <li>dexpa$db$port</li>      
+    <li>dexpa$dirs$output$dbdumps</li>
+       <li>dexpa$db$username</li>
+</ul>}
 
 \item{dumpfile}{dumpfile to import}
 }

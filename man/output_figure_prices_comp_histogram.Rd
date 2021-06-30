@@ -4,10 +4,16 @@
 \alias{output_figure_prices_comp_histogram}
 \title{Generate histogram of prices of load requests.}
 \usage{
-output_figure_prices_comp_histogram(dexpas, data, skiplegend = FALSE,
-  title = "Histogram of load prices", ggplotaddons = NULL,
-  returnplot = FALSE, filename = paste("Histogram_Load_Prices_",
-  shbasic::shbasic_condenseRunids(data[, "id"]), sep = "_"))
+output_figure_prices_comp_histogram(
+  dexpas,
+  data,
+  skiplegend = FALSE,
+  title = "Histogram of load prices",
+  ggplotaddons = NULL,
+  returnplot = FALSE,
+  filename = paste("Histogram_Load_Prices_", shbasic::shbasic_condenseRunids(data[,
+    "id"]), sep = "_")
+)
 }
 \arguments{
 \item{data}{}

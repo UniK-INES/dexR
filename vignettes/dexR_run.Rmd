@@ -39,7 +39,7 @@ dexpa$sim$version <- "testversion"
 dexpa$sim$id 	  <- "Testrun01"
 source("/home/USER/dexr/scripts/dexpa-pversion_pversion.R")
 
-dexR::hl_experiment_cluste(dexpa, basetime = as.numeric(round(strptime("30/09/19 12:00", "%d/%m/%y %H:%M"),"mins"))*1000),
+dexR::hl_experiment_cluster(dexpa, basetime = as.numeric(round(strptime("30/09/19 12:00", "%d/%m/%y %H:%M"),"mins"))*1000),
 		offset = round(basetime - as.numeric(Sys.time())*1000))
 ```
 

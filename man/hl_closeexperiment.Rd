@@ -4,9 +4,14 @@
 \alias{hl_closeexperiment}
 \title{Stop EMGs, dump database, create full report, shutdown server, and redirect output.}
 \usage{
-hl_closeexperiment(dexpa, outputfile = "", basetime,
+hl_closeexperiment(
+  dexpa,
+  outputfile = "",
+  basetime,
   offset = round(basetime - as.numeric(Sys.time()) * 1000),
-  infoData = NULL, nodeids = c(""))
+  infoData = NULL,
+  nodeids = c("")
+)
 }
 \arguments{
 \item{dexpa}{}

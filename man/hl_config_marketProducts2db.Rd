@@ -5,10 +5,12 @@
 \title{Stores market products from CSV file to PostGreSQL database.
 The database tables are emptied before submission.}
 \usage{
-hl_config_marketProducts2db(dexpa, sourcedir = paste(dexpa$dirs$config,
-  dexpa$sim$id, sep = "/"),
-  sourcefile = paste("DEX_Param_MarketProducts_", dexpa$sim$id, ".csv",
-  sep = ""), firstDeliveryPeriodStart = Sys.time())
+hl_config_marketProducts2db(
+  dexpa,
+  sourcedir = paste(dexpa$dirs$config, dexpa$sim$id, sep = "/"),
+  sourcefile = paste("DEX_Param_MarketProducts_", dexpa$sim$id, ".csv", sep = ""),
+  firstDeliveryPeriodStart = Sys.time()
+)
 }
 \arguments{
 \item{dexpa}{\itemize{

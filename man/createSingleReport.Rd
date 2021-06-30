@@ -4,9 +4,14 @@
 \alias{createSingleReport}
 \title{Create a single run report (slides)}
 \usage{
-createSingleReport(dexpas, outputfile,
+createSingleReport(
+  dexpas,
+  outputfile,
   rmdfile = "DEX_report_single_slides.Rmd",
-  output_dir = dexpa$dirs$output$reports, clean = T, run_pandoc = T)
+  output_dir = dexpa$dirs$output$reports,
+  clean = T,
+  run_pandoc = T
+)
 }
 \arguments{
 \item{outputfile}{filename of resulting PDF file}

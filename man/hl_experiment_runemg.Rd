@@ -4,8 +4,13 @@
 \alias{hl_experiment_runemg}
 \title{Run EMGs to experiment}
 \usage{
-hl_experiment_runemg(dexpa, runemg = T, outfileemg = "",
-  outfilesys = "", pauseafterxmlcreation = F)
+hl_experiment_runemg(
+  dexpa,
+  runemg = T,
+  outfileemg = "",
+  outfilesys = "",
+  pauseafterxmlcreation = F
+)
 }
 \arguments{
 \item{dexpa}{}

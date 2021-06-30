@@ -6,15 +6,27 @@
 and potentially as facet plot.
 Uses ticks as X variable if present, runid otherwise.}
 \usage{
-output_figure_lines(dexpa = dexpa, data = data, x_column = NULL,
-  y_column, title = NULL, colour_column = NULL,
-  colour_legendtitle = colour_column, colour_legenditemnames = NULL,
-  linetype_column = NULL, linetype_legendtitle = linetype_column,
-  linetype_legenditemnames = NULL, facet_column = NULL,
-  facet_ncol = 2, filename = paste(dexpa$fig$filenameprefix, gsub(" ",
-  "_", title), shbasic::shbasic_condenseRunids(data[, "id"]),
-  dexpa$fig$filenamepostfix, sep = "_"), alpha = dexpa$fig$alpha,
-  showsd = FALSE, ggplotaddons = NULL, returnplot = FALSE)
+output_figure_lines(
+  dexpa = dexpa,
+  data = data,
+  x_column = NULL,
+  y_column,
+  title = NULL,
+  colour_column = NULL,
+  colour_legendtitle = colour_column,
+  colour_legenditemnames = NULL,
+  linetype_column = NULL,
+  linetype_legendtitle = linetype_column,
+  linetype_legenditemnames = NULL,
+  facet_column = NULL,
+  facet_ncol = 2,
+  filename = paste(dexpa$fig$filenameprefix, gsub(" ", "_", title),
+    shbasic::shbasic_condenseRunids(data[, "id"]), dexpa$fig$filenamepostfix, sep = "_"),
+  alpha = dexpa$fig$alpha,
+  showsd = FALSE,
+  ggplotaddons = NULL,
+  returnplot = FALSE
+)
 }
 \arguments{
 \item{dexpa}{parameter object}

@@ -5,14 +5,26 @@
 \title{Prints a bar of data as ggplot2 with potentially different colour, linetype,
 and potentially as facet plot.}
 \usage{
-output_figure_bars(dexpa, data, y_column, title = NULL,
-  fill_column = NULL, fill_legendtitle = fill_column,
-  fill_legenditemnames = NULL, facet_column = NULL, facet_ncol = 4,
+output_figure_bars(
+  dexpa,
+  data,
+  y_column,
+  title = NULL,
+  fill_column = NULL,
+  fill_legendtitle = fill_column,
+  fill_legenditemnames = NULL,
+  facet_column = NULL,
+  facet_ncol = 4,
   filename = paste(dexpa$fig$filenameprefix, gsub(" ", "_", title),
-  shbasic::shbasic_condenseRunids(data[, "id"]), dexpa$fig$filenamepostfix,
-  sep = "_"), alpha = 1, ggplotaddons = NULL, x_column = "ID",
-  group_column = NULL, group_colors = NULL, position = "dodge",
-  returnplot = FALSE)
+    shbasic::shbasic_condenseRunids(data[, "id"]), dexpa$fig$filenamepostfix, sep = "_"),
+  alpha = 1,
+  ggplotaddons = NULL,
+  x_column = "ID",
+  group_column = NULL,
+  group_colors = NULL,
+  position = "dodge",
+  returnplot = FALSE
+)
 }
 \arguments{
 \item{dexpa}{parameter object}

@@ -4,9 +4,11 @@
 \alias{hl_opsim_runscheduleservice}
 \title{Run Schedule Service}
 \usage{
-hl_opsim_runscheduleservice(dexpa,
+hl_opsim_runscheduleservice(
+  dexpa,
   outfilesservice = paste(dexpa$dirs$output$logs, dexpa$sim$id,
-  dexpa$opsim$sservice$logfile, sep = "/"))
+    dexpa$opsim$sservice$logfile, sep = "/")
+)
 }
 \arguments{
 \item{dexpa}{}

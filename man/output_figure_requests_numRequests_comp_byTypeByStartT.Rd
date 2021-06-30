@@ -4,8 +4,12 @@
 \alias{output_figure_requests_numRequests_comp_byTypeByStartT}
 \title{Output figure: Number of submitted requests per submission time and request type.}
 \usage{
-output_figure_requests_numRequests_comp_byTypeByStartT(dexpa, data,
-  filename = "dex_requests_numRequests_byTypeByCT", skiplegend = F)
+output_figure_requests_numRequests_comp_byTypeByStartT(
+  dexpa,
+  data,
+  filename = "dex_requests_numRequests_byTypeByCT",
+  skiplegend = F
+)
 }
 \arguments{
 \item{dexpa}{}

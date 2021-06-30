@@ -142,7 +142,8 @@
 #  dexpa$fig$plottitle		<- TRUE
 #  dexpa$fig$alpha			<- 0.7
 #  dexpa$fig$linewidth		<- 1
-#  dexpa$fig$facetlabelsize	<- 12
+#  dexpa$fig$facet 			<- list()
+#  dexpa$fig$facet$labelsize<- 12
 #  dexpa$fig$legend$ncols	<- 3
 #  
 #  ### Colour Settings ###########################################################

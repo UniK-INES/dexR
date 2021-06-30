@@ -79,7 +79,7 @@ input_db_dump2db <- function(dexpa, dumpfile =  paste("dump_", dexpa$sim$id, sep
 	system(command)
 	
 	command = paste("pg_restore",  "-h", dexpa$db$host, "-p", dexpa$db$port, "--username", dexpa$db$suname, 
-			"--no-password --clean --if-exists -d", dexpa$db$dbname, paste(dexpa$dirs$output$dbdumps,dumpfile,sep="/"))
+			"--no-password --clean -d", dexpa$db$dbname, paste(dexpa$dirs$output$dbdumps,dumpfile,sep="/"))
 	futile.logger::flog.debug("Command: %s", command, name = "dexr.input.db.dump")
 	system(command)
 	
@@ -115,9 +115,12 @@ input_db_dumps2db <- function(dexpas) {
 input_db_db2dump <- function(dexpa, dumpdir, remoteServer=FALSE, outputfile="") {
 		
 	if (remoteServer) {
-		futile.logger::flog.info("Dump database %s to dumpdir %s (remote)..." ,
+		futile.logger::flog.info("Dump database %s at localhost:%s with username %s to dumpdir %s (remote with ssh-config %s)..." ,
 				dexpa$db$dbname,
+				dexpa$db$port,
+				dexpa$db$suname,
 				paste(dexpa$dirs$output$dbdumpsremote, dumpdir, sep="/"),
+				dexpa$db$sshname,
 				name = "dexr.input.db.dump")
 		
 		system2("ssh", args=paste(dexpa$db$sshname, if (dexpa$db$sshverbose) "-v", " 'pg_dump",  "-h localhost", "-p", dexpa$db$port, "--username", dexpa$db$suname, 

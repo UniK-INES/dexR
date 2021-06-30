@@ -5,10 +5,15 @@
 \title{Prints a bar of data as ggplot2 with potentially different colour, linetype,
 and potentially as facet plot.}
 \usage{
-output_figure_clientdata(dexpa, d = input_csv_clientdata(dexpa),
-  title = NULL, filename = paste(title,
-  shbasic::shbasic_condenseRunids(data[, "Runid"]), sep = "_"),
-  ggplotaddons = NULL, returnplot = FALSE, facet_ncol = 2)
+output_figure_clientdata(
+  dexpa,
+  d = input_csv_clientdata(dexpa),
+  title = NULL,
+  filename = paste(title, shbasic::shbasic_condenseRunids(data[, "Runid"]), sep = "_"),
+  ggplotaddons = NULL,
+  returnplot = FALSE,
+  facet_ncol = 2
+)
 }
 \arguments{
 \item{dexpa}{parameter object}

@@ -4,8 +4,11 @@
 \alias{output_figure_energycosts_requested_comp_avgByTypeStartT}
 \title{Output figure: Comparison of average costs of requested energy per type and per delivery start time.}
 \usage{
-output_figure_energycosts_requested_comp_avgByTypeStartT(dexpa, data,
-  skiplegend = FALSE)
+output_figure_energycosts_requested_comp_avgByTypeStartT(
+  dexpa,
+  data,
+  skiplegend = FALSE
+)
 }
 \arguments{
 \item{dexpa}{}

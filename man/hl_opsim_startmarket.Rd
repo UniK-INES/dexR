@@ -4,9 +4,13 @@
 \alias{hl_opsim_startmarket}
 \title{Start market backend server (creating database, not shutting down).}
 \usage{
-hl_opsim_startmarket(dexpa,
-  basetime = as.numeric(round(strptime("30/09/19 12:00",
-  "\%d/\%m/\%y \%H:\%M"), "mins")) * 1000, runemg = T, shutdown = F)
+hl_opsim_startmarket(
+  dexpa,
+  basetime = as.numeric(round(strptime("30/09/19 12:00", "\%d/\%m/\%y \%H:\%M"),
+    "mins")) * 1000,
+  runemg = T,
+  shutdown = F
+)
 }
 \arguments{
 \item{dexpa}{}

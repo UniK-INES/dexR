@@ -4,9 +4,14 @@
 \alias{hl_reports_comp}
 \title{Create a report for the given <code>ids</code> based on the given <code>dexpa</code> (e.g. dumpdir).}
 \usage{
-hl_reports_comp(dexpa, ids, reporttmpl = "DEX_report_compare_slides.Rmd",
-  outfileprefix = paste(dexpa$sim$project, "_ComparisonReport", sep =
-  "_"), clean = T, dropdb = T)
+hl_reports_comp(
+  dexpa,
+  ids,
+  reporttmpl = "DEX_report_compare_slides.Rmd",
+  outfileprefix = paste(dexpa$sim$project, "_ComparisonReport", sep = "_"),
+  clean = T,
+  dropdb = T
+)
 }
 \arguments{
 \item{dexpa}{parameter object required for e.g. dump dir configuration}

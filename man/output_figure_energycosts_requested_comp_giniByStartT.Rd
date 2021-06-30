@@ -4,8 +4,12 @@
 \alias{output_figure_energycosts_requested_comp_giniByStartT}
 \title{Output figure: Gini coefficient of costs of accepted energy per kWh sum per delivery start time.}
 \usage{
-output_figure_energycosts_requested_comp_giniByStartT(dexpas, data, type,
-  skiplegend = F)
+output_figure_energycosts_requested_comp_giniByStartT(
+  dexpas,
+  data,
+  type,
+  skiplegend = F
+)
 }
 \arguments{
 \item{data}{}

@@ -4,8 +4,12 @@
 \alias{output_figure_power_status_comp_sumByLocationBalanceByStartT}
 \title{Output figure: Requested energy balance per area/location for specific status per submission time.}
 \usage{
-output_figure_power_status_comp_sumByLocationBalanceByStartT(dexpa, data,
-  status = "REQUESTED", ggplotaddons = NULL)
+output_figure_power_status_comp_sumByLocationBalanceByStartT(
+  dexpa,
+  data,
+  status = "REQUESTED",
+  ggplotaddons = NULL
+)
 }
 \arguments{
 \item{dexpa}{}

@@ -4,9 +4,14 @@
 \alias{createCompareReport}
 \title{Create the comparison report}
 \usage{
-createCompareReport(dexpas, outputfile,
+createCompareReport(
+  dexpas,
+  outputfile,
   rmdfile = "DEX_report_compare.Rmd",
-  output_dir = dexpa$dirs$output$reports, clean = T, run_pandoc = T)
+  output_dir = dexpa$dirs$output$reports,
+  clean = T,
+  run_pandoc = T
+)
 }
 \arguments{
 \item{outputfile}{filename of resulting PDF file}

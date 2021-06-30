@@ -4,8 +4,11 @@
 \alias{hl_opsim_runmanager}
 \title{Runs OpSim control manager}
 \usage{
-hl_opsim_runmanager(dexpa, outfileopsim = paste(dexpa$dirs$output$logs,
-  dexpa$sim$id, dexpa$opsim$control$logfile, sep = "/"))
+hl_opsim_runmanager(
+  dexpa,
+  outfileopsim = paste(dexpa$dirs$output$logs, dexpa$sim$id,
+    dexpa$opsim$control$logfile, sep = "/")
+)
 }
 \arguments{
 \item{dexpa}{}

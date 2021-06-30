@@ -4,8 +4,10 @@
 \alias{hl_config_copycsvtemplates}
 \title{Copy CSV template to new configuration folder}
 \usage{
-hl_config_copycsvtemplates(dexpa, targetdir = paste(dexpa$dirs$config,
-  dexpa$sim$id, sep = "/"))
+hl_config_copycsvtemplates(
+  dexpa,
+  targetdir = paste(dexpa$dirs$config, dexpa$sim$id, sep = "/")
+)
 }
 \arguments{
 \item{dexpa}{parameter list}

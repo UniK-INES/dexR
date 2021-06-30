@@ -4,8 +4,11 @@
 \alias{hl_opsim_runnetsim}
 \title{Run panda power net simulation in python}
 \usage{
-hl_opsim_runnetsim(dexpa, outfilenetsim = paste(dexpa$dirs$output$logs,
-  dexpa$sim$id, dexpa$opsim$netsim$logfile, sep = "/"))
+hl_opsim_runnetsim(
+  dexpa,
+  outfilenetsim = paste(dexpa$dirs$output$logs, dexpa$sim$id,
+    dexpa$opsim$netsim$logfile, sep = "/")
+)
 }
 \arguments{
 \item{dexpa}{}
@@ -14,7 +17,6 @@ hl_opsim_runnetsim(dexpa, outfilenetsim = paste(dexpa$dirs$output$logs,
 }
 \value{
 run panda power
-stringi::stri_startswith_fixed(sourcefile
 }
 \description{
 Run panda power net simulation in python

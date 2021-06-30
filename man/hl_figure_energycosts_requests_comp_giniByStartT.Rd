@@ -5,8 +5,11 @@
 \title{Retrieves requests data from DB and creates figure of gini coefficient of requested energy cost
 per KWh by delivery start time.}
 \usage{
-hl_figure_energycosts_requests_comp_giniByStartT(dexpas, type = "load",
-  skiplegend = F)
+hl_figure_energycosts_requests_comp_giniByStartT(
+  dexpas,
+  type = "load",
+  skiplegend = F
+)
 }
 \arguments{
 \item{type}{either 'gen' or 'load'}

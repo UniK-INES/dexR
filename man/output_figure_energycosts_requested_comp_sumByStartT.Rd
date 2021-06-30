@@ -4,8 +4,11 @@
 \alias{output_figure_energycosts_requested_comp_sumByStartT}
 \title{Output figure: Comparison of costs of requested energy sum per delivery start time.}
 \usage{
-output_figure_energycosts_requested_comp_sumByStartT(dexpa, data,
-  skiplegend = F)
+output_figure_energycosts_requested_comp_sumByStartT(
+  dexpa,
+  data,
+  skiplegend = F
+)
 }
 \arguments{
 \item{dexpa}{}

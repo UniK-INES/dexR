@@ -4,14 +4,17 @@
 \alias{hl_experiment_cluster}
 \title{Runs experiments and create the required config folder (for cluster execution)}
 \usage{
-hl_experiment_cluster(dexpa, basetime = as.numeric(round(Sys.time(),
-  "mins")) * 1000, offset = round(basetime - as.numeric(Sys.time()) *
-  1000), outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id,
-  "/", dexpa$sim$id, "_", dexpa$emg$rseed, ".log", sep = ""),
-  outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/",
-  dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep = ""),
-  outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/",
-  dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep = ""))
+hl_experiment_cluster(
+  dexpa,
+  basetime = as.numeric(round(Sys.time(), "mins")) * 1000,
+  offset = round(basetime - as.numeric(Sys.time()) * 1000),
+  outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_",
+    dexpa$emg$rseed, ".log", sep = ""),
+  outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id,
+    "_", dexpa$emg$rseed, "_market.log", sep = ""),
+  outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_",
+    dexpa$emg$rseed, "_emg.log", sep = "")
+)
 }
 \arguments{
 \item{dexpa}{}

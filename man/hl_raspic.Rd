@@ -4,14 +4,17 @@
 \alias{hl_raspic}
 \title{Runs experiments on the rasperry Pi cluster}
 \usage{
-hl_raspic(dexpa, basetime = as.numeric(round(Sys.time(), "mins")) * 1000,
+hl_raspic(
+  dexpa,
+  basetime = as.numeric(round(Sys.time(), "mins")) * 1000,
   offset = round(basetime - as.numeric(Sys.time()) * 1000),
-  outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/",
-  dexpa$sim$id, "_", dexpa$emg$rseed, ".log", sep = ""),
-  outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/",
-  dexpa$sim$id, "_", dexpa$emg$rseed, "_market.log", sep = ""),
-  outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/",
-  dexpa$sim$id, "_", dexpa$emg$rseed, "_emg.log", sep = ""))
+  outputfile = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_",
+    dexpa$emg$rseed, ".log", sep = ""),
+  outfilemarket = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id,
+    "_", dexpa$emg$rseed, "_market.log", sep = ""),
+  outfileemg = paste(dexpa$dirs$output$logs, "/", dexpa$sim$id, "/", dexpa$sim$id, "_",
+    dexpa$emg$rseed, "_emg.log", sep = "")
+)
 }
 \arguments{
 \item{dexpa}{}

@@ -4,8 +4,12 @@
 \alias{output_table_param_products}
 \title{Provides markdown formated table of product patterns.}
 \usage{
-output_table_param_products(dexpas, format = "markdown",
-  caption = "Product information", skipcolumns = c())
+output_table_param_products(
+  dexpas,
+  format = "markdown",
+  caption = "Product information",
+  skipcolumns = c()
+)
 }
 \arguments{
 \item{dexp}{}

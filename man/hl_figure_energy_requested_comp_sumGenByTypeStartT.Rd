@@ -5,8 +5,7 @@
 \title{Retrieves requests data from DB and creates figure of requested energy from generation by generation type 
 and delivery start time.}
 \usage{
-hl_figure_energy_requested_comp_sumGenByTypeStartT(dexpas,
-  skiplegend = F)
+hl_figure_energy_requested_comp_sumGenByTypeStartT(dexpas, skiplegend = F)
 }
 \arguments{
 \item{dexpa}{}

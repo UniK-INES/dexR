@@ -4,8 +4,11 @@
 \alias{str_to_ms}
 \title{Convert time string to milliseconds}
 \usage{
-str_to_ms(timestring, format = "\%Y-\%m-\%d \%H:\%M",
-  timezone = "Europe/Berlin")
+str_to_ms(
+  timestring,
+  format = "\%Y-\%m-\%d \%H:\%M",
+  timezone = "Europe/Berlin"
+)
 }
 \arguments{
 \item{timestring}{}

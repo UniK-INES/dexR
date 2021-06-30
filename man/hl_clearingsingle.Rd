@@ -4,8 +4,13 @@
 \alias{hl_clearingsingle}
 \title{Gnerates a figure of clearing at starttime}
 \usage{
-hl_clearingsingle(dexpa, starttime = NULL, title = NULL,
-  filename = "GetIntersectionPrice", dexpa_comp = NULL)
+hl_clearingsingle(
+  dexpa,
+  starttime = NULL,
+  title = NULL,
+  filename = "GetIntersectionPrice",
+  dexpa_comp = NULL
+)
 }
 \arguments{
 \item{dexpa}{parameter list}

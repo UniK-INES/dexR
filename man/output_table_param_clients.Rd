@@ -4,9 +4,15 @@
 \alias{output_table_param_clients}
 \title{Returns a kable markdown table with client information}
 \usage{
-output_table_param_clients(dexpa, format = "markdown",
-  caption = "Client information", linespertable = 18, file = NULL,
-  filextension = "tex", prefix = "")
+output_table_param_clients(
+  dexpa,
+  format = "markdown",
+  caption = "Client information",
+  linespertable = 18,
+  file = NULL,
+  filextension = "tex",
+  prefix = ""
+)
 }
 \arguments{
 \item{dexpa}{}

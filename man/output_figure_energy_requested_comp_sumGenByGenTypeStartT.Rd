@@ -4,8 +4,11 @@
 \alias{output_figure_energy_requested_comp_sumGenByGenTypeStartT}
 \title{Output figure: Requested generation energy per generation type and submission time and status.}
 \usage{
-output_figure_energy_requested_comp_sumGenByGenTypeStartT(dexpa, data,
-  skiplegend = F)
+output_figure_energy_requested_comp_sumGenByGenTypeStartT(
+  dexpa,
+  data,
+  skiplegend = F
+)
 }
 \arguments{
 \item{dexpa}{}

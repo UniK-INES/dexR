@@ -126,7 +126,8 @@ param_mergeDefaultDexpa <- function(dexpa = list()) {
 	defdexpa$fig$plottitle		<- TRUE
 	defdexpa$fig$alpha			<- 0.7
 	defdexpa$fig$linewidth		<- 0.5
-	defdexpa$fig$facetlabelsize	<- 12
+	defdexpa$fig$facet			<- list()
+	defdexpa$fig$facet$labelsize<- 10
 	defdexpa$fig$facet$scale	<- "free_y"
 	defdexpa$fig$legend$ncols	<- 3
 	defdexpa$fig$labelsubs <- NULL

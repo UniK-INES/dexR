@@ -4,8 +4,12 @@
 \alias{output_figure_init}
 \title{Init figure output}
 \usage{
-output_figure_init(dexpa, outdir = dexpa$dirs$output$figures, filename,
-  ensurePath = TRUE)
+output_figure_init(
+  dexpa,
+  outdir = dexpa$dirs$output$figures,
+  filename,
+  ensurePath = TRUE
+)
 }
 \arguments{
 \item{dexpa}{DEX parameter object}

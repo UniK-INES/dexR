@@ -4,8 +4,12 @@
 \alias{output_figure_energy_requested_byStatusByStartT}
 \title{Output figure: Requested energy per submission time and status.}
 \usage{
-output_figure_energy_requested_byStatusByStartT(dexpa, data,
-  type = "residual", skiplegend = F)
+output_figure_energy_requested_byStatusByStartT(
+  dexpa,
+  data,
+  type = "residual",
+  skiplegend = F
+)
 }
 \arguments{
 \item{dexpa}{}
